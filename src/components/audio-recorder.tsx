@@ -10,7 +10,8 @@ let processor: AudioWorkletNode
 let webSocket: WebSocket
 let source: MediaStreamAudioSourceNode
 let context: AudioContext
-const youtubeCid = '1234-5678-9012-3456'
+const youtubeUrl =
+  'http://upload.youtube.com/closedcaption?cid=1234-5678-9012-3456'
 let seq = 0
 
 export const AudioRecorder: FC<{}> = () => {
@@ -40,7 +41,8 @@ export const AudioRecorder: FC<{}> = () => {
             seq,
             response.data.translation,
             now,
-            youtubeCid
+            youtubeUrl,
+            true
           )
 
           setTranslation((prev) => prev + ' ' + response.data.translation)

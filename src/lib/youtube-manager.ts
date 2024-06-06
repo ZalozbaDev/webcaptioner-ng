@@ -10,19 +10,19 @@ export const getParseDataForYoutube = (
   seq: number,
   text: string,
   date: Date,
-  youtubeCid: string,
+  youtubeUrl: string,
   sendToYoutube: boolean = false
 ) => {
   const parsedDate = dayjs.utc(date).format('YYYY-MM-DDTHH:MM:ss.SSS')
   const data = `${parsedDate} ${region}\n${text}: ${seq}\n`
 
   console.log({
-    youtubeUrl: `${process.env.REACT_APP_YOUTUBE_URL}?cid=${youtubeCid}&seq=${seq}`,
+    youtubeUrl: `${youtubeUrl}&seq=${seq}`,
   })
 
   sendToYoutube &&
     axios.post(
-      `${process.env.REACT_APP_YOUTUBE_URL}?cid=${youtubeCid}&seq=${seq}`,
+      `${youtubeUrl}&seq=${seq}`,
       Buffer.from(data, 'ascii').toString('utf-8'),
       {
         headers: {
