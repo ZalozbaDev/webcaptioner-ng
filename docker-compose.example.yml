@@ -1,0 +1,23 @@
+version: '3'
+services:
+  webcaptioner-ng:
+    image: webcaptioner-ng:latest
+    restart: unless-stopped
+    environment:
+        - REACT_APP_VOSK_SERVER_URL
+#    ports:
+#        - '80:3000'
+
+  webcaptioner-vosk-server:
+    image: vosk_server_whisper:latest
+    privileged: true
+    restart: unless-stopped
+    environment:
+        - VOSK_SAMPLE_RATE
+        - VOSK_LOG_AUDIO
+        - MODEL_PATH_FULL
+    volumes:
+        - ./logs:/logs
+        - ./whisper/:/whisper
+#    ports:
+#        - '80:4000'
