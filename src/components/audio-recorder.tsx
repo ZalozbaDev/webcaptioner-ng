@@ -2,15 +2,22 @@ import { FC, useEffect, useRef, useState } from 'react'
 import { handleSuccess } from './audio-recorder/handler/handle-success'
 import { initWebsocket } from './audio-recorder/handler/init-websocket'
 import { LoadingSpinner } from './loading-spinner'
+import { getTranslation } from '../lib/sotra-manager'
+import { getParseDataForYoutube } from '../lib/youtube-manager'
 
 const SAMPLE_RATE = 48000
 let processor: AudioWorkletNode
 let webSocket: WebSocket
 let source: MediaStreamAudioSourceNode
 let context: AudioContext
+const youtubeCid = '1234-5678-9012-3456'
+let seq = 0
 
 export const AudioRecorder: FC<{}> = () => {
   const [inputText, setInputText] = useState<string>('')
+  const [translation, setTranslation] = useState<string>('')
+  const [youtubeSubtitle, setYoutubeSubtitle] = useState<string>('')
+
   const mediaStream = useRef<MediaStream | null>(null)
   const mediaRecorder = useRef<MediaRecorder | null>(null)
   const [isRecording, setIsRecording] = useState<boolean>(false)
@@ -18,10 +25,27 @@ export const AudioRecorder: FC<{}> = () => {
   const onReceiveMessage = (event: MessageEvent) => {
     if (event.data) {
       let parsed = JSON.parse(event.data)
-      if (parsed.result) console.log(parsed.result)
-      if (parsed.text) {
-        console.log(parsed.text, parsed.text.slice(2, -2).trim())
-        setInputText((prev) => prev + ' ' + parsed.text.slice(2, -2).trim())
+      if (
+        parsed.text &&
+        parsed.text !== '-- ***/whisper/ggml-model.q8_0.bin --' &&
+        parsed.text !== '-- **/whisper/ggml-model.q8_0.bin --' &&
+        parsed.text !== '-- */whisper/ggml-model.q8_0.bin --'
+      ) {
+        const now = new Date()
+        seq += 1
+        const trimmedText = parsed.text.slice(2, -2).trim()
+        setInputText((prev) => prev + ' ' + trimmedText)
+        getTranslation(trimmedText).then((response) => {
+          const youtubeData = getParseDataForYoutube(
+            seq,
+            response.data.translation,
+            now,
+            youtubeCid
+          )
+
+          setTranslation((prev) => prev + ' ' + response.data.translation)
+          setYoutubeSubtitle((prev) => prev + ' ' + youtubeData + '\n')
+        })
       }
     }
   }
@@ -45,7 +69,6 @@ export const AudioRecorder: FC<{}> = () => {
   }
 
   const startRecording = async () => {
-    console.log(process.env.REACT_APP_VOSK_SERVER_URL)
     webSocket = initWebsocket(
       process.env.REACT_APP_VOSK_SERVER_URL!,
       onReceiveMessage
@@ -92,6 +115,7 @@ export const AudioRecorder: FC<{}> = () => {
     if (mediaStream.current)
       mediaStream.current.getTracks().forEach((track) => track.stop())
 
+    seq = 0
     setIsRecording(false)
   }
 
@@ -126,8 +150,21 @@ export const AudioRecorder: FC<{}> = () => {
         value={inputText}
         readOnly
       />
+      <textarea
+        color='white'
+        style={{ width: '100%' }}
+        value={translation}
+        readOnly
+      />
       <button onClick={startRecording}>Start Recording</button>
       <button onClick={stopRecording}>Stop Recording</button>
+
+      <textarea
+        color='white'
+        style={{ width: '300px', minHeight: '400px' }}
+        value={youtubeSubtitle}
+        readOnly
+      />
     </div>
   )
 }
