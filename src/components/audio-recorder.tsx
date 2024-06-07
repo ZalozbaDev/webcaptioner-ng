@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { handleSuccess } from './audio-recorder/handler/handle-success'
 import { initWebsocket } from './audio-recorder/handler/init-websocket'
 import { LoadingSpinner } from './loading-spinner'
@@ -21,8 +21,6 @@ export const AudioRecorder: FC<{}> = () => {
   const [translation, setTranslation] = useState<string>('')
   const [youtubeSubtitle, setYoutubeSubtitle] = useState<string>('')
 
-  const mediaStream = useRef<MediaStream | null>(null)
-  const mediaRecorder = useRef<MediaRecorder | null>(null)
   const [isRecording, setIsRecording] = useState<boolean>(false)
 
   const onReceiveMessage = (event: MessageEvent) => {
@@ -93,6 +91,7 @@ export const AudioRecorder: FC<{}> = () => {
             localeStream = stream
             setIsRecording(true)
             handleSuccess(
+              stream,
               SAMPLE_RATE,
               webSocket,
               onSetNewProcessor,
@@ -115,15 +114,8 @@ export const AudioRecorder: FC<{}> = () => {
       source?.disconnect(processor)
       context?.close()
 
-      if (mediaRecorder.current && mediaRecorder.current.state === 'recording')
-        mediaRecorder.current.stop()
-
-      if (mediaStream.current)
-        mediaStream.current.getTracks().forEach((track) => track.stop())
-
-      localeStream?.getTracks().forEach((track) => {
-        track.stop()
-      })
+      if (localeStream?.active)
+        localeStream.getTracks().forEach((track) => track.stop())
 
       seq = 0
       setIsRecording(false)

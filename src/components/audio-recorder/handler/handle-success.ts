@@ -1,4 +1,5 @@
 export const handleSuccess = (
+  stream: MediaStream,
   sampleRate: number,
   webSocket: WebSocket,
   onSetNewProcessor: (processor: AudioWorkletNode) => void,
@@ -20,20 +21,18 @@ export const handleSuccess = (
         }
       )
       onSetNewProcessor(processor)
-      let constraints = { audio: true }
-      navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
-        const source = context.createMediaStreamSource(stream)
 
-        source.connect(processor)
-        processor.connect(context.destination)
+      const source = context.createMediaStreamSource(stream)
 
-        onSetNewSource(source)
+      source.connect(processor)
+      processor.connect(context.destination)
 
-        processor.port.onmessage = (event) => {
-          webSocket.send(event.data)
-        }
-        processor.port.start()
-      })
+      onSetNewSource(source)
+
+      processor.port.onmessage = (event) => {
+        webSocket.send(event.data)
+      }
+      processor.port.start()
     })
 
   onSetNewContext(context)
