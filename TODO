@@ -23,6 +23,15 @@
 * polo za zapodaća youtube-URL
 *** Feliks
 
+* něhdźe "total runtime" pokazać
+*** Feliks
+
+* aktualny status code wot wotmołwy youtube pokazać (POST reply)
+*** Feliks
+
+* whisper container log redukować
+*** Daniel
+
 * lěpši deployment z docker
 ** produktiwnu wersiju, nic development
 ** hladać, hač potom te pospyty, zo přez WS na frontend zwjazać, preč su
