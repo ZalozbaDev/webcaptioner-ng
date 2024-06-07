@@ -5,6 +5,8 @@ services:
     restart: unless-stopped
     environment:
         - REACT_APP_VOSK_SERVER_URL
+        - REACT_APP_SOTRA_SERVER_URL
+        - REACT_APP_YOUTUBE_REGION
 #    ports:
 #        - '80:3000'
 
