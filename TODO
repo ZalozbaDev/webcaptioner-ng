@@ -1,0 +1,41 @@
+
+* informacije wo wuzwolenym mikrofonu (abo samo selector mikrofonow)
+** mjeno, samplerate, frame format...
+*** Feliks
+
+* čehodla ta wulka přestawka na započatku, prjedy hač započnje poskać
+*** Feliks
+
+* wjace awdija naraz pósłać (16000 samples, abo samo 48000 samples)
+*** Feliks
+
+* knefl za "přestawku" 
+** rozdźěl k stop: counter so wróćo njesadźi
+*** Feliks
+
+* spóznawanska kwalita?
+** přepruwować, hač so w prawym formaće nahrawa
+*** Daniel+Feliks
+
+* auto-scroll za wšitke pola z tekstom
+*** Feliks
+
+* polo za zapodaća youtube-URL
+*** Feliks
+
+* lěpši deployment z docker
+** produktiwnu wersiju, nic development
+** hladać, hač potom te pospyty, zo přez WS na frontend zwjazać, preč su
+*** Daniel
+
+* feedback zatwarić, zo whisper-spóznawanje je zaskoćił
+** tutón feedback potom tež pokazać
+*** Daniel+Feliks
+
+* timestamps wot whisper wróćić
+** hladać, hač dawa hižo API, hewak z přidatnym komandom zaswěćić
+*** Daniel
+
+* cehodla sotra_ctranslate wjace njebezi (to je raz slo)?
+** chcemy tutu wariantu wužiwać, dokelž tam někajka logika nutřka je, kotre słowa so njepřełožuja
+*** Feliks --> snano le to lochki zmylk (assert w python-scripće)
