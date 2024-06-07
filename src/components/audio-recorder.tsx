@@ -42,7 +42,7 @@ export const AudioRecorder: FC<{}> = () => {
             response.data.translation,
             now,
             youtubeUrl,
-            true
+            false
           )
 
           setTranslation((prev) => prev + ' ' + response.data.translation)
