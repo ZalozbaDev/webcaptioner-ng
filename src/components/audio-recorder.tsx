@@ -10,6 +10,8 @@ let processor: AudioWorkletNode
 let webSocket: WebSocket
 let source: MediaStreamAudioSourceNode
 let context: AudioContext
+let localeStream: MediaStream
+
 const youtubeUrl =
   'http://upload.youtube.com/closedcaption?cid=1234-5678-9012-3456'
 let seq = 0
@@ -87,7 +89,8 @@ export const AudioRecorder: FC<{}> = () => {
             },
             video: false,
           })
-          .then(() => {
+          .then((stream) => {
+            localeStream = stream
             setIsRecording(true)
             handleSuccess(
               SAMPLE_RATE,
@@ -104,21 +107,27 @@ export const AudioRecorder: FC<{}> = () => {
   }
 
   const stopRecording = () => {
-    webSocket?.send('{"eof" : 1}')
-    webSocket?.close()
+    if (isRecording) {
+      webSocket?.send('{"eof" : 1}')
+      webSocket?.close()
 
-    processor?.port.close()
-    source?.disconnect(processor)
-    context?.close()
+      processor?.port.close()
+      source?.disconnect(processor)
+      context?.close()
 
-    if (mediaRecorder.current && mediaRecorder.current.state === 'recording')
-      mediaRecorder.current.stop()
+      if (mediaRecorder.current && mediaRecorder.current.state === 'recording')
+        mediaRecorder.current.stop()
 
-    if (mediaStream.current)
-      mediaStream.current.getTracks().forEach((track) => track.stop())
+      if (mediaStream.current)
+        mediaStream.current.getTracks().forEach((track) => track.stop())
 
-    seq = 0
-    setIsRecording(false)
+      localeStream?.getTracks().forEach((track) => {
+        track.stop()
+      })
+
+      seq = 0
+      setIsRecording(false)
+    }
   }
 
   return (
@@ -158,8 +167,12 @@ export const AudioRecorder: FC<{}> = () => {
         value={translation}
         readOnly
       />
-      <button onClick={startRecording}>Start Recording</button>
-      <button onClick={stopRecording}>Stop Recording</button>
+      <button onClick={startRecording} disabled={isRecording}>
+        Start Recording
+      </button>
+      <button onClick={stopRecording} disabled={!isRecording}>
+        Stop Recording
+      </button>
 
       <textarea
         color='white'
