@@ -152,18 +152,9 @@ export const AudioRecorder: FC<{}> = () => {
           <LoadingSpinner />
         </div>
       )}
-      <textarea
-        color='white'
-        style={{ width: '100%' }}
-        value={inputText}
-        readOnly
-      />
-      <textarea
-        color='white'
-        style={{ width: '100%' }}
-        value={translation}
-        readOnly
-      />
+      <p>{inputText}</p>
+      <div style={{ height: 1, width: '80%', backgroundColor: 'white' }} />
+      <p>{translation}</p>
       <button onClick={startRecording} disabled={isRecording}>
         Start Recording
       </button>
