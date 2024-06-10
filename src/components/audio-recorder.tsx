@@ -56,6 +56,7 @@ export const AudioRecorder: FC<{}> = () => {
     return () => {
       stopRecording()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const onSetNewProcessor = (newProcessor: AudioWorkletNode) => {
@@ -77,13 +78,14 @@ export const AudioRecorder: FC<{}> = () => {
     )
     webSocket.onopen = () => {
       try {
+        console.info('Websocket connected')
         navigator.mediaDevices
           .getUserMedia({
             audio: {
               // for our use case audio should be as little processed as possible
               echoCancellation: false,
               noiseSuppression: false,
-              autoGainControl:  false,
+              autoGainControl: false,
               channelCount: 1,
               sampleRate: SAMPLE_RATE,
               sampleSize: 16,
@@ -150,18 +152,9 @@ export const AudioRecorder: FC<{}> = () => {
           <LoadingSpinner />
         </div>
       )}
-      <textarea
-        color='white'
-        style={{ width: '100%' }}
-        value={inputText}
-        readOnly
-      />
-      <textarea
-        color='white'
-        style={{ width: '100%' }}
-        value={translation}
-        readOnly
-      />
+      <p>{inputText}</p>
+      <div style={{ height: 1, width: '80%', backgroundColor: 'white' }} />
+      <p>{translation}</p>
       <button onClick={startRecording} disabled={isRecording}>
         Start Recording
       </button>

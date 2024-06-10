@@ -28,7 +28,7 @@ export const handleSuccess = (
       processor.connect(context.destination)
 
       onSetNewSource(source)
-
+      console.info('Processor started')
       processor.port.onmessage = (event) => {
         webSocket.send(event.data)
       }
