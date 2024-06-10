@@ -1,11 +1,11 @@
 import React from 'react'
 import './App.css'
-import { AudioRecorder } from './components/audio-recorder'
+import { MainScreen } from './features/main-screen'
 
 function App() {
   return (
     <div className='App'>
-      <AudioRecorder />
+      <MainScreen />
     </div>
   )
 }
