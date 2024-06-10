@@ -86,6 +86,7 @@ export const AudioRecorder: FC<{}> = () => {
               autoGainControl:  false,
               channelCount: 1,
               sampleRate: SAMPLE_RATE,
+              sampleSize: 16,
             },
             video: false,
           })
