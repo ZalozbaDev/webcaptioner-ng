@@ -29,8 +29,8 @@ class DataConversionAudioProcessor extends AudioWorkletProcessor {
 
     if (!inputData) return
 
-    for (let index = inputData.length; index > 0; index--) {
-      this._buffer[this._bytesWritten++] = 32767 * Math.min(1, inputData[index])
+    for (let index = 0; index < inputData.length; index++) {
+      this._buffer[this._bytesWritten++] = 32767 * Math.max(-1, Math.min(1, inputData[index]))
     }
 
     return true
