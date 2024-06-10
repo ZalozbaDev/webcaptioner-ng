@@ -80,8 +80,10 @@ export const AudioRecorder: FC<{}> = () => {
         navigator.mediaDevices
           .getUserMedia({
             audio: {
-              echoCancellation: true,
-              noiseSuppression: true,
+              // for our use case audio should be as little processed as possible
+              echoCancellation: false,
+              noiseSuppression: false,
+              autoGainControl:  false,
               channelCount: 1,
               sampleRate: SAMPLE_RATE,
             },

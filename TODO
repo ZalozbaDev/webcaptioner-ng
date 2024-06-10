@@ -23,6 +23,15 @@
 * polo za zapodaća youtube-URL
 *** Feliks
 
+* něhdźe "total runtime" pokazać
+*** Feliks
+
+* aktualny status code wot wotmołwy youtube pokazać (POST reply)
+*** Feliks
+
+* whisper container log redukować
+*** Daniel
+
 * lěpši deployment z docker
 ** produktiwnu wersiju, nic development
 ** hladać, hač potom te pospyty, zo přez WS na frontend zwjazać, preč su
@@ -34,8 +43,15 @@
 
 * timestamps wot whisper wróćić
 ** hladać, hač dawa hižo API, hewak z přidatnym komandom zaswěćić
+** https://github.com/ZalozbaDev/vosk-api/blob/1053cfa0f80039d2956de7e05a05c0b8db90c3c0/src/vosk_api.h#L177 
+** https://github.com/alphacep/vosk-server/blob/5db5b0e89473973f9cd9055d44e48805cb875655/websocket-cpp/asr_server.cpp#L320 
 *** Daniel
 
 * cehodla sotra_ctranslate wjace njebezi (to je raz slo)?
 ** chcemy tutu wariantu wužiwać, dokelž tam někajka logika nutřka je, kotre słowa so njepřełožuja
 *** Feliks --> snano le to lochki zmylk (assert w python-scripće)
+
+* trjebamy zakładnu wěstotu?
+** hesło za frontend
+** API-keys za backend
+*** Feliks
