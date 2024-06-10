@@ -31,7 +31,6 @@ export const MainScreen = () => {
   const onReceiveMessage = (event: MessageEvent) => {
     if (event.data) {
       let parsed = JSON.parse(event.data)
-      console.log(parsed)
       if (
         parsed.text &&
         parsed.text !== '-- ***/whisper/ggml-model.q8_0.bin --' &&
@@ -59,7 +58,7 @@ export const MainScreen = () => {
 
   useEffect(() => {
     return () => {
-      stopRecording()
+      breakRecording('stop')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -117,7 +116,7 @@ export const MainScreen = () => {
     }
   }
 
-  const stopRecording = () => {
+  const breakRecording = (newState: 'stop' | 'pause') => {
     if (isRecording) {
       webSocket?.send('{"eof" : 1}')
       webSocket?.close()
@@ -129,12 +128,15 @@ export const MainScreen = () => {
       if (localeStream?.active)
         localeStream.getTracks().forEach((track) => track.stop())
 
-      seq = 0
+      if (newState === 'stop') {
+        seq = 0
+        setInputText('')
+        setTranslation('')
+        setYoutubeSubtitle('')
+      }
       setIsRecording(false)
     }
   }
-
-  const pauseRecording = () => {}
 
   const visualizerArea = useMemo(
     () => (
@@ -196,7 +198,7 @@ export const MainScreen = () => {
           <MicrophoneSelector
             onChange={(mic) => {
               setSelectedMicrophone(mic)
-              stopRecording()
+              breakRecording('pause')
             }}
           />
         </Box>
@@ -208,8 +210,8 @@ export const MainScreen = () => {
             stop: !isRecording,
           }}
           onPressRecord={startRecording}
-          onPressPause={pauseRecording}
-          onPressStop={stopRecording}
+          onPressPause={() => breakRecording('pause')}
+          onPressStop={() => breakRecording('stop')}
         />
       </Box>
 
