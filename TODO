@@ -1,4 +1,3 @@
-
 * informacije wo wuzwolenym mikrofonu (abo samo selector mikrofonow)
 ** mjeno, samplerate, frame format...
 *** Feliks
@@ -8,10 +7,6 @@
 *** Feliks
 
 * wjace awdija naraz pósłać (16000 samples, abo samo 48000 samples)
-*** Feliks
-
-* knefl za "přestawku" 
-** rozdźěl k stop: counter so wróćo njesadźi
 *** Feliks
 
 * spóznawanska kwalita?

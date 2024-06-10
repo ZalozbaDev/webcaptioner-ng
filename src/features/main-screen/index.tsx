@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { handleSuccess } from './components/audio-recorder/handler/handle-success'
 import { initWebsocket } from './components/audio-recorder/handler/init-websocket'
 import { LoadingSpinner } from '../../components/loading-spinner'
