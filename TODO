@@ -4,6 +4,7 @@
 *** Feliks
 
 * čehodla ta wulka přestawka na započatku, prjedy hač započnje poskać
+** pola chrome wjace njewidźu, ale Firefox ma druhdy hiŝce problem
 *** Feliks
 
 * wjace awdija naraz pósłać (16000 samples, abo samo 48000 samples)
@@ -15,8 +16,9 @@
 
 * spóznawanska kwalita?
 ** přepruwować, hač so w prawym formaće nahrawa
+** Windows: Firefox & Chrome netko OK
+** Mac: jenoz Firefox OK
 *** Daniel+Feliks
-
 
 * polo za zapodaća youtube-URL
 *** Feliks
@@ -25,6 +27,9 @@
 *** Feliks
 
 * aktualny status code wot wotmołwy youtube pokazać (POST reply)
+*** Feliks
+
+* pokazac, je-li je zmylk pri wuziwanju mikrofona
 *** Feliks
 
 * whisper container log redukować
@@ -50,6 +55,7 @@
 *** Feliks --> snano le to lochki zmylk (assert w python-scripće)
 
 * trjebamy zakładnu wěstotu?
-** hesło za frontend
-** API-keys za backend
+** hesło za frontend (env)
+** API-keys za backend (tez jenoz prez env)
 *** Feliks
+
