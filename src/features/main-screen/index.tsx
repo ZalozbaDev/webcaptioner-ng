@@ -1,13 +1,11 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { handleSuccess } from './components/audio-recorder/handler/handle-success'
 import { initWebsocket } from './components/audio-recorder/handler/init-websocket'
-import { LoadingSpinner } from '../../components/loading-spinner'
 import { getTranslation } from '../../lib/sotra-manager'
 import { getParseDataForYoutube } from '../../lib/youtube-manager'
 import { MicrophoneSelector } from './components/microphone-selector.tsx'
 import { RecordButtonsContainer } from './components/record-buttons-container'
 import { Box } from '@mui/material'
-import { Visualizer } from 'react-sound-visualizer'
 
 const SAMPLE_RATE = 48000
 let processor: AudioWorkletNode
@@ -138,22 +136,6 @@ export const MainScreen = () => {
     }
   }
 
-  const visualizerArea = useMemo(
-    () => (
-      <Visualizer
-        audio={localeStream}
-        mode='continuous'
-        autoStart
-        strokeColor='white'
-        lineWidth='default'
-      >
-        {({ canvasRef }) => <canvas ref={canvasRef} width={500} height={100} />}
-      </Visualizer>
-    ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [localeStream]
-  )
-
   return (
     <div
       style={{
@@ -166,19 +148,6 @@ export const MainScreen = () => {
       }}
     >
       <h1>Serbski Webcaptioner</h1>
-      {isRecording && (
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: 4,
-          }}
-        >
-          <h3>Słucham</h3>
-          <LoadingSpinner />
-        </div>
-      )}
       <Box
         sx={{
           display: 'flex',
@@ -202,13 +171,14 @@ export const MainScreen = () => {
             }}
           />
         </Box>
-        {localeStream && visualizerArea}
         <RecordButtonsContainer
+          stream={localeStream}
           isDisabled={{
             record: isRecording || !selectedMicrophone,
             pause: !isRecording,
             stop: !isRecording,
           }}
+          isRecording={isRecording}
           onPressRecord={startRecording}
           onPressPause={() => breakRecording('pause')}
           onPressStop={() => breakRecording('stop')}
