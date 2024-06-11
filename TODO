@@ -1,5 +1,6 @@
 * informacije wo wuzwolenym mikrofonu (abo samo selector mikrofonow)
 ** mjeno, samplerate, frame format...
+** mjeno jenoz funguje za chrome, firefox a edge nico njepokazaja
 *** Feliks
 
 * čehodla ta wulka přestawka na započatku, prjedy hač započnje poskać
@@ -15,6 +16,17 @@
 ** Mac: jenoz Firefox OK
 *** Daniel+Feliks
 
+* level-meter
+** wizualizacija je rjana
+** prosu pokazaj hranicy (za michala, zo we, kak wotre moze cinic)
+*** Feliks
+
+* auto-gain opcija
+** prosu jako checkbox
+** standard: hasnjeny
+** za demo pri licaku ale druhdy zmyslapolne
+*** Feliks
+
 * polo za zapodaća youtube-URL
 *** Feliks
 
@@ -29,6 +41,10 @@
 
 * whisper container log redukować
 *** Daniel
+
+* log folder wot spoznawanja eksportowac prez web powjerch
+** super za debugging
+*** Daniel + Feliks
 
 * lěpši deployment z docker
 ** produktiwnu wersiju, nic development
@@ -54,3 +70,14 @@
 ** API-keys za backend (tez jenoz prez env)
 *** Feliks
 
+------------------------------------------
+
+pozdziso:
+
+* MIT licenca
+
+* wotkazy na zorla, credits
+
+* mobilna webstrona
+
+* prelozk preskocic (jenoz spoznawanje)
