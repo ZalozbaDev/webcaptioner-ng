@@ -175,30 +175,24 @@ export const MainScreen = () => {
       }}
     >
       <h1>Serbski Webcaptioner</h1>
+
       <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'center',
-          alignItems: 'center',
-          gap: 2,
-        }}
+        style={
+          selectedMicrophone === null
+            ? {}
+            : { position: 'absolute', top: 10, right: 10 }
+        }
       >
-        <Box
-          style={
-            selectedMicrophone === null
-              ? {}
-              : { position: 'absolute', top: 10, right: 10 }
-          }
-        >
-          <MicrophoneSelector
-            onChange={(mic) => {
-              setSelectedMicrophone(mic)
-              breakRecording('pause')
-            }}
-          />
-        </Box>
-        {selectedMicrophone !== null && (
+        <MicrophoneSelector
+          onChange={(mic) => {
+            setSelectedMicrophone(mic)
+            breakRecording('pause')
+          }}
+        />
+      </Box>
+
+      {selectedMicrophone && (
+        <>
           <RecordButtonsContainer
             stream={localeStream}
             isDisabled={{
@@ -213,11 +207,6 @@ export const MainScreen = () => {
             onPressPause={() => breakRecording('pause')}
             onPressStop={() => breakRecording('stop')}
           />
-        )}
-      </Box>
-
-      {selectedMicrophone && (
-        <>
           <p>{inputText}</p>
           <div style={{ height: 1, width: '80%', backgroundColor: 'white' }} />
           <p>{translation}</p>
