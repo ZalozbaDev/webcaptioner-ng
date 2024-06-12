@@ -1,3 +1,5 @@
+import { toast } from 'sonner'
+
 export const handleSuccess = (
   stream: MediaStream,
   sampleRate: number,
@@ -28,7 +30,7 @@ export const handleSuccess = (
       processor.connect(context.destination)
 
       onSetNewSource(source)
-      console.info('Processor started')
+      toast.success('Recording started')
       processor.port.onmessage = (event) => {
         webSocket.send(event.data)
       }

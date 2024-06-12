@@ -7,6 +7,7 @@ import { MicrophoneSelector } from './components/microphone-selector.tsx'
 import { RecordButtonsContainer } from './components/record-buttons-container'
 import { Box } from '@mui/material'
 import { Settings } from './components/record-buttons-container/settings-container'
+import { toast } from 'sonner'
 
 const SAMPLE_RATE = 48000
 let processor: AudioWorkletNode
@@ -124,9 +125,11 @@ export const MainScreen = () => {
     )
     webSocket.onopen = () => {
       try {
+        toast.success('Websocket connected')
         console.info('Websocket connected')
         startRecordingWithNewStream()
       } catch (error) {
+        toast.error('Error accessing microphone 2')
         console.error('Error accessing microphone 2:', error)
       }
     }
