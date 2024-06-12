@@ -147,7 +147,7 @@ export const RecordButtonsContainer: FC<{
           }}
         >
           <Pause fontSize='small' />
-          <Typography variant='body2'>Prestalka</Typography>
+          <Typography variant='body2'>Přestawka</Typography>
         </Button>
         <Button
           onClick={() => {

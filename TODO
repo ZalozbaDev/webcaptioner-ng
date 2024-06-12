@@ -1,4 +1,4 @@
-* informacije wo wuzwolenym mikrofonu (abo samo selector mikrofonow)
+* informacije wo wuzwolenym mikrofonu
 ** mjeno, samplerate, frame format...
 ** mjeno jenoz funguje za chrome, firefox a edge nico njepokazaja
 *** Feliks
@@ -24,10 +24,8 @@
 ** prosu pokazaj hranicy (za michala, zo we, kak wotre moze cinic)
 *** Feliks
 
-* auto-gain a noise cancelling jako opcija
-** prosu jako jednotliwe checkbox
-** standard: hasnjeny
-** za demo pri licaku ale druhdy zmyslapolne
+* auto-gain, noise cancelling, echo jako opcija
+** prosu tak zo so jenoz pri hasnjenym streamwanjom zmenic/nastajic daja
 *** Feliks
 
 * něhdźe "total runtime" pokazać
@@ -53,13 +51,13 @@
 
 * feedback zatwarić, zo whisper-spóznawanje je zaskoćił
 ** tutón feedback potom tež pokazać
+** hlej "partial" wotmoĺwa hdyz VOSK_SHOW_WORDS je aktiwne
 *** Daniel+Feliks
 
 * timestamps wot whisper wróćić
-** hladać, hač dawa hižo API, hewak z přidatnym komandom zaswěćić
-** https://github.com/ZalozbaDev/vosk-api/blob/1053cfa0f80039d2956de7e05a05c0b8db90c3c0/src/vosk_api.h#L177 
-** https://github.com/alphacep/vosk-server/blob/5db5b0e89473973f9cd9055d44e48805cb875655/websocket-cpp/asr_server.cpp#L320 
-*** Daniel
+** hlej "text" wotmoĺwa hdyz VOSK_SHOW_WORDS je aktiwne
+** Daniel: wo polepsenju eksaktnosce premyslic
+*** Daniel+Feliks
 
 * cehodla sotra_ctranslate wjace njebezi (to je raz slo)?
 ** chcemy tutu wariantu wužiwać, dokelž tam někajka logika nutřka je, kotre słowa so njepřełožuja
@@ -69,6 +67,10 @@
 ** hesło za frontend (env)
 ** API-keys za backend (tez jenoz prez env)
 *** Feliks
+
+* mikro wot Michala wuspytac
+** kedzbu z wjacorymi kanalemi
+*** Daniel
 
 ------------------------------------------
 
