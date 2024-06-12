@@ -198,20 +198,22 @@ export const MainScreen = () => {
             }}
           />
         </Box>
-        <RecordButtonsContainer
-          stream={localeStream}
-          isDisabled={{
-            record: isRecording || !selectedMicrophone,
-            pause: !isRecording,
-            stop: !isRecording,
-          }}
-          isRecording={isRecording}
-          settings={mediaStreamSettings}
-          onChangeSetting={updateMediaStreamSettings}
-          onPressRecord={startRecording}
-          onPressPause={() => breakRecording('pause')}
-          onPressStop={() => breakRecording('stop')}
-        />
+        {selectedMicrophone !== null && (
+          <RecordButtonsContainer
+            stream={localeStream}
+            isDisabled={{
+              record: isRecording || !selectedMicrophone,
+              pause: !isRecording,
+              stop: !isRecording,
+            }}
+            isRecording={isRecording}
+            settings={mediaStreamSettings}
+            onChangeSetting={updateMediaStreamSettings}
+            onPressRecord={startRecording}
+            onPressPause={() => breakRecording('pause')}
+            onPressStop={() => breakRecording('stop')}
+          />
+        )}
       </Box>
 
       {selectedMicrophone && (
