@@ -13,6 +13,7 @@ import { Settings, SettingsContainer } from './settings-container'
 import { YoutubeContainer } from './youtube-container'
 
 export const RecordButtonsContainer: FC<{
+  voskResponse: boolean
   stream: MediaStream
   isDisabled: { record: boolean; pause: boolean; stop: boolean }
   isRecording: boolean
@@ -26,6 +27,7 @@ export const RecordButtonsContainer: FC<{
   youtubeUrl: string | undefined
   onSaveYoutubeUrl: (url: string) => void
 }> = ({
+  voskResponse,
   stream,
   isRecording,
   isDisabled,
@@ -146,8 +148,9 @@ export const RecordButtonsContainer: FC<{
         }}
       >
         <Typography variant='body1' paddingLeft={1}>
-          Čas: {getDurationFromSeconds(totalTime)}
+          {voskResponse ? '🟢' : '🔴'} Čas: {getDurationFromSeconds(totalTime)}
         </Typography>
+
         <Box>
           <IconButton sx={{ color: 'white' }} onClick={handleYoutubeOpen}>
             <YouTube />

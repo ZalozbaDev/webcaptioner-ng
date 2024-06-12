@@ -9,6 +9,7 @@ import { Box, Typography } from '@mui/material'
 import { Settings } from './components/record-buttons-container/settings-container'
 import { toast } from 'sonner'
 import { LoadingSpinner } from '../../components/loading-spinner'
+import { typedVoskResponse } from '../../helper/vosk'
 
 const SAMPLE_RATE = 48000
 let processor: AudioWorkletNode
@@ -39,10 +40,12 @@ export const MainScreen = () => {
   const [selectedMicrophone, setSelectedMicrophone] =
     useState<MediaDeviceInfo | null>(null)
   const [isRecording, setIsRecording] = useState<boolean>(false)
+  const [voskResponse, setVoskResponse] = useState(false)
 
   const onReceiveMessage = (event: MessageEvent) => {
     if (event.data) {
-      let parsed = JSON.parse(event.data) as VOSKResponse
+      let parsed = typedVoskResponse(event.data)
+      setVoskResponse(parsed.listen)
       if (
         parsed.text &&
         parsed.text !== '-- ***/whisper/ggml-model.q8_0.bin --' &&
@@ -223,6 +226,7 @@ export const MainScreen = () => {
       {selectedMicrophone && (
         <>
           <RecordButtonsContainer
+            voskResponse={voskResponse}
             stream={localeStream}
             isDisabled={{
               record: isRecording || !selectedMicrophone,
