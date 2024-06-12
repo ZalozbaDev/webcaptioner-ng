@@ -27,8 +27,6 @@ const initialSettings: Settings = {
   deviceId: undefined,
 }
 let settings: Settings = initialSettings
-const youtubeUrl =
-  'http://upload.youtube./com/closedcaption?cid=1234-5678-9012-3456'
 let seq = 0
 
 export const MainScreen = () => {
@@ -36,6 +34,7 @@ export const MainScreen = () => {
     useState<Settings>(initialSettings)
   const [inputText, setInputText] = useState<string>('')
   const [translation, setTranslation] = useState<string>('')
+  const [youtubeUrl, setYoutubeUrl] = useState<string | undefined>(undefined)
   const [youtubeSubtitle, setYoutubeSubtitle] = useState<string>('')
   const [selectedMicrophone, setSelectedMicrophone] =
     useState<MediaDeviceInfo | null>(null)
@@ -54,16 +53,17 @@ export const MainScreen = () => {
         const trimmedText = parsed.text.slice(2, -2).trim()
         setInputText((prev) => prev + ' ' + trimmedText)
         getTranslation(trimmedText).then((response) => {
-          const youtubeData = getParseDataForYoutube(
-            seq,
-            response.data.translation,
-            new Date(parsed.start * 1000),
-            youtubeUrl,
-            false
-          )
-
+          if (youtubeUrl) {
+            const youtubeData = getParseDataForYoutube(
+              seq,
+              response.data.translation,
+              new Date(parsed.start * 1000),
+              youtubeUrl,
+              false
+            )
+            setYoutubeSubtitle((prev) => prev + ' ' + youtubeData + '\n')
+          }
           setTranslation((prev) => prev + ' ' + response.data.translation)
-          setYoutubeSubtitle((prev) => prev + ' ' + youtubeData + '\n')
         })
       }
     }
@@ -240,6 +240,8 @@ export const MainScreen = () => {
               setSelectedMicrophone(mic)
             }}
             activeMicrophone={selectedMicrophone}
+            youtubeUrl={youtubeUrl}
+            onSaveYoutubeUrl={(url) => setYoutubeUrl(url)}
           />
           <p>{inputText}</p>
           <div style={{ height: 1, width: '80%', backgroundColor: 'white' }} />

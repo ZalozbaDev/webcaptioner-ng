@@ -5,7 +5,8 @@ import { FormControl, MenuItem, Select } from '@mui/material'
 export const MicrophoneSelector: FC<{
   activeMicrophone: MediaDeviceInfo | null
   onChange: (mic: MediaDeviceInfo) => void
-}> = ({ onChange, activeMicrophone }) => {
+  fullWidth?: boolean
+}> = ({ onChange, activeMicrophone, fullWidth = false }) => {
   const { loading, error, microphones } = useFetchMicrophones()
 
   const handleChange = (event: { target: { value: string } }) => {
@@ -24,7 +25,13 @@ export const MicrophoneSelector: FC<{
   }
 
   return (
-    <FormControl sx={{ backgroundColor: 'white', borderRadius: 1 }}>
+    <FormControl
+      sx={{
+        backgroundColor: 'white',
+        borderRadius: 1,
+        width: fullWidth ? '100%' : 'auto',
+      }}
+    >
       <Select
         value={activeMicrophone?.deviceId || ''}
         defaultValue={''}

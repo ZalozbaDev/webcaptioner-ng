@@ -1,9 +1,16 @@
-import { Mic, Pause, Settings as SettingsIcon, Stop } from '@mui/icons-material'
+import {
+  Mic,
+  Pause,
+  Settings as SettingsIcon,
+  Stop,
+  YouTube,
+} from '@mui/icons-material'
 import { Box, Button, IconButton, Typography } from '@mui/material'
 import { FC, useEffect, useMemo, useState } from 'react'
 import { Visualizer } from 'react-sound-visualizer'
 import { getDurationFromSeconds } from '../../../../helper/date-time-helper'
 import { Settings, SettingsContainer } from './settings-container'
+import { YoutubeContainer } from './youtube-container'
 
 export const RecordButtonsContainer: FC<{
   stream: MediaStream
@@ -16,6 +23,8 @@ export const RecordButtonsContainer: FC<{
   onPressStop: () => void
   onChangeMicrophone: (mic: MediaDeviceInfo) => void
   activeMicrophone: MediaDeviceInfo | null
+  youtubeUrl: string | undefined
+  onSaveYoutubeUrl: (url: string) => void
 }> = ({
   stream,
   isRecording,
@@ -27,6 +36,8 @@ export const RecordButtonsContainer: FC<{
   onPressStop,
   onChangeMicrophone,
   activeMicrophone,
+  youtubeUrl,
+  onSaveYoutubeUrl,
 }) => {
   const [totalTime, setTotalTime] = useState<number>(0)
 
@@ -39,6 +50,17 @@ export const RecordButtonsContainer: FC<{
   }
   const handleSettingsClose = () => {
     setSettingsAnchorEl(null)
+  }
+
+  const [youtubeAnchorEl, setYoutubeAnchorEl] = useState<null | HTMLElement>(
+    null
+  )
+  const youtubeOpen = Boolean(youtubeAnchorEl)
+  const handleYoutubeOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setYoutubeAnchorEl(event.currentTarget)
+  }
+  const handleYoutubeClose = () => {
+    setYoutubeAnchorEl(null)
   }
 
   const visualizerArea = useMemo(
@@ -71,6 +93,7 @@ export const RecordButtonsContainer: FC<{
       <SettingsContainer
         anchorEl={settingsAnchorEl}
         open={settingsOpen}
+        disabled={isRecording}
         onClose={handleSettingsClose}
         settings={settings}
         onChangeSetting={onChangeSetting}
@@ -80,12 +103,30 @@ export const RecordButtonsContainer: FC<{
     ),
     [
       activeMicrophone,
+      isRecording,
       onChangeMicrophone,
       onChangeSetting,
       settings,
       settingsAnchorEl,
       settingsOpen,
     ]
+  )
+
+  const youtubeContainer = useMemo(
+    () => (
+      <YoutubeContainer
+        anchorEl={youtubeAnchorEl}
+        open={youtubeOpen}
+        disabled={isRecording}
+        onClose={handleYoutubeClose}
+        url={youtubeUrl}
+        onSave={(url) => {
+          handleYoutubeClose()
+          onSaveYoutubeUrl(url)
+        }}
+      />
+    ),
+    [isRecording, onSaveYoutubeUrl, youtubeAnchorEl, youtubeOpen, youtubeUrl]
   )
 
   return (
@@ -107,9 +148,14 @@ export const RecordButtonsContainer: FC<{
         <Typography variant='body1' paddingLeft={1}>
           Čas: {getDurationFromSeconds(totalTime)}
         </Typography>
-        <IconButton sx={{ color: 'white' }} onClick={handleSettingsOpen}>
-          <SettingsIcon />
-        </IconButton>
+        <Box>
+          <IconButton sx={{ color: 'white' }} onClick={handleYoutubeOpen}>
+            <YouTube />
+          </IconButton>
+          <IconButton sx={{ color: 'white' }} onClick={handleSettingsOpen}>
+            <SettingsIcon />
+          </IconButton>
+        </Box>
       </Box>
       {visualizerArea}
 
@@ -171,6 +217,7 @@ export const RecordButtonsContainer: FC<{
         </Button>
       </Box>
       {settingsContainer}
+      {youtubeContainer}
     </Box>
   )
 }

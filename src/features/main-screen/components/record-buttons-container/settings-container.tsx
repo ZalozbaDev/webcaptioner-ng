@@ -22,6 +22,7 @@ export type Settings = {
 export const SettingsContainer: FC<{
   anchorEl: null | HTMLElement
   open: boolean
+  disabled: boolean
   onClose: () => void
   settings: Settings
   onChangeSetting: (key: keyof Settings, value: boolean) => void
@@ -30,6 +31,7 @@ export const SettingsContainer: FC<{
 }> = ({
   anchorEl,
   open,
+  disabled,
   onClose,
   settings,
   onChangeSetting,
@@ -44,9 +46,10 @@ export const SettingsContainer: FC<{
       PaperProps={{
         elevation: 0,
         sx: {
+          border: '1px solid black',
           overflow: 'visible',
           filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-          mt: 1.5,
+          mt: 0.5,
           '& .MuiAvatar-root': {
             width: 32,
             height: 32,
@@ -70,13 +73,14 @@ export const SettingsContainer: FC<{
       transformOrigin={{ horizontal: 'right', vertical: 'top' }}
       anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
     >
-      <MenuList dense>
+      <MenuList dense sx={{ width: 300 }}>
         <Typography variant='body1' textAlign='right' paddingRight={1}>
           Zastajenja
         </Typography>
 
         <MenuItem
-          sx={{ marginLeft: -1 }}
+          disabled={disabled}
+          sx={{ marginLeft: -1, height: 30 }}
           onClick={() =>
             onChangeSetting('autoGainControl', !settings.autoGainControl)
           }
@@ -85,7 +89,8 @@ export const SettingsContainer: FC<{
           <Typography variant='body2'>Auto Gain Control</Typography>
         </MenuItem>
         <MenuItem
-          sx={{ marginLeft: -1 }}
+          disabled={disabled}
+          sx={{ marginLeft: -1, height: 30 }}
           onClick={() =>
             onChangeSetting('noiseSuppression', !settings.noiseSuppression)
           }
@@ -94,7 +99,8 @@ export const SettingsContainer: FC<{
           <Typography variant='body2'>Noise Supression</Typography>
         </MenuItem>
         <MenuItem
-          sx={{ marginLeft: -1 }}
+          disabled={disabled}
+          sx={{ marginLeft: -1, height: 30 }}
           onClick={() =>
             onChangeSetting('echoCancellation', !settings.echoCancellation)
           }
@@ -102,11 +108,28 @@ export const SettingsContainer: FC<{
           <Checkbox checked={settings.echoCancellation} />
           <Typography variant='body2'>Echo Cancellation</Typography>
         </MenuItem>
+        <MenuItem disabled={true} sx={{ marginLeft: 1, height: 30 }}>
+          <Typography variant='body2'>
+            sampleRate: {settings.sampleRate}
+          </Typography>
+        </MenuItem>
+        <MenuItem disabled={true} sx={{ marginLeft: 1, height: 30 }}>
+          <Typography variant='body2'>
+            sampleSize: {settings.sampleSize}
+          </Typography>
+        </MenuItem>
+        <MenuItem disabled={true} sx={{ marginLeft: 1, height: 30 }}>
+          <Typography variant='body2'>
+            channelCount: {settings.channelCount}
+          </Typography>
+        </MenuItem>
+
         <Divider />
-        <MenuItem>
+        <MenuItem disabled={disabled}>
           <MicrophoneSelector
             activeMicrophone={activeMicrophone}
             onChange={onChangeMicrophone}
+            fullWidth
           />
         </MenuItem>
       </MenuList>
