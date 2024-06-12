@@ -3,7 +3,6 @@ import {
   Button,
   IconButton,
   Menu,
-  MenuItem,
   MenuList,
   TextField,
   Typography,
@@ -20,18 +19,13 @@ export const YoutubeContainer: FC<{
 }> = ({ anchorEl, open, disabled, onClose, url, onSave }) => {
   const [tempUrl, setTempUrl] = useState<string>(url ?? '')
 
-  const onHandleClose = () => {
-    onClose()
-    // setTempUrl(url ?? '')
-  }
-
   useEffect(() => {
     setTempUrl(url ?? '')
   }, [url, open, anchorEl])
 
   return (
     <Menu
-      onClose={onHandleClose}
+      onClose={onClose}
       anchorEl={anchorEl}
       open={open}
       PaperProps={{
@@ -87,7 +81,7 @@ export const YoutubeContainer: FC<{
         <Button disabled={disabled} onClick={() => onSave(tempUrl)}>
           Save
         </Button>
-        <Button disabled={disabled} onClick={onHandleClose}>
+        <Button disabled={disabled} onClick={onClose}>
           Cancel
         </Button>
       </MenuList>
