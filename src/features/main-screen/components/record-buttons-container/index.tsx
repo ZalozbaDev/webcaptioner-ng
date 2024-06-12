@@ -72,7 +72,7 @@ export const RecordButtonsContainer: FC<{
         onChangeSetting={onChangeSetting}
       />
     ),
-    [settings, settingsAnchorEl]
+    [onChangeSetting, settings, settingsAnchorEl, settingsOpen]
   )
 
   return (
