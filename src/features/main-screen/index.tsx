@@ -6,6 +6,7 @@ import { getParseDataForYoutube } from '../../lib/youtube-manager'
 import { MicrophoneSelector } from './components/microphone-selector.tsx'
 import { RecordButtonsContainer } from './components/record-buttons-container'
 import { Box } from '@mui/material'
+import { Settings } from './components/record-buttons-container/settings-container'
 
 const SAMPLE_RATE = 48000
 let processor: AudioWorkletNode
@@ -14,11 +15,23 @@ let source: MediaStreamAudioSourceNode
 let context: AudioContext
 let localeStream: MediaStream
 
+const initialSettings: Settings = {
+  autoGainControl: false,
+  noiseSuppression: false,
+  echoCancellation: false,
+  channelCount: 1,
+  sampleRate: SAMPLE_RATE,
+  sampleSize: 16,
+  deviceId: undefined,
+}
+let settings: Settings = initialSettings
 const youtubeUrl =
   'http://upload.youtube./com/closedcaption?cid=1234-5678-9012-3456'
 let seq = 0
 
 export const MainScreen = () => {
+  const [mediaStreamSettings, setMediaStreamSettings] =
+    useState<Settings>(initialSettings)
   const [inputText, setInputText] = useState<string>('')
   const [translation, setTranslation] = useState<string>('')
   const [youtubeSubtitle, setYoutubeSubtitle] = useState<string>('')
@@ -73,6 +86,37 @@ export const MainScreen = () => {
     context = newContext
   }
 
+  const startRecordingWithNewStream = () => {
+    navigator.mediaDevices
+      .getUserMedia({
+        audio: {
+          // for our use case audio should be as little processed as possible
+          ...settings,
+          deviceId: selectedMicrophone?.deviceId,
+        },
+        video: false,
+      })
+      .then((stream) => {
+        localeStream = stream
+        settings = { ...settings, deviceId: selectedMicrophone?.deviceId }
+        setMediaStreamSettings(settings)
+
+        setIsRecording(true)
+        if (localeStream !== null)
+          handleSuccess(
+            localeStream,
+            SAMPLE_RATE,
+            webSocket,
+            onSetNewProcessor,
+            onSetNewSource,
+            onSetNewContext
+          )
+      })
+      .catch((error) => {
+        alert('error accessing microphone 1')
+      })
+  }
+
   const startRecording = async () => {
     webSocket = initWebsocket(
       process.env.REACT_APP_VOSK_SERVER_URL!,
@@ -81,35 +125,9 @@ export const MainScreen = () => {
     webSocket.onopen = () => {
       try {
         console.info('Websocket connected')
-        navigator.mediaDevices
-          .getUserMedia({
-            audio: {
-              // for our use case audio should be as little processed as possible
-              echoCancellation: false,
-              noiseSuppression: false,
-              autoGainControl: false,
-              channelCount: 1,
-              sampleRate: SAMPLE_RATE,
-              sampleSize: 16,
-              deviceId: selectedMicrophone?.deviceId,
-            },
-            video: false,
-          })
-          .then((stream) => {
-            localeStream = stream
-            setIsRecording(true)
-            if (localeStream !== null)
-              handleSuccess(
-                localeStream,
-                SAMPLE_RATE,
-                webSocket,
-                onSetNewProcessor,
-                onSetNewSource,
-                onSetNewContext
-              )
-          })
+        startRecordingWithNewStream()
       } catch (error) {
-        console.error('Error accessing microphone:', error)
+        console.error('Error accessing microphone 2:', error)
       }
     }
   }
@@ -134,6 +152,12 @@ export const MainScreen = () => {
       }
       setIsRecording(false)
     }
+  }
+
+  const updateMediaStreamSettings = (key: keyof Settings, value: boolean) => {
+    settings = { ...settings, [key]: value }
+    breakRecording('pause')
+    startRecordingWithNewStream()
   }
 
   return (
@@ -179,6 +203,8 @@ export const MainScreen = () => {
             stop: !isRecording,
           }}
           isRecording={isRecording}
+          settings={mediaStreamSettings}
+          onChangeSetting={updateMediaStreamSettings}
           onPressRecord={startRecording}
           onPressPause={() => breakRecording('pause')}
           onPressStop={() => breakRecording('stop')}

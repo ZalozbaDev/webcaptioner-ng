@@ -1,13 +1,16 @@
-import { Mic, Pause, Stop } from '@mui/icons-material'
-import { Box, Button, Typography } from '@mui/material'
+import { Mic, Pause, Settings as SettingsIcon, Stop } from '@mui/icons-material'
+import { Box, Button, IconButton, Typography } from '@mui/material'
 import { FC, useEffect, useMemo, useState } from 'react'
 import { Visualizer } from 'react-sound-visualizer'
 import { getDurationFromSeconds } from '../../../../helper/date-time-helper'
+import { Settings, SettingsContainer } from './settings-container'
 
 export const RecordButtonsContainer: FC<{
   stream: MediaStream
   isDisabled: { record: boolean; pause: boolean; stop: boolean }
   isRecording: boolean
+  settings: Settings
+  onChangeSetting: (key: keyof Settings, value: boolean) => void
   onPressRecord: () => void
   onPressPause: () => void
   onPressStop: () => void
@@ -15,11 +18,24 @@ export const RecordButtonsContainer: FC<{
   stream,
   isRecording,
   isDisabled,
+  settings,
+  onChangeSetting,
   onPressRecord,
   onPressPause,
   onPressStop,
 }) => {
   const [totalTime, setTotalTime] = useState<number>(0)
+
+  const [settingsAnchorEl, setSettingsAnchorEl] = useState<null | HTMLElement>(
+    null
+  )
+  const settingsOpen = Boolean(settingsAnchorEl)
+  const handleSettingsOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setSettingsAnchorEl(event.currentTarget)
+  }
+  const handleSettingsClose = () => {
+    setSettingsAnchorEl(null)
+  }
 
   const visualizerArea = useMemo(
     () => (
@@ -46,6 +62,19 @@ export const RecordButtonsContainer: FC<{
     }
   }, [totalTime, isRecording])
 
+  const settingsContainer = useMemo(
+    () => (
+      <SettingsContainer
+        anchorEl={settingsAnchorEl}
+        open={settingsOpen}
+        onClose={handleSettingsClose}
+        settings={settings}
+        onChangeSetting={onChangeSetting}
+      />
+    ),
+    [settings, settingsAnchorEl]
+  )
+
   return (
     <Box
       sx={{
@@ -55,9 +84,20 @@ export const RecordButtonsContainer: FC<{
         minWidth: 300,
       }}
     >
-      <Typography variant='body1' textAlign='end' paddingRight={2}>
-        Čas: {getDurationFromSeconds(totalTime)}
-      </Typography>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        <Typography variant='body1' paddingLeft={1}>
+          Čas: {getDurationFromSeconds(totalTime)}
+        </Typography>
+        <IconButton sx={{ color: 'white' }} onClick={handleSettingsOpen}>
+          <SettingsIcon />
+        </IconButton>
+      </Box>
       {visualizerArea}
 
       <Box>
@@ -117,6 +157,7 @@ export const RecordButtonsContainer: FC<{
           <Typography variant='body2'>Stop</Typography>
         </Button>
       </Box>
+      {settingsContainer}
     </Box>
   )
 }
