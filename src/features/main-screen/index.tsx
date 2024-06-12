@@ -1,13 +1,13 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { handleSuccess } from './components/audio-recorder/handler/handle-success'
 import { initWebsocket } from './components/audio-recorder/handler/init-websocket'
-import { LoadingSpinner } from '../../components/loading-spinner'
 import { getTranslation } from '../../lib/sotra-manager'
 import { getParseDataForYoutube } from '../../lib/youtube-manager'
 import { MicrophoneSelector } from './components/microphone-selector.tsx'
 import { RecordButtonsContainer } from './components/record-buttons-container'
 import { Box } from '@mui/material'
-import { Visualizer } from 'react-sound-visualizer'
+import { Settings } from './components/record-buttons-container/settings-container'
+import { toast } from 'sonner'
 
 const SAMPLE_RATE = 48000
 let processor: AudioWorkletNode
@@ -16,11 +16,23 @@ let source: MediaStreamAudioSourceNode
 let context: AudioContext
 let localeStream: MediaStream
 
+const initialSettings: Settings = {
+  autoGainControl: false,
+  noiseSuppression: false,
+  echoCancellation: false,
+  channelCount: 1,
+  sampleRate: SAMPLE_RATE,
+  sampleSize: 16,
+  deviceId: undefined,
+}
+let settings: Settings = initialSettings
 const youtubeUrl =
   'http://upload.youtube./com/closedcaption?cid=1234-5678-9012-3456'
 let seq = 0
 
 export const MainScreen = () => {
+  const [mediaStreamSettings, setMediaStreamSettings] =
+    useState<Settings>(initialSettings)
   const [inputText, setInputText] = useState<string>('')
   const [translation, setTranslation] = useState<string>('')
   const [youtubeSubtitle, setYoutubeSubtitle] = useState<string>('')
@@ -75,6 +87,37 @@ export const MainScreen = () => {
     context = newContext
   }
 
+  const startRecordingWithNewStream = () => {
+    navigator.mediaDevices
+      .getUserMedia({
+        audio: {
+          // for our use case audio should be as little processed as possible
+          ...settings,
+          deviceId: selectedMicrophone?.deviceId,
+        },
+        video: false,
+      })
+      .then((stream) => {
+        localeStream = stream
+        settings = { ...settings, deviceId: selectedMicrophone?.deviceId }
+        setMediaStreamSettings(settings)
+
+        setIsRecording(true)
+        if (localeStream !== null)
+          handleSuccess(
+            localeStream,
+            SAMPLE_RATE,
+            webSocket,
+            onSetNewProcessor,
+            onSetNewSource,
+            onSetNewContext
+          )
+      })
+      .catch((error) => {
+        alert('error accessing microphone 1')
+      })
+  }
+
   const startRecording = async () => {
     webSocket = initWebsocket(
       process.env.REACT_APP_VOSK_SERVER_URL!,
@@ -82,36 +125,12 @@ export const MainScreen = () => {
     )
     webSocket.onopen = () => {
       try {
+        toast.success('Websocket connected')
         console.info('Websocket connected')
-        navigator.mediaDevices
-          .getUserMedia({
-            audio: {
-              // for our use case audio should be as little processed as possible
-              echoCancellation: false,
-              noiseSuppression: false,
-              autoGainControl: false,
-              channelCount: 1,
-              sampleRate: SAMPLE_RATE,
-              sampleSize: 16,
-              deviceId: selectedMicrophone?.deviceId,
-            },
-            video: false,
-          })
-          .then((stream) => {
-            localeStream = stream
-            setIsRecording(true)
-            if (localeStream !== null)
-              handleSuccess(
-                localeStream,
-                SAMPLE_RATE,
-                webSocket,
-                onSetNewProcessor,
-                onSetNewSource,
-                onSetNewContext
-              )
-          })
+        startRecordingWithNewStream()
       } catch (error) {
-        console.error('Error accessing microphone:', error)
+        toast.error('Error accessing microphone 2')
+        console.error('Error accessing microphone 2:', error)
       }
     }
   }
@@ -138,21 +157,11 @@ export const MainScreen = () => {
     }
   }
 
-  const visualizerArea = useMemo(
-    () => (
-      <Visualizer
-        audio={localeStream}
-        mode='continuous'
-        autoStart
-        strokeColor='white'
-        lineWidth='default'
-      >
-        {({ canvasRef }) => <canvas ref={canvasRef} width={500} height={100} />}
-      </Visualizer>
-    ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [localeStream]
-  )
+  const updateMediaStreamSettings = (key: keyof Settings, value: boolean) => {
+    settings = { ...settings, [key]: value }
+    breakRecording('pause')
+    startRecordingWithNewStream()
+  }
 
   return (
     <div
@@ -166,19 +175,6 @@ export const MainScreen = () => {
       }}
     >
       <h1>Serbski Webcaptioner</h1>
-      {isRecording && (
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: 4,
-          }}
-        >
-          <h3>Słucham</h3>
-          <LoadingSpinner />
-        </div>
-      )}
       <Box
         sx={{
           display: 'flex',
@@ -202,17 +198,22 @@ export const MainScreen = () => {
             }}
           />
         </Box>
-        {localeStream && visualizerArea}
-        <RecordButtonsContainer
-          isDisabled={{
-            record: isRecording || !selectedMicrophone,
-            pause: !isRecording,
-            stop: !isRecording,
-          }}
-          onPressRecord={startRecording}
-          onPressPause={() => breakRecording('pause')}
-          onPressStop={() => breakRecording('stop')}
-        />
+        {selectedMicrophone !== null && (
+          <RecordButtonsContainer
+            stream={localeStream}
+            isDisabled={{
+              record: isRecording || !selectedMicrophone,
+              pause: !isRecording,
+              stop: !isRecording,
+            }}
+            isRecording={isRecording}
+            settings={mediaStreamSettings}
+            onChangeSetting={updateMediaStreamSettings}
+            onPressRecord={startRecording}
+            onPressPause={() => breakRecording('pause')}
+            onPressStop={() => breakRecording('stop')}
+          />
+        )}
       </Box>
 
       {selectedMicrophone && (

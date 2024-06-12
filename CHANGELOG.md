@@ -5,6 +5,8 @@
 - auto-scroll za wšitke pola z tekstom
 - selector mikrofonow
 - knefl za "přestawku"
+- "total runtime" pokazać
+- pokaz zastajenja
 
 ## 1.0.0 (RELEASED)
 
