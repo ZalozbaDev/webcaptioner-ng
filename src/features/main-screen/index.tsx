@@ -114,7 +114,10 @@ export const MainScreen = () => {
           )
       })
       .catch((error) => {
-        alert('error accessing microphone 1')
+        toast.error(
+          `Error accessing microphone ${selectedMicrophone?.label}`,
+          error.message
+        )
       })
   }
 
