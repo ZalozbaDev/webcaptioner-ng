@@ -14,6 +14,8 @@ export const RecordButtonsContainer: FC<{
   onPressRecord: () => void
   onPressPause: () => void
   onPressStop: () => void
+  onChangeMicrophone: (mic: MediaDeviceInfo) => void
+  activeMicrophone: MediaDeviceInfo | null
 }> = ({
   stream,
   isRecording,
@@ -23,6 +25,8 @@ export const RecordButtonsContainer: FC<{
   onPressRecord,
   onPressPause,
   onPressStop,
+  onChangeMicrophone,
+  activeMicrophone,
 }) => {
   const [totalTime, setTotalTime] = useState<number>(0)
 
@@ -70,9 +74,18 @@ export const RecordButtonsContainer: FC<{
         onClose={handleSettingsClose}
         settings={settings}
         onChangeSetting={onChangeSetting}
+        onChangeMicrophone={onChangeMicrophone}
+        activeMicrophone={activeMicrophone}
       />
     ),
-    [onChangeSetting, settings, settingsAnchorEl, settingsOpen]
+    [
+      activeMicrophone,
+      onChangeMicrophone,
+      onChangeSetting,
+      settings,
+      settingsAnchorEl,
+      settingsOpen,
+    ]
   )
 
   return (

@@ -114,7 +114,10 @@ export const MainScreen = () => {
           )
       })
       .catch((error) => {
-        alert('error accessing microphone 1')
+        toast.error(
+          `Error accessing microphone ${selectedMicrophone?.label}`,
+          error.message
+        )
       })
   }
 
@@ -175,30 +178,25 @@ export const MainScreen = () => {
       }}
     >
       <h1>Serbski Webcaptioner</h1>
+
       <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'center',
-          alignItems: 'center',
-          gap: 2,
-        }}
+        style={
+          selectedMicrophone === null
+            ? {}
+            : { position: 'absolute', top: 10, right: 10 }
+        }
       >
-        <Box
-          style={
-            selectedMicrophone === null
-              ? {}
-              : { position: 'absolute', top: 10, right: 10 }
-          }
-        >
-          <MicrophoneSelector
-            onChange={(mic) => {
-              setSelectedMicrophone(mic)
-              breakRecording('pause')
-            }}
-          />
-        </Box>
-        {selectedMicrophone !== null && (
+        <MicrophoneSelector
+          activeMicrophone={selectedMicrophone}
+          onChange={(mic) => {
+            breakRecording('pause')
+            setSelectedMicrophone(mic)
+          }}
+        />
+      </Box>
+
+      {selectedMicrophone && (
+        <>
           <RecordButtonsContainer
             stream={localeStream}
             isDisabled={{
@@ -212,12 +210,12 @@ export const MainScreen = () => {
             onPressRecord={startRecording}
             onPressPause={() => breakRecording('pause')}
             onPressStop={() => breakRecording('stop')}
+            onChangeMicrophone={(mic) => {
+              breakRecording('pause')
+              setSelectedMicrophone(mic)
+            }}
+            activeMicrophone={selectedMicrophone}
           />
-        )}
-      </Box>
-
-      {selectedMicrophone && (
-        <>
           <p>{inputText}</p>
           <div style={{ height: 1, width: '80%', backgroundColor: 'white' }} />
           <p>{translation}</p>
