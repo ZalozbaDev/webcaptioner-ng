@@ -3,6 +3,9 @@
 ** mjeno jenoz funguje za chrome, firefox a edge nico njepokazaja
 *** Feliks
 
+* polo za zapodaća youtube-URL
+*** Feliks
+
 * čehodla ta wulka přestawka na započatku, prjedy hač započnje poskać
 ** pola chrome wjace njewidźu, ale Firefox ma druhdy hiŝce problem
 *** Feliks
@@ -21,13 +24,10 @@
 ** prosu pokazaj hranicy (za michala, zo we, kak wotre moze cinic)
 *** Feliks
 
-* auto-gain opcija
-** prosu jako checkbox
+* auto-gain a noise cancelling jako opcija
+** prosu jako jednotliwe checkbox
 ** standard: hasnjeny
 ** za demo pri licaku ale druhdy zmyslapolne
-*** Feliks
-
-* polo za zapodaća youtube-URL
 *** Feliks
 
 * něhdźe "total runtime" pokazać
