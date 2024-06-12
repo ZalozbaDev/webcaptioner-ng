@@ -7,3 +7,11 @@ type SotraResponse = {
   ok: boolean
   translation: string
 }
+
+type VOSKResponse = {
+  text?: string
+  partial?: string
+  listen: boolean
+  start?: number
+  stop?: number
+}

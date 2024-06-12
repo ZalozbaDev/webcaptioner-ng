@@ -42,7 +42,7 @@ export const MainScreen = () => {
 
   const onReceiveMessage = (event: MessageEvent) => {
     if (event.data) {
-      let parsed = JSON.parse(event.data)
+      let parsed = JSON.parse(event.data) as VOSKResponse
       if (
         parsed.text &&
         parsed.text !== '-- ***/whisper/ggml-model.q8_0.bin --' &&
@@ -57,7 +57,7 @@ export const MainScreen = () => {
             const youtubeData = getParseDataForYoutube(
               seq,
               response.data.translation,
-              new Date(parsed.start * 1000),
+              new Date(parsed.start! * 1000),
               youtubeUrl,
               false
             )
