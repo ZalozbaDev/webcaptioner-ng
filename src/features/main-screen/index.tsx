@@ -5,9 +5,10 @@ import { getTranslation } from '../../lib/sotra-manager'
 import { getParseDataForYoutube } from '../../lib/youtube-manager'
 import { MicrophoneSelector } from './components/microphone-selector.tsx'
 import { RecordButtonsContainer } from './components/record-buttons-container'
-import { Box } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import { Settings } from './components/record-buttons-container/settings-container'
 import { toast } from 'sonner'
+import { LoadingSpinner } from '../../components/loading-spinner'
 
 const SAMPLE_RATE = 48000
 let processor: AudioWorkletNode
@@ -166,6 +167,20 @@ export const MainScreen = () => {
     startRecordingWithNewStream()
   }
 
+  const [permission, setPermission] = useState<
+    'loading' | 'granted' | 'denied'
+  >('loading')
+
+  useEffect(() => {
+    navigator.mediaDevices.enumerateDevices().then((devices) => {
+      if (devices.length === 0) {
+        setPermission('denied')
+      } else {
+        setPermission(devices[0].label ? 'granted' : 'denied')
+      }
+    })
+  }, [])
+
   return (
     <div
       style={{
@@ -179,21 +194,31 @@ export const MainScreen = () => {
     >
       <h1>Serbski Webcaptioner</h1>
 
-      <Box
-        style={
-          selectedMicrophone === null
-            ? {}
-            : { position: 'absolute', top: 10, right: 10 }
-        }
-      >
-        <MicrophoneSelector
-          activeMicrophone={selectedMicrophone}
-          onChange={(mic) => {
-            breakRecording('pause')
-            setSelectedMicrophone(mic)
-          }}
-        />
-      </Box>
+      {permission === 'granted' && (
+        <Box
+          style={
+            selectedMicrophone === null
+              ? {}
+              : { position: 'absolute', top: 10, right: 10 }
+          }
+        >
+          <MicrophoneSelector
+            activeMicrophone={selectedMicrophone}
+            onChange={(mic) => {
+              breakRecording('pause')
+              setSelectedMicrophone(mic)
+            }}
+          />
+        </Box>
+      )}
+
+      {permission === 'loading' && <LoadingSpinner />}
+
+      {permission === 'denied' && (
+        <Typography>
+          Permission denied, please active it in the browser settings
+        </Typography>
+      )}
 
       {selectedMicrophone && (
         <>
