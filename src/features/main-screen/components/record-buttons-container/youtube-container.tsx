@@ -73,18 +73,23 @@ export const YoutubeContainer: FC<{
           placeholder='http://upload.youtube./com/closedcaption?cid=1234-5678-9012-3456'
           value={tempUrl}
           fullWidth
+          disabled={disabled}
           onChange={(e) => setTempUrl(e.target.value)}
           InputProps={{
             endAdornment: tempUrl.length > 0 && (
-              <IconButton onClick={() => setTempUrl('')}>
+              <IconButton disabled={disabled} onClick={() => setTempUrl('')}>
                 <Clear />
               </IconButton>
             ),
           }}
         />
 
-        <Button onClick={() => onSave(tempUrl)}>Save</Button>
-        <Button onClick={onHandleClose}>Cancel</Button>
+        <Button disabled={disabled} onClick={() => onSave(tempUrl)}>
+          Save
+        </Button>
+        <Button disabled={disabled} onClick={onHandleClose}>
+          Cancel
+        </Button>
       </MenuList>
     </Menu>
   )
