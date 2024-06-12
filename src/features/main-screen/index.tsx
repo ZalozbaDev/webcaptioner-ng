@@ -187,9 +187,10 @@ export const MainScreen = () => {
         }
       >
         <MicrophoneSelector
+          activeMicrophone={selectedMicrophone}
           onChange={(mic) => {
-            setSelectedMicrophone(mic)
             breakRecording('pause')
+            setSelectedMicrophone(mic)
           }}
         />
       </Box>
@@ -209,6 +210,11 @@ export const MainScreen = () => {
             onPressRecord={startRecording}
             onPressPause={() => breakRecording('pause')}
             onPressStop={() => breakRecording('stop')}
+            onChangeMicrophone={(mic) => {
+              breakRecording('pause')
+              setSelectedMicrophone(mic)
+            }}
+            activeMicrophone={selectedMicrophone}
           />
           <p>{inputText}</p>
           <div style={{ height: 1, width: '80%', backgroundColor: 'white' }} />
