@@ -171,19 +171,19 @@ export const MainScreen = () => {
     startRecordingWithNewStream()
   }
 
-  const [permission, setPermission] = useState<
-    'loading' | 'granted' | 'denied'
-  >('loading')
+  // const [permission, setPermission] = useState<
+  //   'loading' | 'granted' | 'denied'
+  // >('loading')
 
-  useEffect(() => {
-    navigator.mediaDevices.enumerateDevices().then((devices) => {
-      if (devices.length === 0) {
-        setPermission('denied')
-      } else {
-        setPermission(devices[0].label ? 'granted' : 'denied')
-      }
-    })
-  }, [])
+  // useEffect(() => {
+  //   navigator.mediaDevices.enumerateDevices().then((devices) => {
+  //     if (devices.length === 0) {
+  //       setPermission('denied')
+  //     } else {
+  //       setPermission(devices[0].label ? 'granted' : 'denied')
+  //     }
+  //   })
+  // }, [])
 
   return (
     <div
@@ -198,31 +198,31 @@ export const MainScreen = () => {
     >
       <h1>Serbski Webcaptioner</h1>
 
-      {permission === 'granted' && (
-        <Box
-          style={
-            selectedMicrophone === null
-              ? {}
-              : { position: 'absolute', top: 10, right: 10 }
-          }
-        >
-          <MicrophoneSelector
-            activeMicrophone={selectedMicrophone}
-            onChange={(mic) => {
-              breakRecording('pause')
-              setSelectedMicrophone(mic)
-            }}
-          />
-        </Box>
-      )}
+      {/* {permission === 'granted' && ( */}
+      <Box
+        style={
+          selectedMicrophone === null
+            ? {}
+            : { position: 'absolute', top: 10, right: 10 }
+        }
+      >
+        <MicrophoneSelector
+          activeMicrophone={selectedMicrophone}
+          onChange={(mic) => {
+            breakRecording('pause')
+            setSelectedMicrophone(mic)
+          }}
+        />
+      </Box>
+      {/* )} */}
 
-      {permission === 'loading' && <LoadingSpinner />}
+      {/* {permission === 'loading' && <LoadingSpinner />}
 
       {permission === 'denied' && (
         <Typography>
           Permission denied, please active it in the browser settings
         </Typography>
-      )}
+      )} */}
 
       {selectedMicrophone && (
         <>
