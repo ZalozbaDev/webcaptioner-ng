@@ -1,41 +1,14 @@
-* informacije wo wuzwolenym mikrofonu
-** mjeno, samplerate, frame format...
-** mjeno jenoz funguje za chrome, firefox a edge nico njepokazaja
+* informacije wo wuzwolenym streamu
+** samplerate, frame format...
+** je rozdzel mjez wuprosenym formatom a woprawdzitym formatom (kajkosce)?
+** --> po starće pokazać, sto "woprawdze dóstas"
 *** Feliks
-
-* polo za zapodaća youtube-URL
-*** Feliks
-
-* čehodla ta wulka přestawka na započatku, prjedy hač započnje poskać
-** pola chrome wjace njewidźu, ale Firefox ma druhdy hiŝce problem
-*** Feliks
-
-* firefox je netko komplet kaput
-** Permission denied, please active it in the browser settings
-*** Feliks
-
-* spóznawanska kwalita?
-** přepruwować, hač so w prawym formaće nahrawa
-** Windows: Firefox & Chrome netko OK
-** Mac: jenoz Firefox OK
-*** Daniel+Feliks
 
 * level-meter
-** wizualizacija je rjana
-** prosu pokazaj hranicy (za michala, zo we, kak wotre moze cinic)
-*** Feliks
-
-* auto-gain, noise cancelling, echo jako opcija
-** prosu tak zo so jenoz pri hasnjenym streamwanjom zmenic/nastajic daja
-*** Feliks
-
-* něhdźe "total runtime" pokazać
+** pak hranicy tej "waveform", pak hinasi meter kiz pokaza hranicu
 *** Feliks
 
 * aktualny status code wot wotmołwy youtube pokazać (POST reply)
-*** Feliks
-
-* pokazac, je-li je zmylk pri wuziwanju mikrofona
 *** Feliks
 
 * whisper container log redukować
@@ -49,11 +22,6 @@
 ** produktiwnu wersiju, nic development
 ** hladać, hač potom te pospyty, zo přez WS na frontend zwjazać, preč su
 *** Daniel
-
-* feedback zatwarić, zo whisper-spóznawanje je zaskoćił
-** tutón feedback potom tež pokazać
-** hlej "partial" wotmoĺwa hdyz VOSK_SHOW_WORDS je aktiwne
-*** Daniel+Feliks
 
 * timestamps wot whisper wróćić
 ** hlej "text" wotmoĺwa hdyz VOSK_SHOW_WORDS je aktiwne
@@ -72,10 +40,6 @@
 * mikro wot Michala wuspytac
 ** kedzbu z wjacorymi kanalemi
 *** Daniel
-
-* wjace awdija naraz pósłać (16000 samples, abo samo 48000 samples)
-** spytać hac to nesto pomha / hac netcisa warianta problematiska je
-*** Daniel + Feliks
 
 ------------------------------------------
 
