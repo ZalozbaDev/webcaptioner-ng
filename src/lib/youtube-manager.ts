@@ -21,7 +21,13 @@ export const getParseDataForYoutube = (
     axios
       .post(
         `${youtubeUrl}&seq=${seq}`,
-        Buffer.from(data, 'ascii').toString('utf-8')
+        Buffer.from(data, 'ascii').toString('utf-8'),
+        {
+          headers: {
+            'Content-Type': 'text/plain',
+            'Access-Control-Allow-Origin': '*',
+          },
+        }
       )
       .then((res) => {
         console.log(res)
