@@ -16,21 +16,20 @@ export const getParseDataForYoutube = (
   const parsedDate = dayjs.utc(date).format('YYYY-MM-DDTHH:MM:ss.SSS')
   const data = `${parsedDate} ${region}\n${text}: ${seq}\n`
 
-  console.log({
-    youtubeUrl: `${youtubeUrl}&seq=${seq}`,
-  })
-
-  sendToYoutube &&
-    axios.post(
-      `${youtubeUrl}&seq=${seq}`,
-      Buffer.from(data, 'ascii').toString('utf-8'),
-      {
-        headers: {
-          'Content-Type': 'text/plain',
-          'Access-Control-Allow-Origin': '*',
-        },
-      }
-    )
+  if (sendToYoutube) {
+    console.log('send to youtube')
+    axios
+      .post(
+        `${youtubeUrl}&seq=${seq}`,
+        Buffer.from(data, 'ascii').toString('utf-8')
+      )
+      .then((res) => {
+        console.log(res)
+      })
+      .catch((err) => {
+        console.error(err)
+      })
+  }
 
   return data
 }
