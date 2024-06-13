@@ -24,7 +24,7 @@ const initialSettings: Settings = {
   echoCancellation: false,
   channelCount: 1,
   sampleRate: SAMPLE_RATE,
-  sampleSize: 2048,
+  sampleSize: 16,
   deviceId: undefined,
 }
 let settings: Settings = initialSettings
