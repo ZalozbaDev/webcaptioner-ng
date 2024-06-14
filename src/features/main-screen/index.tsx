@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import { handleSuccess } from './components/audio-recorder/handler/handle-success'
 import { initWebsocket } from './components/audio-recorder/handler/init-websocket'
-import { getTranslation } from '../../lib/sotra-manager'
-import { getParseDataForYoutube } from '../../lib/youtube-manager'
+import {
+  getTranslation,
+  getParseDataForYoutube,
+} from '../../lib/server-manager'
 import { MicrophoneSelector } from './components/microphone-selector.tsx'
 import { RecordButtonsContainer } from './components/record-buttons-container'
 import { Box, Typography } from '@mui/material'
