@@ -13,7 +13,7 @@ export const getParseDataForYoutube = (
   youtubeUrl: string,
   sendToYoutube: boolean = false
 ) => {
-  const parsedDate = dayjs.utc(date).format('YYYY-MM-DDTHH:MM:ss.SSS')
+  const parsedDate = dayjs.utc(date).format('YYYY-MM-DDTHH:mm:ss.SSS')
   const data = `${parsedDate} ${region}\n${text}: ${seq}\n`
 
   if (sendToYoutube) {
