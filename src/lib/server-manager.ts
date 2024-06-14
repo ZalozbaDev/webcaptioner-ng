@@ -25,13 +25,18 @@ export const getTranslation = async (
 
 const region = process.env.REACT_APP_YOUTUBE_REGION
 
-export const getParseDataForYoutube = (
+export const getParseDataForYoutube = async (
   seq: number,
   text: string,
   date: Date,
   youtubeUrl: string,
   sendToYoutube: boolean = false
 ) => {
+  console.log({
+    date,
+    toISOString: date.toISOString(),
+    utcString: date.toUTCString(),
+  })
   const data = {
     cid: youtubeUrl.split('cid=')[1],
     seq: seq,
@@ -52,13 +57,15 @@ export const getParseDataForYoutube = (
 
   if (sendToYoutube) {
     console.log('send to youtube')
-    axios
+    return axios
       .request(config)
       .then((res) => {
         console.log(res)
+        return `✅ ${data.text}`
       })
       .catch((err) => {
         console.error(err)
+        return `❌ ${data.text}`
       })
   }
 

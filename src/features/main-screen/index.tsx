@@ -57,17 +57,16 @@ export const MainScreen = () => {
         seq += 1
         const trimmedText = parsed.text.slice(2, -2).trim()
         setInputText((prev) => prev + ' ' + trimmedText)
-        getTranslation(trimmedText).then((response) => {
-          console.log({ youtubeUrl })
+        getTranslation(trimmedText).then(async (response) => {
           if (youtubeUrl) {
-            const youtubeData = getParseDataForYoutube(
+            const youtubeData = await getParseDataForYoutube(
               seq,
               response.data.translation,
-              new Date(parsed.start! * 1000),
+              new Date(), // TODO: Use new Date(parsed.start! * 1000)
               youtubeUrl,
               true
             )
-            setYoutubeSubtitle((prev) => prev + ' ' + youtubeData + '\n')
+            setYoutubeSubtitle((prev) => prev + ' ' + youtubeData + '' + '\n')
           }
           setTranslation((prev) => prev + ' ' + response.data.translation)
         })
