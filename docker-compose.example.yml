@@ -4,23 +4,23 @@ services:
     image: webcaptioner-ng:latest
     restart: unless-stopped
     environment:
-        - REACT_APP_VOSK_SERVER_URL
-        - REACT_APP_SOTRA_SERVER_URL
-        - REACT_APP_YOUTUBE_REGION
-#    ports:
-#        - '80:3000'
+      - REACT_APP_VOSK_SERVER_URL
+      - REACT_APP_WEBCAPTIONER_SERVER
+      - REACT_APP_YOUTUBE_REGION
+  #    ports:
+  #        - '80:3000'
 
   webcaptioner-vosk-server:
     image: vosk_server_whisper:latest
     privileged: true
     restart: unless-stopped
     environment:
-        - VOSK_SAMPLE_RATE
-        - VOSK_LOG_AUDIO
-        - MODEL_PATH_FULL
-        - VOSK_SHOW_WORDS
+      - VOSK_SAMPLE_RATE
+      - VOSK_LOG_AUDIO
+      - MODEL_PATH_FULL
+      - VOSK_SHOW_WORDS
     volumes:
-        - ./logs:/logs
-        - ./whisper/:/whisper
+      - ./logs:/logs
+      - ./whisper/:/whisper
 #    ports:
 #        - '80:4000'
