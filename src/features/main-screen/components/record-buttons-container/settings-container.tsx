@@ -20,12 +20,13 @@ export type Settings = {
 }
 
 const menuItemWithCheckbox = (
+  key: string,
   disabled: boolean,
   checked: boolean,
   title: string,
   onSetChecked: (value: boolean) => void
 ) => (
-  <MenuItem disabled={disabled} sx={{ marginLeft: -1, height: 30 }}>
+  <MenuItem disabled={disabled} sx={{ marginLeft: -1, height: 30 }} key={key}>
     <Checkbox
       checked={checked}
       onChange={(event) => onSetChecked(event.target.checked)}
@@ -34,8 +35,12 @@ const menuItemWithCheckbox = (
   </MenuItem>
 )
 
-const menuitemWithText = (title: string, value: string | number | boolean) => (
-  <MenuItem disabled={true} sx={{ marginLeft: 1, height: 30 }}>
+const menuitemWithText = (
+  key: string,
+  title: string,
+  value: string | number | boolean
+) => (
+  <MenuItem disabled={true} sx={{ marginLeft: 1, height: 30 }} key={key}>
     <Typography variant='body2'>
       {title}: {value}
     </Typography>
@@ -116,6 +121,7 @@ export const SettingsContainer: FC<{
         {checkboxes.map(({ key, title }) => {
           const setting = settings[key]
           return menuItemWithCheckbox(
+            key,
             disabled,
             typeof setting !== 'boolean' ? false : setting,
             title,
@@ -124,7 +130,8 @@ export const SettingsContainer: FC<{
         })}
         {menuTextItems.map(({ key, title }) => {
           const setting = settings[key]
-          if (setting !== undefined) return menuitemWithText(title, setting)
+          if (setting !== undefined)
+            return menuitemWithText(key, title, setting)
           return null
         })}
         <Divider />
