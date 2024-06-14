@@ -168,6 +168,7 @@ export const MainScreen = () => {
 
   const updateMediaStreamSettings = (key: keyof Settings, value: boolean) => {
     breakRecording('pause')
+    setMediaStreamSettings({ ...mediaStreamSettings, [key]: value })
     settings = { ...settings, [key]: value }
   }
 
