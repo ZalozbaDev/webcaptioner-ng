@@ -3,7 +3,7 @@ export const initWebsocket = (
   onReceiveMessage: (event: MessageEvent) => void
 ) => {
   const webSocket = new WebSocket(url)
-  webSocket.binaryType = 'arraybuffer'
+  // webSocket.binaryType = 'arraybuffer'
 
   webSocket.onerror = (error) => console.error('WebSocket error:', error)
 

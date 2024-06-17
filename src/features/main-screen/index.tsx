@@ -129,7 +129,7 @@ export const MainScreen = () => {
 
   const startRecording = async () => {
     webSocket = initWebsocket(
-      process.env.REACT_APP_VOSK_SERVER_URL!,
+      `${process.env.REACT_APP_WEBCAPTIONER_SERVER!}/vosk`,
       onReceiveMessage
     )
     webSocket.onopen = () => {
