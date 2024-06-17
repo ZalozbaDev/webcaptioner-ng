@@ -4,7 +4,6 @@ services:
     image: webcaptioner-ng:latest
     restart: unless-stopped
     environment:
-      - REACT_APP_VOSK_SERVER_URL
       - REACT_APP_WEBCAPTIONER_SERVER
       - REACT_APP_YOUTUBE_REGION
   #    ports:
