@@ -7,11 +7,13 @@ import {
 } from '../../lib/server-manager'
 import { MicrophoneSelector } from './components/microphone-selector.tsx'
 import { RecordButtonsContainer } from './components/record-buttons-container'
-import { Box, Typography } from '@mui/material'
+import { Box, IconButton, Typography } from '@mui/material'
 import { Settings } from './components/record-buttons-container/settings-container'
 import { toast } from 'sonner'
 import { LoadingSpinner } from '../../components/loading-spinner'
 import { typedVoskResponse } from '../../helper/vosk'
+import { Logout } from '@mui/icons-material'
+import useAuth from '../../hooks/use-auth'
 
 const SAMPLE_RATE = 48000
 let processor: AudioWorkletNode
@@ -44,6 +46,7 @@ export const MainScreen = () => {
     useState<MediaDeviceInfo | null>(null)
   const [isRecording, setIsRecording] = useState<boolean>(false)
   const [voskResponse, setVoskResponse] = useState(false)
+  const { logout } = useAuth()
 
   const onReceiveMessage = (event: MessageEvent) => {
     if (event.data) {
@@ -122,7 +125,7 @@ export const MainScreen = () => {
         if (localeStream !== null)
           handleSuccess(
             localeStream,
-            SAMPLE_RATE,
+            settings.sampleRate,
             webSocket,
             onSetNewProcessor,
             onSetNewSource,
@@ -209,6 +212,13 @@ export const MainScreen = () => {
         gap: 2,
       }}
     >
+      <IconButton
+        onClick={logout}
+        color='inherit'
+        sx={{ position: 'absolute', top: 5, left: 5 }}
+      >
+        <Logout />
+      </IconButton>
       <h1>Serbski Webcaptioner</h1>
 
       {/* {permission === 'granted' && ( */}
