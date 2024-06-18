@@ -1,3 +1,9 @@
+* auto-scroll + limit wŝitke 3 pola
+** spoznawanje (4 linki, preco z "enter" dzelic)
+** prelozk (4 linki, preco z "enter" dzelic)
+** youtube (4 linki, preco z "enter" dzelic)
+*** Feliks
+
 * informacije wo wuzwolenym streamu
 ** samplerate, frame format...
 ** je rozdzel mjez wuprosenym formatom a woprawdzitym formatom (kajkosce)?
@@ -8,7 +14,7 @@
 ** pak hranicy tej "waveform", pak hinasi meter kiz pokaza hranicu
 *** Feliks
 
-* aktualny status code wot wotmołwy youtube pokazać (POST reply)
+* Github Issue #13 
 *** Feliks
 
 * whisper container log redukować
@@ -28,10 +34,6 @@
 ** Daniel: wo polepsenju eksaktnosce premyslic
 *** Daniel+Feliks
 
-* cehodla sotra_ctranslate wjace njebezi (to je raz slo)?
-** chcemy tutu wariantu wužiwać, dokelž tam někajka logika nutřka je, kotre słowa so njepřełožuja
-*** Feliks --> snano le to lochki zmylk (assert w python-scripće)
-
 * trjebamy zakładnu wěstotu?
 ** hesło za frontend (env)
 ** API-keys za backend (tez jenoz prez env)
@@ -40,6 +42,10 @@
 * mikro wot Michala wuspytac
 ** kedzbu z wjacorymi kanalemi
 *** Daniel
+
+* cehodla sotra_ctranslate wjace njebezi (to je raz slo)?
+** chcemy tutu wariantu wužiwać, dokelž tam někajka logika nutřka je, kotre słowa so njepřełožuja
+*** Feliks --> snano le to lochki zmylk (assert w python-scripće)
 
 ------------------------------------------
 
