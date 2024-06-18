@@ -8,9 +8,6 @@
 ** pak hranicy tej "waveform", pak hinasi meter kiz pokaza hranicu
 *** Feliks
 
-* aktualny status code wot wotmołwy youtube pokazać (POST reply)
-*** Feliks
-
 * whisper container log redukować
 *** Daniel
 
@@ -28,10 +25,6 @@
 ** Daniel: wo polepsenju eksaktnosce premyslic
 *** Daniel+Feliks
 
-* cehodla sotra_ctranslate wjace njebezi (to je raz slo)?
-** chcemy tutu wariantu wužiwać, dokelž tam někajka logika nutřka je, kotre słowa so njepřełožuja
-*** Feliks --> snano le to lochki zmylk (assert w python-scripće)
-
 * trjebamy zakładnu wěstotu?
 ** hesło za frontend (env)
 ** API-keys za backend (tez jenoz prez env)
@@ -40,6 +33,10 @@
 * mikro wot Michala wuspytac
 ** kedzbu z wjacorymi kanalemi
 *** Daniel
+
+* cehodla sotra_ctranslate wjace njebezi (to je raz slo)?
+** chcemy tutu wariantu wužiwać, dokelž tam někajka logika nutřka je, kotre słowa so njepřełožuja
+*** Feliks --> snano le to lochki zmylk (assert w python-scripće)
 
 ------------------------------------------
 
