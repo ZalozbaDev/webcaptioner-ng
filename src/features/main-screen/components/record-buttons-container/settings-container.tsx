@@ -18,6 +18,7 @@ export type Settings = {
   sampleRate: number
   sampleSize: number
   deviceId: undefined | string
+  bufferSize: number
 }
 
 const menuItemWithCheckbox = (
@@ -91,9 +92,10 @@ const menuTextItems: {
   title: string
   editable: boolean
 }[] = [
+  { key: 'bufferSize', title: 'Buffer Size', editable: true },
   { key: 'channelCount', title: 'Channel Count', editable: false },
-  { key: 'sampleRate', title: 'Sample Rate', editable: true },
-  { key: 'sampleSize', title: 'Sample Size', editable: true },
+  { key: 'sampleRate', title: 'Sample Rate', editable: false },
+  { key: 'sampleSize', title: 'Sample Size', editable: false },
   { key: 'deviceId', title: 'Device ID', editable: false },
 ]
 

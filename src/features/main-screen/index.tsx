@@ -31,6 +31,7 @@ const initialSettings: Settings = {
   sampleRate: SAMPLE_RATE,
   sampleSize: 16,
   deviceId: undefined,
+  bufferSize: 4096,
 }
 let settings: Settings = initialSettings
 let seq = 0
@@ -127,6 +128,7 @@ export const MainScreen = () => {
             localeStream,
             settings.sampleRate,
             webSocket,
+            settings.bufferSize,
             onSetNewProcessor,
             onSetNewSource,
             onSetNewContext

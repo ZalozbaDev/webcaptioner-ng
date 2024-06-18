@@ -4,6 +4,7 @@ export const handleSuccess = (
   stream: MediaStream,
   sampleRate: number,
   webSocket: WebSocket,
+  bufferSize: number,
   onSetNewProcessor: (processor: AudioWorkletNode) => void,
   onSetNewSource: (source: MediaStreamAudioSourceNode) => void,
   onSetNewContext: (context: AudioContext) => void
@@ -17,9 +18,12 @@ export const handleSuccess = (
         context,
         'data-conversion-processor',
         {
-          channelCount: 1,
+          channelCount: 5,
           numberOfInputs: 1,
           numberOfOutputs: 1,
+          processorOptions: {
+            bufferSize,
+          },
         }
       )
       onSetNewProcessor(processor)

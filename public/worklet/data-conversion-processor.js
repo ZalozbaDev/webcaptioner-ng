@@ -4,7 +4,10 @@ class DataConversionAudioProcessor extends AudioWorkletProcessor {
   _buffer = new Int16Array(this.bufferSize)
 
   constructor(options) {
+    console.log({ options })
     super()
+    this.bufferSize = options.processorOptions.bufferSize || this.bufferSize
+    this._buffer = new Int16Array(this.bufferSize)
     this.initBuffer()
   }
 
