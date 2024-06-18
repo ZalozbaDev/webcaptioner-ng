@@ -1,27 +1,22 @@
 * auto-scroll + limit wŝitke 3 pola
-** spoznawanje (4 linki, preco z "enter" dzelic)
-** prelozk (4 linki, preco z "enter" dzelic)
-** youtube (4 linki, preco z "enter" dzelic)
-*** Feliks
-
-* informacije wo wuzwolenym streamu
-** samplerate, frame format...
-** je rozdzel mjez wuprosenym formatom a woprawdzitym formatom (kajkosce)?
-** --> po starće pokazać, sto "woprawdze dóstas"
+** spoznawanje (4 linki, preco z "enter" dzelic, stare linki prec)
+** prelozk (4 linki, preco z "enter" dzelic...)
+** youtube (4 linki, preco z "enter" dzelic...)
 *** Feliks
 
 * level-meter
 ** pak hranicy tej "waveform", pak hinasi meter kiz pokaza hranicu
 *** Feliks
 
-* Github Issue #13 
-*** Feliks
+* Github Issue #13 (sampling buffer)
+*** Daniel kontrola
 
 * whisper container log redukować
 *** Daniel
 
 * log folder wot spoznawanja eksportowac prez web powjerch
 ** super za debugging
+** rjadowak /logs z backenda eksportować
 *** Daniel + Feliks
 
 * lěpši deployment z docker
@@ -46,6 +41,12 @@
 * cehodla sotra_ctranslate wjace njebezi (to je raz slo)?
 ** chcemy tutu wariantu wužiwać, dokelž tam někajka logika nutřka je, kotre słowa so njepřełožuja
 *** Feliks --> snano le to lochki zmylk (assert w python-scripće)
+
+* informacije wo wuzwolenym streamu
+** samplerate, frame format...
+** je rozdzel mjez wuprosenym formatom a woprawdzitym formatom (kajkosce)?
+** --> po starće pokazać, sto "woprawdze dóstas"
+*** Daniel kontrola (wospjetowac z Firefox na Mac)
 
 ------------------------------------------
 
