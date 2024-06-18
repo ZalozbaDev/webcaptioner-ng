@@ -19,6 +19,7 @@ let webSocket: WebSocket
 let source: MediaStreamAudioSourceNode
 let context: AudioContext
 let localeStream: MediaStream
+const MAX_TEXT_LINES = 4
 
 const initialSettings: Settings = {
   autoGainControl: false,
@@ -35,10 +36,10 @@ let seq = 0
 export const MainScreen = () => {
   const [mediaStreamSettings, setMediaStreamSettings] =
     useState<Settings>(initialSettings)
-  const [inputText, setInputText] = useState<string>('')
-  const [translation, setTranslation] = useState<string>('')
+  const [inputText, setInputText] = useState<string[]>([])
+  const [translation, setTranslation] = useState<string[]>([])
   const [youtubeUrl, setYoutubeUrl] = useState<string | undefined>(undefined)
-  const [youtubeSubtitle, setYoutubeSubtitle] = useState<string>('')
+
   const [selectedMicrophone, setSelectedMicrophone] =
     useState<MediaDeviceInfo | null>(null)
   const [isRecording, setIsRecording] = useState<boolean>(false)
@@ -56,19 +57,28 @@ export const MainScreen = () => {
       ) {
         seq += 1
         const trimmedText = parsed.text.slice(2, -2).trim()
-        setInputText((prev) => prev + ' ' + trimmedText)
+        setInputText((prev) => [...prev, trimmedText].slice(-MAX_TEXT_LINES))
         getTranslation(trimmedText).then(async (response) => {
+          setTranslation((prev) =>
+            [...prev, response.data.translation].slice(-MAX_TEXT_LINES)
+          )
           if (youtubeUrl) {
             const youtubeData = await getParseDataForYoutube(
               seq,
               response.data.translation,
               new Date(), // TODO: Use new Date(parsed.start! * 1000)
-              youtubeUrl,
-              true
+              youtubeUrl
             )
-            setYoutubeSubtitle((prev) => prev + ' ' + youtubeData + '' + '\n')
+            setTranslation((prev) =>
+              prev
+                .map((p) =>
+                  p === youtubeData.text
+                    ? `${p} ${youtubeData.successfull ? '✅' : '❌'}`
+                    : p
+                )
+                .slice(-MAX_TEXT_LINES)
+            )
           }
-          setTranslation((prev) => prev + ' ' + response.data.translation)
         })
       }
     }
@@ -158,15 +168,17 @@ export const MainScreen = () => {
 
       if (newState === 'stop') {
         seq = 0
-        setInputText('')
-        setTranslation('')
-        setYoutubeSubtitle('')
+        setInputText([])
+        setTranslation([])
       }
       setIsRecording(false)
     }
   }
 
-  const updateMediaStreamSettings = (key: keyof Settings, value: boolean) => {
+  const updateMediaStreamSettings = (
+    key: keyof Settings,
+    value: boolean | number
+  ) => {
     breakRecording('pause')
     setMediaStreamSettings({ ...mediaStreamSettings, [key]: value })
     settings = { ...settings, [key]: value }
@@ -249,15 +261,17 @@ export const MainScreen = () => {
             youtubeUrl={youtubeUrl}
             onSaveYoutubeUrl={(url) => setYoutubeUrl(url)}
           />
-          <p>{inputText}</p>
+          <Box sx={{ paddingTop: 2, paddingBottom: 2 }}>
+            {inputText.map((t) => (
+              <Typography>{t}</Typography>
+            ))}
+          </Box>
           <div style={{ height: 1, width: '80%', backgroundColor: 'white' }} />
-          <p>{translation}</p>
-          <textarea
-            color='white'
-            style={{ width: '300px', minHeight: '400px' }}
-            value={youtubeSubtitle}
-            readOnly
-          />
+          <Box sx={{ paddingTop: 2, paddingBottom: 2 }}>
+            {translation.map((t) => (
+              <Typography>{t}</Typography>
+            ))}
+          </Box>
         </>
       )}
     </div>

@@ -29,14 +29,8 @@ export const getParseDataForYoutube = async (
   seq: number,
   text: string,
   date: Date,
-  youtubeUrl: string,
-  sendToYoutube: boolean = false
+  youtubeUrl: string
 ) => {
-  console.log({
-    date,
-    toISOString: date.toISOString(),
-    utcString: date.toUTCString(),
-  })
   const data = {
     cid: youtubeUrl.split('cid=')[1],
     seq: seq,
@@ -55,19 +49,14 @@ export const getParseDataForYoutube = async (
     data: data,
   }
 
-  if (sendToYoutube) {
-    console.log('send to youtube')
-    return axios
-      .request(config)
-      .then((res) => {
-        console.log(res)
-        return `✅ ${data.text}`
-      })
-      .catch((err) => {
-        console.error(err)
-        return `❌ ${data.text}`
-      })
-  }
-
-  return data
+  return axios
+    .request(config)
+    .then((res) => {
+      console.log(res)
+      return { seq, text: data.text, successfull: true }
+    })
+    .catch((err) => {
+      console.error(err)
+      return { seq, text: data.text, successfull: false }
+    })
 }

@@ -1,6 +1,7 @@
 import {
   Checkbox,
   Divider,
+  Input,
   Menu,
   MenuItem,
   MenuList,
@@ -38,12 +39,44 @@ const menuItemWithCheckbox = (
 const menuitemWithText = (
   key: string,
   title: string,
-  value: string | number | boolean
+  value: string | number,
+  disabled: boolean,
+  editable: boolean,
+  onSetValue: (value: number) => void
 ) => (
-  <MenuItem disabled={true} sx={{ marginLeft: 1, height: 30 }} key={key}>
-    <Typography variant='body2'>
-      {title}: {value}
-    </Typography>
+  <MenuItem
+    disabled={disabled}
+    sx={{
+      marginLeft: 1,
+      paddingRight: 4,
+      height: 30,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      width: '100%',
+    }}
+    key={key}
+  >
+    {disabled || !editable ? (
+      <>
+        <Typography variant='body2'>{title}:</Typography>
+        <Typography variant='body2'>{value}</Typography>
+      </>
+    ) : (
+      <>
+        <Typography variant='body2'>{title}:</Typography>
+        <Input
+          size='small'
+          sx={{ width: 70, marginLeft: 1, textAlign: 'right' }}
+          type='number'
+          defaultValue={value}
+          title={title}
+          onChange={(newValue) =>
+            onSetValue(newValue.target.value as unknown as number)
+          }
+        />
+      </>
+    )}
   </MenuItem>
 )
 
@@ -53,11 +86,15 @@ const checkboxes: { key: keyof Settings; title: string }[] = [
   { key: 'echoCancellation', title: 'Echo Cancellation' },
 ]
 
-const menuTextItems: { key: keyof Settings; title: string }[] = [
-  { key: 'channelCount', title: 'Channel Count' },
-  { key: 'sampleRate', title: 'Sample Rate' },
-  { key: 'sampleSize', title: 'Sample Size' },
-  { key: 'deviceId', title: 'Device ID' },
+const menuTextItems: {
+  key: keyof Settings
+  title: string
+  editable: boolean
+}[] = [
+  { key: 'channelCount', title: 'Channel Count', editable: false },
+  { key: 'sampleRate', title: 'Sample Rate', editable: true },
+  { key: 'sampleSize', title: 'Sample Size', editable: true },
+  { key: 'deviceId', title: 'Device ID', editable: false },
 ]
 
 export const SettingsContainer: FC<{
@@ -66,7 +103,7 @@ export const SettingsContainer: FC<{
   disabled: boolean
   onClose: () => void
   settings: Settings
-  onChangeSetting: (key: keyof Settings, value: boolean) => void
+  onChangeSetting: (key: keyof Settings, value: boolean | number) => void
   onChangeMicrophone: (mic: MediaDeviceInfo) => void
   activeMicrophone: MediaDeviceInfo | null
 }> = ({
@@ -128,10 +165,17 @@ export const SettingsContainer: FC<{
             (value) => onChangeSetting(key, value)
           )
         })}
-        {menuTextItems.map(({ key, title }) => {
+        {menuTextItems.map(({ key, title, editable }) => {
           const setting = settings[key]
-          if (setting !== undefined)
-            return menuitemWithText(key, title, setting)
+          if (setting !== undefined && typeof setting !== 'boolean')
+            return menuitemWithText(
+              key,
+              title,
+              setting,
+              disabled,
+              editable,
+              (value) => onChangeSetting(key, value)
+            )
           return null
         })}
         <Divider />
