@@ -18,7 +18,7 @@ export const RecordButtonsContainer: FC<{
   isDisabled: { record: boolean; pause: boolean; stop: boolean }
   isRecording: boolean
   settings: Settings
-  onChangeSetting: (key: keyof Settings, value: boolean) => void
+  onChangeSetting: (key: keyof Settings, value: boolean | number) => void
   onPressRecord: () => void
   onPressPause: () => void
   onPressStop: () => void
