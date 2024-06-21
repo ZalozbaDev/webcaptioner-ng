@@ -22,7 +22,7 @@ let webSocket: WebSocket
 let source: MediaStreamAudioSourceNode
 let context: AudioContext
 let localeStream: MediaStream
-const MAX_TEXT_LINES = 4
+const MAX_TEXT_LINES = 10
 
 const initialSettings: Settings = {
   autoGainControl: false,
