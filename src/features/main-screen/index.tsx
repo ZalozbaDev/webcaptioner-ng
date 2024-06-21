@@ -14,6 +14,7 @@ import { LoadingSpinner } from '../../components/loading-spinner'
 import { typedVoskResponse } from '../../helper/vosk'
 import { Logout } from '@mui/icons-material'
 import useAuth from '../../hooks/use-auth'
+import { localStorage } from '../../lib/local-storage'
 
 const SAMPLE_RATE = 48000
 let processor: AudioWorkletNode
@@ -59,7 +60,11 @@ export const MainScreen = () => {
         parsed.text !== '-- **/whisper/ggml-model.q8_0.bin --' &&
         parsed.text !== '-- */whisper/ggml-model.q8_0.bin --'
       ) {
-        seq += 1
+        if (youtubeUrl) {
+          seq += 1
+          localStorage.setCounterForCid(youtubeUrl.split('cid=')[1], seq)
+        }
+
         const trimmedText = parsed.text.slice(2, -2).trim()
         setInputText((prev) => [...prev, trimmedText].slice(-MAX_TEXT_LINES))
         getTranslation(trimmedText).then(async (response) => {
@@ -77,7 +82,9 @@ export const MainScreen = () => {
               prev
                 .map((p) =>
                   p === youtubeData.text
-                    ? `${p} ${youtubeData.successfull ? '✅' : '❌'}`
+                    ? `[${youtubeData.seq}]: ${p} ${
+                        youtubeData.successfull ? '✅' : '❌'
+                      }`
                     : p
                 )
                 .slice(-MAX_TEXT_LINES)
@@ -147,6 +154,9 @@ export const MainScreen = () => {
       `${process.env.REACT_APP_WEBCAPTIONER_SERVER!}/vosk`,
       onReceiveMessage
     )
+    if (youtubeUrl) {
+      seq = localStorage.getCounterForCid(youtubeUrl.split('cid=')[1])
+    } else seq = 0
     webSocket.onopen = () => {
       try {
         toast.success('Websocket connected')
@@ -172,7 +182,6 @@ export const MainScreen = () => {
         localeStream.getTracks().forEach((track) => track.stop())
 
       if (newState === 'stop') {
-        seq = 0
         setInputText([])
         setTranslation([])
       }
