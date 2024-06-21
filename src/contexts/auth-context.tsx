@@ -1,5 +1,6 @@
 import { createContext, useEffect, useState } from 'react'
 import type { FC, ReactNode } from 'react'
+import { localStorage } from '../lib/local-storage'
 interface State {
   isAuthenticated: boolean
 }
@@ -28,22 +29,20 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   useEffect(() => {
-    const authenticated =
-      window.localStorage.getItem('isAuthenticated') === 'true' || false
-    setIsAuthenticated(authenticated)
+    setIsAuthenticated(localStorage.isAuthenticated)
   }, [])
 
   const login = (password: string) => {
     if (password === process.env.REACT_APP_PASSWORD) {
       setIsAuthenticated(true)
-      window.localStorage.setItem('isAuthenticated', 'true')
+      localStorage.setIsAuthenticated(true)
       return true
     }
     return false
   }
 
   const logout = () => {
-    window.localStorage.removeItem('isAuthenticated')
+    localStorage.setIsAuthenticated(false)
     setIsAuthenticated(false)
   }
 
