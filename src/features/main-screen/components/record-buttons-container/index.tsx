@@ -24,8 +24,8 @@ export const RecordButtonsContainer: FC<{
   onPressStop: () => void
   onChangeMicrophone: (mic: MediaDeviceInfo) => void
   activeMicrophone: MediaDeviceInfo | null
-  youtubeUrl: string | undefined
-  onSaveYoutubeUrl: (url: string) => void
+  youtubeStreamingKey: string | undefined
+  onSaveYoutubeStreamingKey: (streamingKey: string) => void
 }> = ({
   voskResponse,
   stream,
@@ -38,8 +38,8 @@ export const RecordButtonsContainer: FC<{
   onPressStop,
   onChangeMicrophone,
   activeMicrophone,
-  youtubeUrl,
-  onSaveYoutubeUrl,
+  youtubeStreamingKey,
+  onSaveYoutubeStreamingKey,
 }) => {
   const [totalTime, setTotalTime] = useState<number>(0)
 
@@ -121,14 +121,20 @@ export const RecordButtonsContainer: FC<{
         open={youtubeOpen}
         disabled={isRecording}
         onClose={handleYoutubeClose}
-        url={youtubeUrl}
-        onSave={(url) => {
+        streamingKey={youtubeStreamingKey}
+        onSave={(streamingKey) => {
           handleYoutubeClose()
-          onSaveYoutubeUrl(url)
+          onSaveYoutubeStreamingKey(streamingKey)
         }}
       />
     ),
-    [isRecording, onSaveYoutubeUrl, youtubeAnchorEl, youtubeOpen, youtubeUrl]
+    [
+      isRecording,
+      onSaveYoutubeStreamingKey,
+      youtubeAnchorEl,
+      youtubeOpen,
+      youtubeStreamingKey,
+    ]
   )
 
   return (

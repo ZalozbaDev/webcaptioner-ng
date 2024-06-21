@@ -42,7 +42,9 @@ export const MainScreen = () => {
     useState<Settings>(initialSettings)
   const [inputText, setInputText] = useState<string[]>([])
   const [translation, setTranslation] = useState<string[]>([])
-  const [youtubeUrl, setYoutubeUrl] = useState<string | undefined>(undefined)
+  const [youtubeStreamingKey, setYoutubeStreamingKey] = useState<
+    string | undefined
+  >(undefined)
 
   const [selectedMicrophone, setSelectedMicrophone] =
     useState<MediaDeviceInfo | null>(null)
@@ -60,9 +62,9 @@ export const MainScreen = () => {
         parsed.text !== '-- **/whisper/ggml-model.q8_0.bin --' &&
         parsed.text !== '-- */whisper/ggml-model.q8_0.bin --'
       ) {
-        if (youtubeUrl) {
+        if (youtubeStreamingKey) {
           seq += 1
-          localStorage.setCounterForCid(youtubeUrl.split('cid=')[1], seq)
+          localStorage.setCounterForYoutubeStreaming(youtubeStreamingKey, seq)
         }
 
         const trimmedText = parsed.text.slice(2, -2).trim()
@@ -71,12 +73,12 @@ export const MainScreen = () => {
           setTranslation((prev) =>
             [...prev, response.data.translation].slice(-MAX_TEXT_LINES)
           )
-          if (youtubeUrl) {
+          if (youtubeStreamingKey) {
             const youtubeData = await getParseDataForYoutube(
               seq,
               response.data.translation,
               new Date(), // TODO: Use new Date(parsed.start! * 1000)
-              youtubeUrl
+              youtubeStreamingKey
             )
             setTranslation((prev) =>
               prev
@@ -154,8 +156,8 @@ export const MainScreen = () => {
       `${process.env.REACT_APP_WEBCAPTIONER_SERVER!}/vosk`,
       onReceiveMessage
     )
-    if (youtubeUrl) {
-      seq = localStorage.getCounterForCid(youtubeUrl.split('cid=')[1])
+    if (youtubeStreamingKey) {
+      seq = localStorage.getCounterForYoutubeStreaming(youtubeStreamingKey)
     } else seq = 0
     webSocket.onopen = () => {
       try {
@@ -279,8 +281,10 @@ export const MainScreen = () => {
               setSelectedMicrophone(mic)
             }}
             activeMicrophone={selectedMicrophone}
-            youtubeUrl={youtubeUrl}
-            onSaveYoutubeUrl={(url) => setYoutubeUrl(url)}
+            youtubeStreamingKey={youtubeStreamingKey}
+            onSaveYoutubeStreamingKey={(youtubeStreamingKey) =>
+              setYoutubeStreamingKey(youtubeStreamingKey)
+            }
           />
           <Box sx={{ paddingTop: 2, paddingBottom: 2 }}>
             {inputText.map((t) => (

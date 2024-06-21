@@ -14,14 +14,16 @@ export const YoutubeContainer: FC<{
   open: boolean
   disabled: boolean
   onClose: () => void
-  url: string | undefined
+  streamingKey: string | undefined
   onSave: (url: string) => void
-}> = ({ anchorEl, open, disabled, onClose, url, onSave }) => {
-  const [tempUrl, setTempUrl] = useState<string>(url ?? '')
+}> = ({ anchorEl, open, disabled, onClose, streamingKey, onSave }) => {
+  const [tempStreamingKey, setTempStreamingKey] = useState<string>(
+    streamingKey ?? ''
+  )
 
   useEffect(() => {
-    setTempUrl(url ?? '')
-  }, [url, open, anchorEl])
+    setTempStreamingKey(streamingKey ?? '')
+  }, [streamingKey, open, anchorEl])
 
   return (
     <Menu
@@ -60,25 +62,28 @@ export const YoutubeContainer: FC<{
     >
       <MenuList dense sx={{ width: 600, padding: 1 }}>
         <Typography variant='body1' gutterBottom>
-          Youtube Link:
+          Youtube Streamkluč:
         </Typography>
 
         <TextField
-          placeholder='http://upload.youtube./com/closedcaption?cid=1234-5678-9012-3456'
-          value={tempUrl}
+          placeholder='1234-5678-9012-3456'
+          value={tempStreamingKey}
           fullWidth
           disabled={disabled}
-          onChange={(e) => setTempUrl(e.target.value)}
+          onChange={(e) => setTempStreamingKey(e.target.value)}
           InputProps={{
-            endAdornment: tempUrl.length > 0 && (
-              <IconButton disabled={disabled} onClick={() => setTempUrl('')}>
+            endAdornment: tempStreamingKey.length > 0 && (
+              <IconButton
+                disabled={disabled}
+                onClick={() => setTempStreamingKey('')}
+              >
                 <Clear />
               </IconButton>
             ),
           }}
         />
 
-        <Button disabled={disabled} onClick={() => onSave(tempUrl)}>
+        <Button disabled={disabled} onClick={() => onSave(tempStreamingKey)}>
           Save
         </Button>
         <Button disabled={disabled} onClick={onClose}>

@@ -29,10 +29,10 @@ export const getParseDataForYoutube = async (
   seq: number,
   text: string,
   date: Date,
-  youtubeUrl: string
+  youtubeStreamingKey: string
 ) => {
   const data = {
-    cid: youtubeUrl.split('cid=')[1],
+    cid: youtubeStreamingKey,
     seq: seq,
     timestamp: date.toISOString(),
     region: region,
