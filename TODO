@@ -1,6 +1,10 @@
-* level-meter
-** pak hranicy tej "waveform", pak hinasi meter kiz pokaza hranicu
+* wróćeny čas wot youtube pokazać
+** zo by jen widźał, kak "stary" kóždy podtitul někak je
 *** Feliks
+
+* cehodla sotra_ctranslate wjace njebezi (to je raz slo)?
+** chcemy tutu wariantu wužiwać, dokelž tam někajka logika nutřka je, kotre słowa so njepřełožuja
+*** Feliks --> snano le to lochki zmylk (assert w python-scripće)
 
 * whisper container log redukować
 *** Daniel
@@ -27,10 +31,6 @@
 * mikro wot Michala wuspytac
 ** kedzbu z wjacorymi kanalemi
 *** Daniel
-
-* cehodla sotra_ctranslate wjace njebezi (to je raz slo)?
-** chcemy tutu wariantu wužiwać, dokelž tam někajka logika nutřka je, kotre słowa so njepřełožuja
-*** Feliks --> snano le to lochki zmylk (assert w python-scripće)
 
 * informacije wo wuzwolenym streamu
 ** samplerate, frame format...
