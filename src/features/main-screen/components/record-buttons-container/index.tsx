@@ -72,7 +72,6 @@ export const RecordButtonsContainer: FC<{
         mode='continuous'
         autoStart
         strokeColor='white'
-        lineWidth='default'
       >
         {({ canvasRef }) => <canvas ref={canvasRef} height={100} />}
       </Visualizer>
@@ -166,7 +165,14 @@ export const RecordButtonsContainer: FC<{
           </IconButton>
         </Box>
       </Box>
-      {visualizerArea}
+      <Box
+        sx={{
+          borderTop: '2px white solid',
+          height: 100,
+        }}
+      >
+        {visualizerArea}
+      </Box>
 
       <Box>
         <Button
