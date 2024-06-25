@@ -187,12 +187,13 @@ export const RecordButtonsContainer: FC<{
             borderTop: 2,
             borderRight: 1,
             borderRadius: 0,
+            width: '50%',
           }}
         >
           <Mic fontSize='small' />
           <Typography variant='body2'>Start</Typography>
         </Button>
-        <Button
+        {/* <Button
           onClick={onPressPause}
           disabled={isDisabled.pause}
           size='large'
@@ -209,7 +210,7 @@ export const RecordButtonsContainer: FC<{
         >
           <Pause fontSize='small' />
           <Typography variant='body2'>Přestawka</Typography>
-        </Button>
+        </Button> */}
         <Button
           onClick={() => {
             onPressStop()
@@ -225,6 +226,7 @@ export const RecordButtonsContainer: FC<{
             borderTop: 2,
             borderLeft: 1,
             borderRadius: 0,
+            width: '50%',
           }}
         >
           <Stop fontSize='small' />
