@@ -235,13 +235,7 @@ export const MainScreen = () => {
       <h1>Serbski Webcaptioner</h1>
 
       {/* {permission === 'granted' && ( */}
-      <Box
-        style={
-          selectedMicrophone === null
-            ? {}
-            : { position: 'absolute', top: 10, right: 10 }
-        }
-      >
+      {selectedMicrophone === null && (
         <MicrophoneSelector
           activeMicrophone={selectedMicrophone}
           onChange={(mic) => {
@@ -249,7 +243,7 @@ export const MainScreen = () => {
             setSelectedMicrophone(mic)
           }}
         />
-      </Box>
+      )}
       {/* )} */}
 
       {/* {permission === 'loading' && <LoadingSpinner />}
