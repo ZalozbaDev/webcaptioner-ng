@@ -15,6 +15,11 @@ import { typedVoskResponse } from '../../helper/vosk'
 import { Logout } from '@mui/icons-material'
 import useAuth from '../../hooks/use-auth'
 import { localStorage } from '../../lib/local-storage'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
 const SAMPLE_RATE = 48000
 let processor: AudioWorkletNode
@@ -86,7 +91,9 @@ export const MainScreen = () => {
                   p === youtubeData.text
                     ? `[${youtubeData.seq}]: ${p} ${
                         youtubeData.successfull ? '✅' : '❌'
-                      }`
+                      } ${dayjs(youtubeData.timestamp)
+                        .tz(dayjs.tz.guess())
+                        .format('HH:mm:ss:SSS')}`
                     : p
                 )
                 .slice(-MAX_TEXT_LINES)
