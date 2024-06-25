@@ -138,6 +138,9 @@ export const MainScreen = () => {
         settings = { ...settings, deviceId: selectedMicrophone?.deviceId }
         setMediaStreamSettings(settings)
 
+        setInputText([])
+        setTranslation([])
+
         setIsRecording(true)
         if (localeStream !== null)
           handleSuccess(
@@ -190,10 +193,6 @@ export const MainScreen = () => {
       if (localeStream?.active)
         localeStream.getTracks().forEach((track) => track.stop())
 
-      if (newState === 'stop') {
-        setInputText([])
-        setTranslation([])
-      }
       setIsRecording(false)
     }
   }
