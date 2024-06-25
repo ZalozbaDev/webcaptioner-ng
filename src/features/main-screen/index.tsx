@@ -27,7 +27,6 @@ let webSocket: WebSocket
 let source: MediaStreamAudioSourceNode
 let context: AudioContext
 let localeStream: MediaStream
-let sotraModel: 'ctranslate' | 'fairseq' = 'ctranslate'
 
 const MAX_TEXT_LINES = 10
 
@@ -40,6 +39,7 @@ const initialSettings: Settings = {
   sampleSize: 16,
   deviceId: undefined,
   bufferSize: 4096,
+  sotraModel: 'fairseq',
 }
 let settings: Settings = initialSettings
 let seq = 0
@@ -76,32 +76,34 @@ export const MainScreen = () => {
 
         const trimmedText = parsed.text.slice(2, -2).trim()
         setInputText((prev) => [...prev, trimmedText].slice(-MAX_TEXT_LINES))
-        getTranslation(trimmedText, sotraModel).then(async (response) => {
-          setTranslation((prev) =>
-            [...prev, response.data.translation].slice(-MAX_TEXT_LINES)
-          )
-          if (youtubeStreamingKey) {
-            const youtubeData = await getParseDataForYoutube(
-              seq,
-              response.data.translation,
-              new Date(), // TODO: Use new Date(parsed.start! * 1000)
-              youtubeStreamingKey
-            )
+        getTranslation(trimmedText, settings.sotraModel).then(
+          async (response) => {
             setTranslation((prev) =>
-              prev
-                .map((p) =>
-                  p === youtubeData.text
-                    ? `[${youtubeData.seq}]: ${p} ${
-                        youtubeData.successfull ? '✅' : '❌'
-                      } ${dayjs(youtubeData.timestamp)
-                        .tz(dayjs.tz.guess())
-                        .format('HH:mm:ss:SSS')}`
-                    : p
-                )
-                .slice(-MAX_TEXT_LINES)
+              [...prev, response.data.translation].slice(-MAX_TEXT_LINES)
             )
+            if (youtubeStreamingKey) {
+              const youtubeData = await getParseDataForYoutube(
+                seq,
+                response.data.translation,
+                new Date(), // TODO: Use new Date(parsed.start! * 1000)
+                youtubeStreamingKey
+              )
+              setTranslation((prev) =>
+                prev
+                  .map((p) =>
+                    p === youtubeData.text
+                      ? `[${youtubeData.seq}]: ${p} ${
+                          youtubeData.successfull ? '✅' : '❌'
+                        } ${dayjs(youtubeData.timestamp)
+                          .tz(dayjs.tz.guess())
+                          .format('HH:mm:ss:SSS')}`
+                      : p
+                  )
+                  .slice(-MAX_TEXT_LINES)
+              )
+            }
           }
-        })
+        )
       }
     }
   }

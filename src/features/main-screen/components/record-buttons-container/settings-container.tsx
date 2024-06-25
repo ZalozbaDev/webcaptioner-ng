@@ -5,6 +5,7 @@ import {
   Menu,
   MenuItem,
   MenuList,
+  Select,
   Typography,
 } from '@mui/material'
 import { FC } from 'react'
@@ -19,6 +20,7 @@ export type Settings = {
   sampleSize: number
   deviceId: undefined | string
   bufferSize: number
+  sotraModel: SotraModel
 }
 
 const menuItemWithCheckbox = (
@@ -34,6 +36,54 @@ const menuItemWithCheckbox = (
       onChange={(event) => onSetChecked(event.target.checked)}
     />
     <Typography variant='body2'>{title}</Typography>
+  </MenuItem>
+)
+
+const menuItemWithSelection = (
+  key: string,
+  title: string,
+  value: string | number,
+  disabled: boolean,
+  options: SotraModel[],
+  onSetValue: (value: number) => void
+) => (
+  <MenuItem
+    disabled={disabled}
+    sx={{
+      marginLeft: 1,
+      paddingRight: 4,
+      height: 30,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      width: '100%',
+    }}
+    key={key}
+  >
+    {disabled ? (
+      <>
+        <Typography variant='body2'>{title}:</Typography>
+        <Typography variant='body2'>{value}</Typography>
+      </>
+    ) : (
+      <>
+        <Typography variant='body2'>{title}:</Typography>
+        <Select
+          size='small'
+          sx={{ marginLeft: 1, textAlign: 'right' }}
+          type='number'
+          defaultValue={value}
+          title={title}
+          onChange={(newValue) =>
+            onSetValue(newValue.target.value as unknown as number)
+          }
+        >
+          {options.map((option) => (
+            <MenuItem value={option}>{option}</MenuItem>
+          ))}
+        </Select>
+      </>
+    )}
   </MenuItem>
 )
 
@@ -97,6 +147,18 @@ const menuTextItems: {
   { key: 'sampleRate', title: 'Sample Rate', editable: false },
   { key: 'sampleSize', title: 'Sample Size', editable: false },
   { key: 'deviceId', title: 'Device ID', editable: false },
+]
+
+const menuSelectionItems: {
+  key: keyof Settings
+  title: string
+  options: SotraModel[]
+}[] = [
+  {
+    key: 'sotraModel',
+    title: 'Sotra Model',
+    options: ['ctranslate', 'fairseq'],
+  },
 ]
 
 export const SettingsContainer: FC<{
@@ -176,6 +238,19 @@ export const SettingsContainer: FC<{
               setting,
               disabled,
               editable,
+              (value) => onChangeSetting(key, value)
+            )
+          return null
+        })}
+        {menuSelectionItems.map(({ key, title, options }) => {
+          const setting = settings[key]
+          if (setting !== undefined && typeof setting !== 'boolean')
+            return menuItemWithSelection(
+              key,
+              title,
+              setting,
+              disabled,
+              options,
               (value) => onChangeSetting(key, value)
             )
           return null
