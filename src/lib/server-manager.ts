@@ -2,11 +2,13 @@ import axios from 'axios'
 
 export const getTranslation = async (
   text: string,
+  model: 'ctranslate' | 'fairseq',
   sourceLanguage: 'de' | 'hsb' = 'hsb',
   targetLanguage: 'de' | 'hsb' = 'de'
 ) => {
   const data = JSON.stringify({
     text,
+    model,
     sourceLanguage: sourceLanguage,
     targetLanguage: targetLanguage,
   })

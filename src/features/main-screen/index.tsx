@@ -27,6 +27,8 @@ let webSocket: WebSocket
 let source: MediaStreamAudioSourceNode
 let context: AudioContext
 let localeStream: MediaStream
+let sotraModel: 'ctranslate' | 'fairseq' = 'ctranslate'
+
 const MAX_TEXT_LINES = 10
 
 const initialSettings: Settings = {
@@ -74,7 +76,7 @@ export const MainScreen = () => {
 
         const trimmedText = parsed.text.slice(2, -2).trim()
         setInputText((prev) => [...prev, trimmedText].slice(-MAX_TEXT_LINES))
-        getTranslation(trimmedText).then(async (response) => {
+        getTranslation(trimmedText, sotraModel).then(async (response) => {
           setTranslation((prev) =>
             [...prev, response.data.translation].slice(-MAX_TEXT_LINES)
           )
