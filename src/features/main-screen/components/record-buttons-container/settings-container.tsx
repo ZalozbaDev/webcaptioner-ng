@@ -10,6 +10,7 @@ import {
 } from '@mui/material'
 import { FC } from 'react'
 import { MicrophoneSelector } from '../microphone-selector.tsx'
+import { localStorage } from '../../../../lib/local-storage'
 
 export type Settings = {
   autoGainControl: boolean
@@ -170,6 +171,7 @@ export const SettingsContainer: FC<{
   onChangeSetting: (key: keyof Settings, value: boolean | number) => void
   onChangeMicrophone: (mic: MediaDeviceInfo) => void
   activeMicrophone: MediaDeviceInfo | null
+  youtubeStreamingKey: string | undefined
 }> = ({
   anchorEl,
   open,
@@ -179,6 +181,7 @@ export const SettingsContainer: FC<{
   onChangeSetting,
   onChangeMicrophone,
   activeMicrophone,
+  youtubeStreamingKey,
 }) => {
   return (
     <Menu
@@ -255,6 +258,19 @@ export const SettingsContainer: FC<{
             )
           return null
         })}
+        {youtubeStreamingKey &&
+          menuitemWithText(
+            'counter',
+            'Counter',
+            localStorage.getCounterForYoutubeStreaming(youtubeStreamingKey),
+            disabled,
+            true,
+            (value) =>
+              localStorage.setCounterForYoutubeStreaming(
+                youtubeStreamingKey,
+                value
+              )
+          )}
         <Divider />
         <MenuItem disabled={disabled}>
           <MicrophoneSelector
