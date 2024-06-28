@@ -30,6 +30,7 @@ let context: AudioContext
 let localeStream: MediaStream
 
 const MAX_TEXT_LINES = 10
+const DEFAULT_YOUTUBE_TIME_OFFSET = 8
 
 const initialSettings: Settings = {
   autoGainControl: false,
@@ -52,7 +53,7 @@ export const MainScreen = () => {
   const [translation, setTranslation] = useState<string[]>([])
   const [youtubeSettings, setYoutubeSettings] = useState<YoutubeSettings>({
     streamingKey: undefined,
-    timeOffset: 0,
+    timeOffset: DEFAULT_YOUTUBE_TIME_OFFSET,
     counter: 0,
   })
   const timeOffsetRef = useRef<number>(0)
@@ -109,6 +110,14 @@ export const MainScreen = () => {
                     .toDate(),
                   youtubeSettings.streamingKey
                 )
+                setTranslation((prev) => [
+                  ...prev,
+                  `orignal:${youtubePackage}, updated:${dayjs(
+                    youtubePackage.date
+                  )
+                    .add(timeOffsetRef.current, 'seconds')
+                    .toDate()}`,
+                ])
                 setTranslation((prev) =>
                   prev
                     .map((p) =>
