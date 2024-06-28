@@ -131,7 +131,7 @@ export const YoutubeContainer: FC<{
               size='small'
               sx={{ width: 70, marginLeft: 1, textAlign: 'right' }}
               type='number'
-              disabled={fetchingCounterIsLoading}
+              disabled={disabled || fetchingCounterIsLoading}
               value={tempSettings.counter}
               title='Counter'
               onChange={(newValue) =>
@@ -161,12 +161,8 @@ export const YoutubeContainer: FC<{
             }
           />
         </Box>
-        <Button disabled={disabled} onClick={() => onSave(tempSettings)}>
-          Save
-        </Button>
-        <Button disabled={disabled} onClick={onClose}>
-          Cancel
-        </Button>
+        <Button onClick={() => onSave(tempSettings)}>Save</Button>
+        <Button onClick={onClose}>Cancel</Button>
       </MenuList>
     </Menu>
   )

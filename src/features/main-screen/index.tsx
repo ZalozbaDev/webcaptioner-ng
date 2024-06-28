@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { handleSuccess } from './components/audio-recorder/handler/handle-success'
 import { initWebsocket } from './components/audio-recorder/handler/init-websocket'
 import {
@@ -55,6 +55,7 @@ export const MainScreen = () => {
     timeOffset: 0,
     counter: 0,
   })
+  const timeOffsetRef = useRef<number>(0)
 
   const [selectedMicrophone, setSelectedMicrophone] =
     useState<MediaDeviceInfo | null>(null)
@@ -104,7 +105,7 @@ export const MainScreen = () => {
                   seq,
                   youtubePackage.text,
                   dayjs(youtubePackage.date)
-                    .add(youtubeSettings.timeOffset, 'seconds')
+                    .add(timeOffsetRef.current, 'seconds')
                     .toDate(),
                   youtubeSettings.streamingKey
                 )
@@ -117,8 +118,8 @@ export const MainScreen = () => {
                           } ${dayjs(youtubeData.timestamp)
                             .tz(dayjs.tz.guess())
                             .format('HH:mm:ss:SSS')} ${
-                            youtubeSettings.timeOffset > 0 ? '+' : ''
-                          }${youtubeSettings.timeOffset}s`
+                            timeOffsetRef.current > 0 ? '+' : ''
+                          }${timeOffsetRef.current}s`
                         : p
                     )
                     .slice(-MAX_TEXT_LINES)
@@ -313,6 +314,7 @@ export const MainScreen = () => {
             youtubeSettings={youtubeSettings}
             onSaveYoutubeSettings={(newSettings) => {
               setYoutubeSettings(newSettings)
+              timeOffsetRef.current = newSettings.timeOffset
               newSettings.streamingKey &&
                 localStorage.setCounterForYoutubeStreaming(
                   newSettings.streamingKey,
