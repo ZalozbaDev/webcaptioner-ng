@@ -85,7 +85,7 @@ export const MainScreen = () => {
               const youtubeData = await getParseDataForYoutube(
                 seq,
                 response.data.translation,
-                new Date(), // TODO: Use new Date(parsed.start! * 1000)
+                parsed.start ? new Date(parsed.start * 1000) : new Date(),
                 youtubeStreamingKey
               )
               setTranslation((prev) =>
