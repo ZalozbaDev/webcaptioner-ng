@@ -2,6 +2,7 @@ import { Clear } from '@mui/icons-material'
 import {
   Box,
   Button,
+  CircularProgress,
   IconButton,
   Input,
   Menu,
@@ -10,10 +11,13 @@ import {
   Typography,
 } from '@mui/material'
 import { FC, useEffect, useState } from 'react'
+import { localStorage } from '../../../../lib/local-storage'
+import { LoadingSpinner } from '../../../../components/loading-spinner'
 
 export type YoutubeSettings = {
   streamingKey: string | undefined
   timeOffset: number
+  counter: number
 }
 
 export const YoutubeContainer: FC<{
@@ -24,17 +28,36 @@ export const YoutubeContainer: FC<{
   settings: YoutubeSettings
   onSave: (settings: YoutubeSettings) => void
 }> = ({ anchorEl, open, disabled, onClose, settings, onSave }) => {
+  const [fetchingCounterIsLoading, setFetchingCounterIsLoading] =
+    useState(false)
   const [tempSettings, setTempSettings] = useState<YoutubeSettings>({
     streamingKey: settings.streamingKey ?? '',
     timeOffset: settings.timeOffset,
+    counter: settings.counter,
   })
 
   useEffect(() => {
     setTempSettings({
       streamingKey: settings.streamingKey ?? '',
       timeOffset: settings.timeOffset,
+      counter: settings.counter,
     })
   }, [settings, open, anchorEl])
+
+  const getYoutubeCounter = (streamingKey: string | undefined) => {
+    setFetchingCounterIsLoading(true)
+    const counter = streamingKey
+      ? localStorage.getCounterForYoutubeStreaming(streamingKey)
+      : 0
+    setTimeout(() => {
+      setTempSettings((prev) => ({ ...prev, counter }))
+      setFetchingCounterIsLoading(false)
+    }, 500)
+  }
+
+  useEffect(() => {
+    getYoutubeCounter(tempSettings.streamingKey)
+  }, [tempSettings.streamingKey])
 
   return (
     <Menu
@@ -102,12 +125,33 @@ export const YoutubeContainer: FC<{
         />
 
         <Box>
+          <Typography variant='body2'>Counter:</Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Input
+              size='small'
+              sx={{ width: 70, marginLeft: 1, textAlign: 'right' }}
+              type='number'
+              disabled={fetchingCounterIsLoading}
+              value={tempSettings.counter}
+              title='Counter'
+              onChange={(newValue) =>
+                setTempSettings((prev) => ({
+                  ...prev,
+                  counter: newValue.target.value as unknown as number,
+                }))
+              }
+            />
+            {fetchingCounterIsLoading && <CircularProgress size={15} />}
+          </Box>
+        </Box>
+
+        <Box>
           <Typography variant='body2'>Časowy offset (s):</Typography>
           <Input
             size='small'
             sx={{ width: 70, marginLeft: 1, textAlign: 'right' }}
             type='number'
-            defaultValue={tempSettings.timeOffset}
+            value={tempSettings.timeOffset}
             title='Časowy offset (s)'
             onChange={(newValue) =>
               setTempSettings((prev) => ({

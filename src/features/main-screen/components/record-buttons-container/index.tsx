@@ -100,7 +100,6 @@ export const RecordButtonsContainer: FC<{
         onChangeSetting={onChangeSetting}
         onChangeMicrophone={onChangeMicrophone}
         activeMicrophone={activeMicrophone}
-        youtubeStreamingKey={youtubeSettings.streamingKey}
       />
     ),
     [
@@ -111,7 +110,6 @@ export const RecordButtonsContainer: FC<{
       settings,
       settingsAnchorEl,
       settingsOpen,
-      youtubeSettings.streamingKey,
     ]
   )
 

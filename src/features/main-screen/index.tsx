@@ -53,6 +53,7 @@ export const MainScreen = () => {
   const [youtubeSettings, setYoutubeSettings] = useState<YoutubeSettings>({
     streamingKey: undefined,
     timeOffset: 0,
+    counter: 0,
   })
 
   const [selectedMicrophone, setSelectedMicrophone] =
@@ -310,9 +311,14 @@ export const MainScreen = () => {
             }}
             activeMicrophone={selectedMicrophone}
             youtubeSettings={youtubeSettings}
-            onSaveYoutubeSettings={(newSettings) =>
+            onSaveYoutubeSettings={(newSettings) => {
               setYoutubeSettings(newSettings)
-            }
+              newSettings.streamingKey &&
+                localStorage.setCounterForYoutubeStreaming(
+                  newSettings.streamingKey,
+                  newSettings.counter
+                )
+            }}
           />
           <Box sx={{ paddingTop: 2, paddingBottom: 2 }}>
             {inputText.map((t) => (
