@@ -110,14 +110,7 @@ export const MainScreen = () => {
                     .toDate(),
                   youtubeSettings.streamingKey
                 )
-                setTranslation((prev) => [
-                  ...prev,
-                  `orignal:${youtubePackage}, updated:${dayjs(
-                    youtubePackage.date
-                  )
-                    .add(timeOffsetRef.current, 'seconds')
-                    .toDate()}`,
-                ])
+             
                 setTranslation((prev) =>
                   prev
                     .map((p) =>
