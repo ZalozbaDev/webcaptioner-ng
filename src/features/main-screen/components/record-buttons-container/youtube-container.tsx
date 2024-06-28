@@ -1,7 +1,9 @@
 import { Clear } from '@mui/icons-material'
 import {
+  Box,
   Button,
   IconButton,
+  Input,
   Menu,
   MenuList,
   TextField,
@@ -9,21 +11,30 @@ import {
 } from '@mui/material'
 import { FC, useEffect, useState } from 'react'
 
+export type YoutubeSettings = {
+  streamingKey: string | undefined
+  timeOffset: number
+}
+
 export const YoutubeContainer: FC<{
   anchorEl: null | HTMLElement
   open: boolean
   disabled: boolean
   onClose: () => void
-  streamingKey: string | undefined
-  onSave: (url: string) => void
-}> = ({ anchorEl, open, disabled, onClose, streamingKey, onSave }) => {
-  const [tempStreamingKey, setTempStreamingKey] = useState<string>(
-    streamingKey ?? ''
-  )
+  settings: YoutubeSettings
+  onSave: (settings: YoutubeSettings) => void
+}> = ({ anchorEl, open, disabled, onClose, settings, onSave }) => {
+  const [tempSettings, setTempSettings] = useState<YoutubeSettings>({
+    streamingKey: settings.streamingKey ?? '',
+    timeOffset: settings.timeOffset,
+  })
 
   useEffect(() => {
-    setTempStreamingKey(streamingKey ?? '')
-  }, [streamingKey, open, anchorEl])
+    setTempSettings({
+      streamingKey: settings.streamingKey ?? '',
+      timeOffset: settings.timeOffset,
+    })
+  }, [settings, open, anchorEl])
 
   return (
     <Menu
@@ -67,15 +78,22 @@ export const YoutubeContainer: FC<{
 
         <TextField
           placeholder='1234-5678-9012-3456'
-          value={tempStreamingKey}
+          value={tempSettings.streamingKey}
           fullWidth
           disabled={disabled}
-          onChange={(e) => setTempStreamingKey(e.target.value)}
+          onChange={(e) =>
+            setTempSettings((prev) => ({
+              ...prev,
+              streamingKey: e.target.value,
+            }))
+          }
           InputProps={{
-            endAdornment: tempStreamingKey.length > 0 && (
+            endAdornment: tempSettings.streamingKey!.length > 0 && (
               <IconButton
                 disabled={disabled}
-                onClick={() => setTempStreamingKey('')}
+                onClick={() =>
+                  setTempSettings((prev) => ({ ...prev, streamingKey: '' }))
+                }
               >
                 <Clear />
               </IconButton>
@@ -83,7 +101,23 @@ export const YoutubeContainer: FC<{
           }}
         />
 
-        <Button disabled={disabled} onClick={() => onSave(tempStreamingKey)}>
+        <Box>
+          <Typography variant='body2'>Časowy offset (s):</Typography>
+          <Input
+            size='small'
+            sx={{ width: 70, marginLeft: 1, textAlign: 'right' }}
+            type='number'
+            defaultValue={tempSettings.timeOffset}
+            title='Časowy offset (s)'
+            onChange={(newValue) =>
+              setTempSettings((prev) => ({
+                ...prev,
+                timeOffset: newValue.target.value as unknown as number,
+              }))
+            }
+          />
+        </Box>
+        <Button disabled={disabled} onClick={() => onSave(tempSettings)}>
           Save
         </Button>
         <Button disabled={disabled} onClick={onClose}>

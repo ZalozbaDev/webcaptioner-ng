@@ -10,7 +10,7 @@ import { FC, useEffect, useMemo, useState } from 'react'
 import { Visualizer } from 'react-sound-visualizer'
 import { getDurationFromSeconds } from '../../../../helper/date-time-helper'
 import { Settings, SettingsContainer } from './settings-container'
-import { YoutubeContainer } from './youtube-container'
+import { YoutubeContainer, YoutubeSettings } from './youtube-container'
 
 export const RecordButtonsContainer: FC<{
   voskResponse: boolean
@@ -24,8 +24,8 @@ export const RecordButtonsContainer: FC<{
   onPressStop: () => void
   onChangeMicrophone: (mic: MediaDeviceInfo) => void
   activeMicrophone: MediaDeviceInfo | null
-  youtubeStreamingKey: string | undefined
-  onSaveYoutubeStreamingKey: (streamingKey: string) => void
+  youtubeSettings: YoutubeSettings
+  onSaveYoutubeSettings: (settings: YoutubeSettings) => void
 }> = ({
   voskResponse,
   stream,
@@ -38,8 +38,8 @@ export const RecordButtonsContainer: FC<{
   onPressStop,
   onChangeMicrophone,
   activeMicrophone,
-  youtubeStreamingKey,
-  onSaveYoutubeStreamingKey,
+  youtubeSettings,
+  onSaveYoutubeSettings,
 }) => {
   const [totalTime, setTotalTime] = useState<number>(0)
 
@@ -100,7 +100,7 @@ export const RecordButtonsContainer: FC<{
         onChangeSetting={onChangeSetting}
         onChangeMicrophone={onChangeMicrophone}
         activeMicrophone={activeMicrophone}
-        youtubeStreamingKey={youtubeStreamingKey}
+        youtubeStreamingKey={youtubeSettings.streamingKey}
       />
     ),
     [
@@ -111,6 +111,7 @@ export const RecordButtonsContainer: FC<{
       settings,
       settingsAnchorEl,
       settingsOpen,
+      youtubeSettings.streamingKey,
     ]
   )
 
@@ -121,19 +122,19 @@ export const RecordButtonsContainer: FC<{
         open={youtubeOpen}
         disabled={isRecording}
         onClose={handleYoutubeClose}
-        streamingKey={youtubeStreamingKey}
-        onSave={(streamingKey) => {
+        settings={youtubeSettings}
+        onSave={(settings) => {
           handleYoutubeClose()
-          onSaveYoutubeStreamingKey(streamingKey)
+          onSaveYoutubeSettings(settings)
         }}
       />
     ),
     [
       isRecording,
-      onSaveYoutubeStreamingKey,
+      onSaveYoutubeSettings,
       youtubeAnchorEl,
       youtubeOpen,
-      youtubeStreamingKey,
+      youtubeSettings,
     ]
   )
 

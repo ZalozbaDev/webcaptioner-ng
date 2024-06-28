@@ -18,6 +18,7 @@ import { localStorage } from '../../lib/local-storage'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
+import { YoutubeSettings } from './components/record-buttons-container/youtube-container'
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
@@ -49,9 +50,10 @@ export const MainScreen = () => {
     useState<Settings>(initialSettings)
   const [inputText, setInputText] = useState<string[]>([])
   const [translation, setTranslation] = useState<string[]>([])
-  const [youtubeStreamingKey, setYoutubeStreamingKey] = useState<
-    string | undefined
-  >(undefined)
+  const [youtubeSettings, setYoutubeSettings] = useState<YoutubeSettings>({
+    streamingKey: undefined,
+    timeOffset: 0,
+  })
 
   const [selectedMicrophone, setSelectedMicrophone] =
     useState<MediaDeviceInfo | null>(null)
@@ -69,9 +71,12 @@ export const MainScreen = () => {
         parsed.text !== '-- **/whisper/ggml-model.q8_0.bin --' &&
         parsed.text !== '-- */whisper/ggml-model.q8_0.bin --'
       ) {
-        if (youtubeStreamingKey) {
+        if (youtubeSettings.streamingKey) {
           seq += 1
-          localStorage.setCounterForYoutubeStreaming(youtubeStreamingKey, seq)
+          localStorage.setCounterForYoutubeStreaming(
+            youtubeSettings.streamingKey,
+            seq
+          )
         }
 
         const trimmedText = parsed.text.slice(2, -2).trim()
@@ -81,7 +86,7 @@ export const MainScreen = () => {
             setTranslation((prev) =>
               [...prev, response.data.translation].slice(-MAX_TEXT_LINES)
             )
-            if (youtubeStreamingKey) {
+            if (youtubeSettings.streamingKey) {
               const youtubePackages = createYoutubePackages(
                 response.data.translation,
                 {
@@ -97,8 +102,10 @@ export const MainScreen = () => {
                 const youtubeData = await getParseDataForYoutube(
                   seq,
                   youtubePackage.text,
-                  youtubePackage.date,
-                  youtubeStreamingKey
+                  dayjs(youtubePackage.date)
+                    .add(youtubeSettings.timeOffset, 'seconds')
+                    .toDate(),
+                  youtubeSettings.streamingKey
                 )
                 setTranslation((prev) =>
                   prev
@@ -108,7 +115,9 @@ export const MainScreen = () => {
                             youtubeData.successfull ? '✅' : '❌'
                           } ${dayjs(youtubeData.timestamp)
                             .tz(dayjs.tz.guess())
-                            .format('HH:mm:ss:SSS')}`
+                            .format('HH:mm:ss:SSS')} ${
+                            youtubeSettings.timeOffset > 0 ? '+' : ''
+                          }${youtubeSettings.timeOffset}s`
                         : p
                     )
                     .slice(-MAX_TEXT_LINES)
@@ -183,8 +192,10 @@ export const MainScreen = () => {
       `${process.env.REACT_APP_WEBCAPTIONER_SERVER!}/vosk`,
       onReceiveMessage
     )
-    if (youtubeStreamingKey) {
-      seq = localStorage.getCounterForYoutubeStreaming(youtubeStreamingKey)
+    if (youtubeSettings.streamingKey) {
+      seq = localStorage.getCounterForYoutubeStreaming(
+        youtubeSettings.streamingKey
+      )
     } else seq = 0
     webSocket.onopen = () => {
       try {
@@ -298,9 +309,9 @@ export const MainScreen = () => {
               setSelectedMicrophone(mic)
             }}
             activeMicrophone={selectedMicrophone}
-            youtubeStreamingKey={youtubeStreamingKey}
-            onSaveYoutubeStreamingKey={(youtubeStreamingKey) =>
-              setYoutubeStreamingKey(youtubeStreamingKey)
+            youtubeSettings={youtubeSettings}
+            onSaveYoutubeSettings={(newSettings) =>
+              setYoutubeSettings(newSettings)
             }
           />
           <Box sx={{ paddingTop: 2, paddingBottom: 2 }}>
