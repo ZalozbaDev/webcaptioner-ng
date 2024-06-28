@@ -6,3 +6,19 @@ export const typedVoskResponse = (data: any): VOSKResponse => {
 
   return typed
 }
+
+export const createYoutubePackages = (
+  text: string,
+  timestamps: { start: Date; stop: Date }
+) => {
+  const duration = timestamps.stop.getTime() - timestamps.start.getTime()
+  const textLength = text.length
+  const textWordsLength = text.split(' ').length
+
+  if (duration <= 5) {
+    return [{ date: timestamps.start, text: text }]
+  }
+
+  // TODO: Add Logic
+  return [{ date: timestamps.start, text: text }]
+}

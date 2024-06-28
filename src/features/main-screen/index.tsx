@@ -11,7 +11,7 @@ import { Box, IconButton, Typography } from '@mui/material'
 import { Settings } from './components/record-buttons-container/settings-container'
 import { toast } from 'sonner'
 import { LoadingSpinner } from '../../components/loading-spinner'
-import { typedVoskResponse } from '../../helper/vosk'
+import { createYoutubePackages, typedVoskResponse } from '../../helper/vosk'
 import { Logout } from '@mui/icons-material'
 import useAuth from '../../hooks/use-auth'
 import { localStorage } from '../../lib/local-storage'
@@ -82,25 +82,38 @@ export const MainScreen = () => {
               [...prev, response.data.translation].slice(-MAX_TEXT_LINES)
             )
             if (youtubeStreamingKey) {
-              const youtubeData = await getParseDataForYoutube(
-                seq,
+              const youtubePackages = createYoutubePackages(
                 response.data.translation,
-                parsed.start ? new Date(parsed.start * 1000) : new Date(),
-                youtubeStreamingKey
+                {
+                  start: parsed.start
+                    ? new Date(parsed.start * 1000)
+                    : new Date(),
+                  stop: parsed.stop ? new Date(parsed.stop * 1000) : new Date(),
+                }
               )
-              setTranslation((prev) =>
-                prev
-                  .map((p) =>
-                    p === youtubeData.text
-                      ? `[${youtubeData.seq}]: ${p} ${
-                          youtubeData.successfull ? '✅' : '❌'
-                        } ${dayjs(youtubeData.timestamp)
-                          .tz(dayjs.tz.guess())
-                          .format('HH:mm:ss:SSS')}`
-                      : p
-                  )
-                  .slice(-MAX_TEXT_LINES)
-              )
+
+              for (let index = 0; index < youtubePackages.length; index++) {
+                const youtubePackage = youtubePackages[index]
+                const youtubeData = await getParseDataForYoutube(
+                  seq,
+                  youtubePackage.text,
+                  youtubePackage.date,
+                  youtubeStreamingKey
+                )
+                setTranslation((prev) =>
+                  prev
+                    .map((p) =>
+                      p === youtubeData.text
+                        ? `[${youtubeData.seq}]: ${p} ${
+                            youtubeData.successfull ? '✅' : '❌'
+                          } ${dayjs(youtubeData.timestamp)
+                            .tz(dayjs.tz.guess())
+                            .format('HH:mm:ss:SSS')}`
+                        : p
+                    )
+                    .slice(-MAX_TEXT_LINES)
+                )
+              }
             }
           }
         )
