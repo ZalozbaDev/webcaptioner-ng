@@ -93,10 +93,8 @@ export const MainScreen = () => {
               const youtubePackages = createYoutubePackages(
                 response.data.translation,
                 {
-                  start: parsed.start
-                    ? new Date(parsed.start * 1000)
-                    : new Date(),
-                  stop: parsed.stop ? new Date(parsed.stop * 1000) : new Date(),
+                  start: parsed.start ? new Date(parsed.start) : new Date(),
+                  stop: parsed.stop ? new Date(parsed.stop) : new Date(),
                 }
               )
 
@@ -110,7 +108,7 @@ export const MainScreen = () => {
                     .toDate(),
                   youtubeSettings.streamingKey
                 )
-             
+
                 setTranslation((prev) =>
                   prev
                     .map((p) =>
