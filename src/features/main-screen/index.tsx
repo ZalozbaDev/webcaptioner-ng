@@ -64,7 +64,7 @@ export const MainScreen = () => {
   const [voskResponse, setVoskResponse] = useState(false)
   const { logout } = useAuth()
 
-  const onReceiveMessage = (event: MessageEvent) => {
+  const onReceiveMessage = async (event: MessageEvent) => {
     if (event.data) {
       let parsed = typedVoskResponse(event.data)
       setVoskResponse(parsed.listen)
@@ -83,51 +83,88 @@ export const MainScreen = () => {
         }
 
         const trimmedText = parsed.text.slice(2, -2).trim()
-        setInputText((prev) => [...prev, trimmedText].slice(-MAX_TEXT_LINES))
-        getTranslation(trimmedText, settings.sotraModel).then(
-          async (response) => {
-            setTranslation((prev) =>
-              [...prev, response.data.translation].slice(-MAX_TEXT_LINES)
-            )
-            if (youtubeSettings.streamingKey) {
-              const youtubePackages = createYoutubePackages(
-                response.data.translation,
-                {
-                  start: parsed.start ? new Date(parsed.start) : new Date(),
-                  stop: parsed.stop ? new Date(parsed.stop) : new Date(),
-                }
+        setInputText(prev => [...prev, trimmedText].slice(-MAX_TEXT_LINES))
+        if (settings.sotraModel === 'passthrough') {
+          setTranslation(prev => [...prev, trimmedText].slice(-MAX_TEXT_LINES))
+          if (youtubeSettings.streamingKey) {
+            const youtubePackages = createYoutubePackages(trimmedText, {
+              start: parsed.start ? new Date(parsed.start) : new Date(),
+              stop: parsed.stop ? new Date(parsed.stop) : new Date(),
+            })
+
+            for (let index = 0; index < youtubePackages.length; index++) {
+              const youtubePackage = youtubePackages[index]
+              const youtubeData = await getParseDataForYoutube(
+                seq,
+                youtubePackage.text,
+                dayjs(youtubePackage.date)
+                  .add(timeOffsetRef.current, 'seconds')
+                  .toDate(),
+                youtubeSettings.streamingKey
               )
 
-              for (let index = 0; index < youtubePackages.length; index++) {
-                const youtubePackage = youtubePackages[index]
-                const youtubeData = await getParseDataForYoutube(
-                  seq,
-                  youtubePackage.text,
-                  dayjs(youtubePackage.date)
-                    .add(timeOffsetRef.current, 'seconds')
-                    .toDate(),
-                  youtubeSettings.streamingKey
-                )
-
-                setTranslation((prev) =>
-                  prev
-                    .map((p) =>
-                      p === youtubeData.text
-                        ? `[${youtubeData.seq}]: ${p} ${
-                            youtubeData.successfull ? '✅' : '❌'
-                          } ${dayjs(youtubeData.timestamp)
-                            .tz(dayjs.tz.guess())
-                            .format('HH:mm:ss:SSS')} ${
-                            timeOffsetRef.current > 0 ? '+' : ''
-                          }${timeOffsetRef.current}s`
-                        : p
-                    )
-                    .slice(-MAX_TEXT_LINES)
-                )
-              }
+              setTranslation(prev =>
+                prev
+                  .map(p =>
+                    p === youtubeData.text
+                      ? `[${youtubeData.seq}]: ${p} ${
+                          youtubeData.successfull ? '✅' : '❌'
+                        } ${dayjs(youtubeData.timestamp)
+                          .tz(dayjs.tz.guess())
+                          .format('HH:mm:ss:SSS')} ${
+                          timeOffsetRef.current > 0 ? '+' : ''
+                        }${timeOffsetRef.current}s`
+                      : p
+                  )
+                  .slice(-MAX_TEXT_LINES)
+              )
             }
           }
-        )
+        } else
+          getTranslation(trimmedText, settings.sotraModel).then(
+            async response => {
+              setTranslation(prev =>
+                [...prev, response.data.translation].slice(-MAX_TEXT_LINES)
+              )
+              if (youtubeSettings.streamingKey) {
+                const youtubePackages = createYoutubePackages(
+                  response.data.translation,
+                  {
+                    start: parsed.start ? new Date(parsed.start) : new Date(),
+                    stop: parsed.stop ? new Date(parsed.stop) : new Date(),
+                  }
+                )
+
+                for (let index = 0; index < youtubePackages.length; index++) {
+                  const youtubePackage = youtubePackages[index]
+                  const youtubeData = await getParseDataForYoutube(
+                    seq,
+                    youtubePackage.text,
+                    dayjs(youtubePackage.date)
+                      .add(timeOffsetRef.current, 'seconds')
+                      .toDate(),
+                    youtubeSettings.streamingKey
+                  )
+
+                  setTranslation(prev =>
+                    prev
+                      .map(p =>
+                        p === youtubeData.text
+                          ? `[${youtubeData.seq}]: ${p} ${
+                              youtubeData.successfull ? '✅' : '❌'
+                            } ${dayjs(youtubeData.timestamp)
+                              .tz(dayjs.tz.guess())
+                              .format('HH:mm:ss:SSS')} ${
+                              timeOffsetRef.current > 0 ? '+' : ''
+                            }${timeOffsetRef.current}s`
+                          : p
+                      )
+                      .slice(-MAX_TEXT_LINES)
+                  )
+                }
+              }
+            }
+          )
       }
     }
   }
@@ -161,7 +198,7 @@ export const MainScreen = () => {
         },
         video: false,
       })
-      .then((stream) => {
+      .then(stream => {
         localeStream = stream
         settings = { ...settings, deviceId: selectedMicrophone?.deviceId }
         setMediaStreamSettings(settings)
@@ -181,7 +218,7 @@ export const MainScreen = () => {
             onSetNewContext
           )
       })
-      .catch((error) => {
+      .catch(error => {
         toast.error(
           `Error accessing microphone ${selectedMicrophone?.label}`,
           error.message
@@ -221,7 +258,7 @@ export const MainScreen = () => {
       context?.close()
 
       if (localeStream?.active)
-        localeStream.getTracks().forEach((track) => track.stop())
+        localeStream.getTracks().forEach(track => track.stop())
 
       setIsRecording(false)
     }
@@ -274,7 +311,7 @@ export const MainScreen = () => {
       {selectedMicrophone === null && (
         <MicrophoneSelector
           activeMicrophone={selectedMicrophone}
-          onChange={(mic) => {
+          onChange={mic => {
             breakRecording('pause')
             setSelectedMicrophone(mic)
           }}
@@ -306,13 +343,13 @@ export const MainScreen = () => {
             onPressRecord={startRecording}
             onPressPause={() => breakRecording('pause')}
             onPressStop={() => breakRecording('stop')}
-            onChangeMicrophone={(mic) => {
+            onChangeMicrophone={mic => {
               breakRecording('pause')
               setSelectedMicrophone(mic)
             }}
             activeMicrophone={selectedMicrophone}
             youtubeSettings={youtubeSettings}
-            onSaveYoutubeSettings={(newSettings) => {
+            onSaveYoutubeSettings={newSettings => {
               setYoutubeSettings(newSettings)
               timeOffsetRef.current = newSettings.timeOffset
               newSettings.streamingKey &&
@@ -323,13 +360,13 @@ export const MainScreen = () => {
             }}
           />
           <Box sx={{ paddingTop: 2, paddingBottom: 2 }}>
-            {inputText.map((t) => (
+            {inputText.map(t => (
               <Typography>{t}</Typography>
             ))}
           </Box>
           <div style={{ height: 1, width: '80%', backgroundColor: 'white' }} />
           <Box sx={{ paddingTop: 2, paddingBottom: 2 }}>
-            {translation.map((t) => (
+            {translation.map(t => (
               <Typography>{t}</Typography>
             ))}
           </Box>

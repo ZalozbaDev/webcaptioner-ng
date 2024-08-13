@@ -33,7 +33,7 @@ const menuItemWithCheckbox = (
   <MenuItem disabled={disabled} sx={{ marginLeft: -1, height: 30 }} key={key}>
     <Checkbox
       checked={checked}
-      onChange={(event) => onSetChecked(event.target.checked)}
+      onChange={event => onSetChecked(event.target.checked)}
     />
     <Typography variant='body2'>{title}</Typography>
   </MenuItem>
@@ -74,11 +74,11 @@ const menuItemWithSelection = (
           type='number'
           defaultValue={value}
           title={title}
-          onChange={(newValue) =>
+          onChange={newValue =>
             onSetValue(newValue.target.value as unknown as number)
           }
         >
-          {options.map((option) => (
+          {options.map(option => (
             <MenuItem value={option}>{option}</MenuItem>
           ))}
         </Select>
@@ -122,7 +122,7 @@ const menuitemWithText = (
           type='number'
           defaultValue={value}
           title={title}
-          onChange={(newValue) =>
+          onChange={newValue =>
             onSetValue(newValue.target.value as unknown as number)
           }
         />
@@ -157,7 +157,7 @@ const menuSelectionItems: {
   {
     key: 'sotraModel',
     title: 'Sotra Model',
-    options: ['ctranslate', 'fairseq'],
+    options: ['ctranslate', 'fairseq', 'passthrough'],
   },
 ]
 
@@ -226,7 +226,7 @@ export const SettingsContainer: FC<{
             disabled,
             typeof setting !== 'boolean' ? false : setting,
             title,
-            (value) => onChangeSetting(key, value)
+            value => onChangeSetting(key, value)
           )
         })}
         {menuTextItems.map(({ key, title, editable }) => {
@@ -238,7 +238,7 @@ export const SettingsContainer: FC<{
               setting,
               disabled,
               editable,
-              (value) => onChangeSetting(key, value)
+              value => onChangeSetting(key, value)
             )
           return null
         })}
@@ -251,7 +251,7 @@ export const SettingsContainer: FC<{
               setting,
               disabled,
               options,
-              (value) => onChangeSetting(key, value)
+              value => onChangeSetting(key, value)
             )
           return null
         })}

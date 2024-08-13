@@ -1,1 +1,1 @@
-type SotraModel = 'ctranslate' | 'fairseq'
+type SotraModel = 'ctranslate' | 'fairseq' | 'passthrough'
