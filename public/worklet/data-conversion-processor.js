@@ -28,7 +28,7 @@ class DataConversionAudioProcessor extends AudioWorkletProcessor {
     const inputData = inputs[0][0]
 
     if (this.isBufferFull()) {
-      console.log('flush', this._bytesWritten, this.bufferSize)
+      // console.log('flush', this._bytesWritten, this.bufferSize)
       this.flush()
     }
 

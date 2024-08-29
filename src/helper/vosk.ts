@@ -6,11 +6,11 @@ export const typedVoskResponse = (data: any): VOSKResponse => {
   typed.start = typed.start ? parseInt(`${typed.start}${startMs}`) : undefined
   typed.stop = typed.stop ? parseInt(`${typed.stop}${stopMs}`) : undefined
 
-  console.log({
-    text: typed.text,
-    start: `${typed.start}${startMs}`,
-    stop: `${typed.stop}${stopMs}`,
-  })
+  // console.log({
+  //   text: typed.text,
+  //   start: `${typed.start}${startMs}`,
+  //   stop: `${typed.stop}${stopMs}`,
+  // })
 
   return typed
 }
