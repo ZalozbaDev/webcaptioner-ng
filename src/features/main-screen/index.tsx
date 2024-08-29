@@ -30,7 +30,6 @@ let context: AudioContext
 let localeStream: MediaStream
 
 const MAX_TEXT_LINES = 10
-const DEFAULT_YOUTUBE_TIME_OFFSET = 8
 
 const initialSettings: Settings = {
   autoGainControl: false,
@@ -41,7 +40,8 @@ const initialSettings: Settings = {
   sampleSize: 16,
   deviceId: undefined,
   bufferSize: 4096,
-  sotraModel: 'fairseq',
+  sotraModel: process.env
+    .REACT_APP_DEFAULT_SOTRA_MODEL as Settings['sotraModel'],
 }
 let settings: Settings = initialSettings
 let seq = 0
@@ -53,7 +53,9 @@ export const MainScreen = () => {
   const [translation, setTranslation] = useState<string[]>([])
   const [youtubeSettings, setYoutubeSettings] = useState<YoutubeSettings>({
     streamingKey: undefined,
-    timeOffset: DEFAULT_YOUTUBE_TIME_OFFSET,
+    timeOffset: parseInt(
+      process.env.REACT_APP_DEFAULT_YOUTUBE_TIME_OFFSET ?? '8'
+    ),
     counter: 0,
   })
   const timeOffsetRef = useRef<number>(0)

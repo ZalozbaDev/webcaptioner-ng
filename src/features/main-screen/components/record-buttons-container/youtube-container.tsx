@@ -12,7 +12,6 @@ import {
 } from '@mui/material'
 import { FC, useEffect, useState } from 'react'
 import { localStorage } from '../../../../lib/local-storage'
-import { LoadingSpinner } from '../../../../components/loading-spinner'
 
 export type YoutubeSettings = {
   streamingKey: string | undefined
@@ -50,7 +49,7 @@ export const YoutubeContainer: FC<{
       ? localStorage.getCounterForYoutubeStreaming(streamingKey)
       : 0
     setTimeout(() => {
-      setTempSettings((prev) => ({ ...prev, counter }))
+      setTempSettings(prev => ({ ...prev, counter }))
       setFetchingCounterIsLoading(false)
     }, 500)
   }
@@ -104,8 +103,8 @@ export const YoutubeContainer: FC<{
           value={tempSettings.streamingKey}
           fullWidth
           disabled={disabled}
-          onChange={(e) =>
-            setTempSettings((prev) => ({
+          onChange={e =>
+            setTempSettings(prev => ({
               ...prev,
               streamingKey: e.target.value,
             }))
@@ -115,7 +114,7 @@ export const YoutubeContainer: FC<{
               <IconButton
                 disabled={disabled}
                 onClick={() =>
-                  setTempSettings((prev) => ({ ...prev, streamingKey: '' }))
+                  setTempSettings(prev => ({ ...prev, streamingKey: '' }))
                 }
               >
                 <Clear />
@@ -134,8 +133,8 @@ export const YoutubeContainer: FC<{
               disabled={disabled || fetchingCounterIsLoading}
               value={tempSettings.counter}
               title='Counter'
-              onChange={(newValue) =>
-                setTempSettings((prev) => ({
+              onChange={newValue =>
+                setTempSettings(prev => ({
                   ...prev,
                   counter: newValue.target.value as unknown as number,
                 }))
@@ -153,8 +152,8 @@ export const YoutubeContainer: FC<{
             type='number'
             value={tempSettings.timeOffset}
             title='Časowy offset (s)'
-            onChange={(newValue) =>
-              setTempSettings((prev) => ({
+            onChange={newValue =>
+              setTempSettings(prev => ({
                 ...prev,
                 timeOffset: newValue.target.value as unknown as number,
               }))
