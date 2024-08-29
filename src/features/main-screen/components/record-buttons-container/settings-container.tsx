@@ -10,6 +10,7 @@ import {
 } from '@mui/material'
 import { FC } from 'react'
 import { MicrophoneSelector } from '../microphone-selector.tsx'
+import { parseSotraModelToText } from '../../../../helper/text-parser'
 
 export type Settings = {
   autoGainControl: boolean
@@ -79,7 +80,7 @@ const menuItemWithSelection = (
           }
         >
           {options.map(option => (
-            <MenuItem value={option}>{option}</MenuItem>
+            <MenuItem value={option}>{parseSotraModelToText(option)}</MenuItem>
           ))}
         </Select>
       </>
