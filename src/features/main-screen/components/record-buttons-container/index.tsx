@@ -1,6 +1,5 @@
 import {
   Mic,
-  Pause,
   Settings as SettingsIcon,
   Stop,
   YouTube,
@@ -83,7 +82,7 @@ export const RecordButtonsContainer: FC<{
   useEffect(() => {
     if (isRecording) {
       const interval = setTimeout(() => {
-        setTotalTime((prev) => prev + 1)
+        setTotalTime(prev => prev + 1)
       }, 1000)
       return () => clearInterval(interval)
     }
@@ -121,7 +120,7 @@ export const RecordButtonsContainer: FC<{
         disabled={isRecording}
         onClose={handleYoutubeClose}
         settings={youtubeSettings}
-        onSave={(settings) => {
+        onSave={settings => {
           handleYoutubeClose()
           onSaveYoutubeSettings(settings)
         }}

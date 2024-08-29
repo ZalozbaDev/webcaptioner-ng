@@ -16,16 +16,16 @@ export const typedVoskResponse = (data: any): VOSKResponse => {
 }
 
 const MAX_LENGTH_SECONDS = 5
-const MAX_LENGTH_WORDS = 4
-const MAX_LENGTH_CHARS = 40
+// const MAX_LENGTH_WORDS = 4
+// const MAX_LENGTH_CHARS = 40
 
 export const createYoutubePackages = (
   text: string,
   timestamps: { start: Date; stop: Date }
 ) => {
   const duration = timestamps.stop.getTime() - timestamps.start.getTime()
-  const textLength = text.length
-  const textWordsLength = text.split(' ').length
+  // const textLength = text.length
+  // const textWordsLength = text.split(' ').length
 
   // if (textLength <= MAX_LENGTH_CHARS) {
   //   if (textWordsLength <= MAX_LENGTH_WORDS) {
