@@ -189,6 +189,20 @@ export const MainScreen = () => {
     context = newContext
   }
 
+  const onStopRecording = () => {
+    webSocket?.send('{"eof" : 1}')
+    webSocket?.close()
+
+    processor?.port.close()
+    source?.disconnect(processor)
+    context?.close()
+
+    if (localeStream?.active)
+      localeStream.getTracks().forEach(track => track.stop())
+
+    setIsRecording(false)
+  }
+
   const startRecordingWithNewStream = () => {
     navigator.mediaDevices
       .getUserMedia({
@@ -216,7 +230,8 @@ export const MainScreen = () => {
             settings.bufferSize,
             onSetNewProcessor,
             onSetNewSource,
-            onSetNewContext
+            onSetNewContext,
+            onStopRecording
           )
       })
       .catch(error => {
@@ -246,6 +261,11 @@ export const MainScreen = () => {
         toast.error('Error accessing microphone 2')
         console.error('Error accessing microphone 2:', error)
       }
+    }
+
+    webSocket.onerror = err => {
+      toast('Oh je, websocket je skóncowany.😵‍💫 Prošu spytaj hišće raz.')
+      breakRecording('stop')
     }
   }
 
