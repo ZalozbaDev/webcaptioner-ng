@@ -7,7 +7,8 @@ export const handleSuccess = (
   bufferSize: number,
   onSetNewProcessor: (processor: AudioWorkletNode) => void,
   onSetNewSource: (source: MediaStreamAudioSourceNode) => void,
-  onSetNewContext: (context: AudioContext) => void
+  onSetNewContext: (context: AudioContext) => void,
+  onStop: () => void
 ) => {
   const context = new AudioContext({ sampleRate })
 
@@ -35,8 +36,14 @@ export const handleSuccess = (
 
       onSetNewSource(source)
       toast.success('Recording started')
-      processor.port.onmessage = (event) => {
-        webSocket.send(event.data)
+      processor.port.onmessage = event => {
+        if (webSocket.readyState === webSocket.OPEN) {
+          webSocket.send(event.data)
+        } else if (webSocket.readyState === webSocket.CLOSED) {
+          processor.port.close()
+          toast.error('WebSocket connection closed')
+          onStop()
+        }
       }
       processor.port.start()
     })
