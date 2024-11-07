@@ -6,18 +6,23 @@ export const useFetchMicrophones = () => {
   const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
-    setLoading(true)
-    navigator.mediaDevices
-      .enumerateDevices()
-      .then((devices) => {
-        const mics = devices.filter((device) => device.kind === 'audioinput')
-        setMicrophones(mics)
-        setLoading(false)
-      })
-      .catch((err) => {
-        setError(err.message)
-        setLoading(false)
-      })
+    const getDevices = async () => {
+      await navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+      setLoading(true)
+      navigator.mediaDevices
+        .enumerateDevices()
+        .then(devices => {
+          const mics = devices.filter(device => device.kind === 'audioinput')
+          setMicrophones(mics)
+          setLoading(false)
+        })
+        .catch(err => {
+          setError(err.message)
+          setLoading(false)
+        })
+    }
+
+    getDevices()
   }, [])
 
   return { microphones, error, loading }
