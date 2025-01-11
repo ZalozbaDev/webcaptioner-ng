@@ -7,17 +7,18 @@ import {
 } from '../../lib/server-manager'
 import { MicrophoneSelector } from './components/microphone-selector.tsx'
 import { RecordButtonsContainer } from './components/record-buttons-container'
-import { Box, IconButton, Typography } from '@mui/material'
+import { Box, Button, IconButton, Typography } from '@mui/material'
 import { Settings } from './components/record-buttons-container/settings-container'
 import { toast } from 'sonner'
 import { createYoutubePackages, typedVoskResponse } from '../../helper/vosk'
-import { Logout } from '@mui/icons-material'
+import { Download, Logout } from '@mui/icons-material'
 import useAuth from '../../hooks/use-auth'
 import { localStorage } from '../../lib/local-storage'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 import { YoutubeSettings } from './components/record-buttons-container/youtube-container'
+import { download } from '../../helper/download'
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
@@ -380,16 +381,28 @@ export const MainScreen = () => {
                 )
             }}
           />
-          <Box sx={{ paddingTop: 2, paddingBottom: 2 }}>
+          <Box sx={{ padding: 2 }}>
             {inputText.map(t => (
               <Typography>{t}</Typography>
             ))}
+            <Button
+              onClick={() => download(inputText, 'orignal')}
+              startIcon={<Download />}
+            >
+              Download
+            </Button>
           </Box>
           <div style={{ height: 1, width: '80%', backgroundColor: 'white' }} />
-          <Box sx={{ paddingTop: 2, paddingBottom: 2 }}>
+          <Box sx={{ padding: 2 }}>
             {translation.map(t => (
               <Typography>{t}</Typography>
             ))}
+            <Button
+              onClick={() => download(translation, 'prelozk')}
+              startIcon={<Download />}
+            >
+              Download
+            </Button>
           </Box>
         </>
       )}
