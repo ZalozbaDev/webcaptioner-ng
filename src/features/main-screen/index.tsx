@@ -385,24 +385,28 @@ export const MainScreen = () => {
             {inputText.map(t => (
               <Typography>{t}</Typography>
             ))}
-            <Button
-              onClick={() => download(inputText, 'orignal')}
-              startIcon={<Download />}
-            >
-              Download
-            </Button>
+            {!isRecording && translation.length > 0 && (
+              <Button
+                onClick={() => download(inputText, 'orignal')}
+                startIcon={<Download />}
+              >
+                Download
+              </Button>
+            )}
           </Box>
           <div style={{ height: 1, width: '80%', backgroundColor: 'white' }} />
           <Box sx={{ padding: 2 }}>
             {translation.map(t => (
               <Typography>{t}</Typography>
             ))}
-            <Button
-              onClick={() => download(translation, 'prelozk')}
-              startIcon={<Download />}
-            >
-              Download
-            </Button>
+            {!isRecording && translation.length > 0 && (
+              <Button
+                onClick={() => download(translation, 'prelozk')}
+                startIcon={<Download />}
+              >
+                Download
+              </Button>
+            )}
           </Box>
         </>
       )}
