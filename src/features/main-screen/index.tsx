@@ -387,7 +387,7 @@ export const MainScreen = () => {
             ))}
             {!isRecording && translation.length > 0 && (
               <Button
-                onClick={() => download(inputText, 'orignal')}
+                onClick={() => download(inputText, 'original')}
                 startIcon={<Download />}
               >
                 Download
