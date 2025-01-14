@@ -219,8 +219,8 @@ export const MainScreen = () => {
         settings = { ...settings, deviceId: selectedMicrophone?.deviceId }
         setMediaStreamSettings(settings)
 
-        setInputText([])
-        setTranslation([])
+        // setInputText([])
+        // setTranslation([])
 
         setIsRecording(true)
         if (localeStream !== null)
