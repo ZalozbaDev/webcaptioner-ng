@@ -85,9 +85,9 @@ export const MainScreen = () => {
         }
 
         const trimmedText = parsed.text.slice(2, -2).trim()
-        setInputText(prev => [...prev, trimmedText].slice(-MAX_TEXT_LINES))
+        setInputText(prev => [...prev, trimmedText])
         if (settings.sotraModel === 'passthrough') {
-          setTranslation(prev => [...prev, trimmedText].slice(-MAX_TEXT_LINES))
+          setTranslation(prev => [...prev, trimmedText])
           if (youtubeSettings.streamingKey) {
             const youtubePackages = createYoutubePackages(trimmedText, {
               start: parsed.start ? new Date(parsed.start) : new Date(),
@@ -382,7 +382,7 @@ export const MainScreen = () => {
             }}
           />
           <Box sx={{ padding: 2 }}>
-            {inputText.map(t => (
+            {inputText.slice(-MAX_TEXT_LINES).map(t => (
               <Typography>{t}</Typography>
             ))}
             {!isRecording && translation.length > 0 && (
@@ -396,7 +396,7 @@ export const MainScreen = () => {
           </Box>
           <div style={{ height: 1, width: '80%', backgroundColor: 'white' }} />
           <Box sx={{ padding: 2 }}>
-            {translation.map(t => (
+            {translation.slice(-MAX_TEXT_LINES).map(t => (
               <Typography>{t}</Typography>
             ))}
             {!isRecording && translation.length > 0 && (
