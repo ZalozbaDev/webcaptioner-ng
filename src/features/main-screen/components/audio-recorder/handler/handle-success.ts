@@ -39,6 +39,9 @@ export const handleSuccess = (
       processor.port.onmessage = event => {
         if (webSocket.readyState === webSocket.OPEN) {
           webSocket.send(event.data)
+          if (process.env.REACT_APP_SEND_TIMESTAMP === 'true') {
+            webSocket.send(`${new Date().getTime()}`)
+          }
         } else if (webSocket.readyState === webSocket.CLOSED) {
           processor.port.close()
           toast.error('WebSocket connection closed')
