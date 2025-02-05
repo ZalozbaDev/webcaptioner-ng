@@ -11,7 +11,7 @@ export const handleSuccess = (
   onStop: () => void
 ) => {
   const context = new AudioContext({ sampleRate })
-
+  let count = 0
   context.audioWorklet
     .addModule('worklet/data-conversion-processor.js')
     .then(function () {
@@ -39,6 +39,15 @@ export const handleSuccess = (
       processor.port.onmessage = event => {
         if (webSocket.readyState === webSocket.OPEN) {
           webSocket.send(event.data)
+          if (process.env.REACT_APP_SEND_TIMESTAMP === 'true') {
+            count += 1
+            if (
+              count > parseInt(process.env.REACT_APP_SEND_TIMESTAMP_COUNT!, 10)
+            ) {
+              webSocket.send(`${new Date().getTime()}`)
+              count = 0
+            }
+          }
         } else if (webSocket.readyState === webSocket.CLOSED) {
           processor.port.close()
           toast.error('WebSocket connection closed')
