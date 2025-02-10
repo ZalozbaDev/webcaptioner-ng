@@ -46,7 +46,7 @@ const initialSettings: Settings = {
 let settings: Settings = initialSettings
 let seq = 0
 
-export const MainScreen = () => {
+const MainScreen = () => {
   const [mediaStreamSettings, setMediaStreamSettings] =
     useState<Settings>(initialSettings)
   const [inputText, setInputText] = useState<string[]>([])
@@ -106,28 +106,24 @@ export const MainScreen = () => {
               )
 
               setTranslation(prev =>
-                prev
-                  .map(p =>
-                    p === youtubeData.text
-                      ? `[${youtubeData.seq}]: ${p} ${
-                          youtubeData.successfull ? '✅' : '❌'
-                        } ${dayjs(youtubeData.timestamp)
-                          .tz(dayjs.tz.guess())
-                          .format('HH:mm:ss:SSS')} ${
-                          timeOffsetRef.current > 0 ? '+' : ''
-                        }${timeOffsetRef.current}s`
-                      : p
-                  )
-                  .slice(-MAX_TEXT_LINES)
+                prev.map(p =>
+                  p === youtubeData.text
+                    ? `[${youtubeData.seq}]: ${p} ${
+                        youtubeData.successfull ? '✅' : '❌'
+                      } ${dayjs(youtubeData.timestamp)
+                        .tz(dayjs.tz.guess())
+                        .format('HH:mm:ss:SSS')} ${
+                        timeOffsetRef.current > 0 ? '+' : ''
+                      }${timeOffsetRef.current}s`
+                    : p
+                )
               )
             }
           }
         } else
           getTranslation(trimmedText, settings.sotraModel).then(
             async response => {
-              setTranslation(prev =>
-                [...prev, response.data.translation].slice(-MAX_TEXT_LINES)
-              )
+              setTranslation(prev => [...prev, response.data.translation])
               if (youtubeSettings.streamingKey) {
                 const youtubePackages = createYoutubePackages(
                   response.data.translation,
@@ -149,19 +145,17 @@ export const MainScreen = () => {
                   )
 
                   setTranslation(prev =>
-                    prev
-                      .map(p =>
-                        p === youtubeData.text
-                          ? `[${youtubeData.seq}]: ${p} ${
-                              youtubeData.successfull ? '✅' : '❌'
-                            } ${dayjs(youtubeData.timestamp)
-                              .tz(dayjs.tz.guess())
-                              .format('HH:mm:ss:SSS')} ${
-                              timeOffsetRef.current > 0 ? '+' : ''
-                            }${timeOffsetRef.current}s`
-                          : p
-                      )
-                      .slice(-MAX_TEXT_LINES)
+                    prev.map(p =>
+                      p === youtubeData.text
+                        ? `[${youtubeData.seq}]: ${p} ${
+                            youtubeData.successfull ? '✅' : '❌'
+                          } ${dayjs(youtubeData.timestamp)
+                            .tz(dayjs.tz.guess())
+                            .format('HH:mm:ss:SSS')} ${
+                            timeOffsetRef.current > 0 ? '+' : ''
+                          }${timeOffsetRef.current}s`
+                        : p
+                    )
                   )
                 }
               }
@@ -385,7 +379,7 @@ export const MainScreen = () => {
             {inputText.slice(-MAX_TEXT_LINES).map(t => (
               <Typography>{t}</Typography>
             ))}
-            {!isRecording && translation.length > 0 && (
+            {!isRecording && inputText.length > 0 && (
               <Button
                 onClick={() => download(inputText, 'original')}
                 startIcon={<Download />}
@@ -413,3 +407,5 @@ export const MainScreen = () => {
     </div>
   )
 }
+
+export default MainScreen
