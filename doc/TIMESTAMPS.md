@@ -209,5 +209,21 @@ export const typedVoskResponse = (data: any): VOSKResponse => {
 	
 ```
 
-	* send data to youtube and return result from youtube
+	* send data to backend (and return result message)
+	
+## backend (webcaptioner-ng-server)
+
+* src/routes/youtube.ts
+
+```code
+
+  const parsedDate = dayjs
+    .utc(params.timestamp)
+    .format('YYYY-MM-DDTHH:mm:ss.SSS')
+
+
+```
+
+	* parse timestamp as UTC and re-format for youtube
+	
 	
