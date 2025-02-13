@@ -6,7 +6,6 @@ services:
     environment:
       - REACT_APP_WEBCAPTIONER_SERVER
       - REACT_APP_YOUTUBE_REGION
-      - REACT_APP_PASSWORD
       - REACT_APP_SEND_TIMESTAMP
       - REACT_APP_SEND_TIMESTAMP_COUNT
   #    ports:

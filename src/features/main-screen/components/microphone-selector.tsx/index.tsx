@@ -10,18 +10,21 @@ export const MicrophoneSelector: FC<{
   const { loading, error, microphones } = useFetchMicrophones()
 
   const handleChange = (event: { target: { value: string } }) => {
-    const activeMic = microphones.find((m) => m.deviceId === event.target.value)
+    const activeMic = microphones.find(m => m.deviceId === event.target.value)
     if (activeMic) {
       onChange(activeMic)
     }
   }
 
   if (loading) {
-    return <h1>Loading...</h1>
+    return <h1>Wotwołać ...</h1>
   }
 
   if (error) {
-    return <h1>{error}</h1>
+    if (error.name === 'NotAllowedError') {
+      return <h3>Prošu aktiwěruj twoj mikro w nastajenjach.</h3>
+    }
+    return <h1>{error.message}</h1>
   }
 
   return (
@@ -38,10 +41,10 @@ export const MicrophoneSelector: FC<{
         displayEmpty
         onChange={handleChange}
       >
-        <MenuItem disabled value={''}>
+        <MenuItem disabled value={''} key={'Mikro0'}>
           <em>Wuzwoleny Mikrofon</em>
         </MenuItem>
-        {microphones.map((mic) => (
+        {microphones.map(mic => (
           <MenuItem key={mic.deviceId} value={mic.deviceId}>
             {mic.label}
           </MenuItem>

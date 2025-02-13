@@ -19,6 +19,7 @@ import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 import { YoutubeSettings } from './components/record-buttons-container/youtube-container'
 import { download } from '../../helper/download'
+import { axiosInstance } from '../../lib/axios'
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
@@ -64,7 +65,7 @@ const MainScreen = () => {
     useState<MediaDeviceInfo | null>(null)
   const [isRecording, setIsRecording] = useState<boolean>(false)
   const [voskResponse, setVoskResponse] = useState(false)
-  const { logout } = useAuth()
+  const { user, logout } = useAuth()
 
   const onReceiveMessage = async (event: MessageEvent) => {
     if (event.data) {
@@ -276,6 +277,12 @@ const MainScreen = () => {
       if (localeStream?.active)
         localeStream.getTracks().forEach(track => track.stop())
 
+      if (user)
+        axiosInstance.post('/users/audioRecords', {
+          originalText: inputText,
+          translatedText: translation,
+        })
+
       setIsRecording(false)
     }
   }
@@ -306,21 +313,24 @@ const MainScreen = () => {
   return (
     <div
       style={{
-        width: '80%',
+        width: '100%',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'column',
         gap: 2,
+        backgroundColor: 'transparent',
       }}
     >
-      <IconButton
-        onClick={logout}
-        color='inherit'
-        sx={{ position: 'absolute', top: 5, left: 5 }}
-      >
-        <Logout />
-      </IconButton>
+      {!user && (
+        <IconButton
+          onClick={logout}
+          color='inherit'
+          sx={{ position: 'absolute', top: 5, left: 5 }}
+        >
+          <Logout />
+        </IconButton>
+      )}
       <h1>Serbski Webcaptioner</h1>
 
       {/* {permission === 'granted' && ( */}
