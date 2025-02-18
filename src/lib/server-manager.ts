@@ -60,15 +60,17 @@ export const getParseDataForYoutube = async (
         text: data.text,
         timestamp: new Date(res.data.split('\n')[0] + '+00:00'),
         successfull: true,
+        errorMessage: null,
       }
     })
     .catch(err => {
-      console.error(err)
+      console.error(err.response.data)
       return {
         seq,
         text: data.text,
         timestamp: new Date(),
         successfull: false,
+        errorMessage: err.response.data.errors.at(0)?.message ?? err.message,
       }
     })
 }
