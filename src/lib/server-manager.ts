@@ -64,13 +64,17 @@ export const getParseDataForYoutube = async (
       }
     })
     .catch(err => {
-      console.error(err.response.data)
+      console.error(err.response?.data ?? 'Zmylk')
       return {
         seq,
         text: data.text,
         timestamp: new Date(),
         successfull: false,
-        errorMessage: err.response.data.errors.at(0)?.message ?? err.message,
+        errorMessage:
+          err.response?.data?.errors?.at(0)?.message ??
+          err.response?.data ??
+          err.message ??
+          err.satusText,
       }
     })
 }

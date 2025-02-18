@@ -48,6 +48,7 @@ let settings: Settings = initialSettings
 let seq = 0
 
 const MainScreen = () => {
+  // const [audio] = useState<typeof Audio>()
   const [mediaStreamSettings, setMediaStreamSettings] =
     useState<Settings>(initialSettings)
   const [inputText, setInputText] = useState<string[]>([])
@@ -86,6 +87,7 @@ const MainScreen = () => {
         }
 
         const trimmedText = parsed.text.slice(2, -2).trim()
+        if (trimmedText.length <= 0) return
         setInputText(prev => [...prev, trimmedText])
         if (settings.sotraModel === 'passthrough') {
           setTranslation(prev => [...prev, trimmedText])
@@ -106,6 +108,11 @@ const MainScreen = () => {
                 youtubeSettings.streamingKey
               )
 
+              if (youtubeData.errorMessage) {
+                console.error(youtubeData.errorMessage)
+                toast.error(youtubeData.errorMessage)
+              }
+
               setTranslation(prev =>
                 prev.map(p =>
                   p === youtubeData.text
@@ -124,6 +131,10 @@ const MainScreen = () => {
         } else
           getTranslation(trimmedText, settings.sotraModel).then(
             async response => {
+              // if (response.data.audio) {
+              //   console.log(response.data)
+              //   new Audio(response.data.audio).play()
+              // }
               setTranslation(prev => [...prev, response.data.translation])
               if (youtubeSettings.streamingKey) {
                 const youtubePackages = createYoutubePackages(
@@ -144,6 +155,11 @@ const MainScreen = () => {
                       .toDate(),
                     youtubeSettings.streamingKey
                   )
+
+                  if (youtubeData.errorMessage) {
+                    console.error(youtubeData.errorMessage)
+                    toast.error(youtubeData.errorMessage)
+                  }
 
                   setTranslation(prev =>
                     prev.map(p =>
