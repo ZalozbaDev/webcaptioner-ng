@@ -17,7 +17,10 @@ const getCounterForYoutubeStreaming = (streamingKey: string) => {
 const setCounterForYoutubeStreaming = (streamingKey: string, counter: number) =>
   window.localStorage.setItem(`counter-${streamingKey}`, counter.toString())
 
-const deleteAll = () => window.localStorage.clear()
+const deleteAll = () => {
+  window.localStorage.removeItem('isAuthenticated')
+  window.localStorage.removeItem('accessToken')
+}
 
 export const localStorage = {
   isAuthenticated,
