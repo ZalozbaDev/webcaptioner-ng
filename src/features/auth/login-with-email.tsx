@@ -12,18 +12,40 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import { toast } from 'sonner'
 import useAuth from '../../hooks/use-auth'
 
-const LoginScreen: FC = () => {
+const LoginWithEmailScreen: FC = () => {
   const [showPassword, setShowPassword] = useState(false)
-  const { loginFree } = useAuth()
+  const [email, setEmail] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const { login } = useAuth()
 
   const [password, setPassword] = useState('')
 
   const onLogin = () => {
-    loginFree(password).catch(() => toast.error('Wopačne tajne hesło'))
+    setLoading(true)
+    login(email, password)
+      .catch(err => {
+        toast.error('Wopačne tajne hesło')
+      })
+      .finally(() => setLoading(false))
   }
 
   return (
     <Container maxWidth='xs'>
+      <TextField
+        fullWidth
+        label='email'
+        margin='normal'
+        autoComplete='false'
+        type='email'
+        value={email}
+        onChange={e => setEmail(e.target.value)}
+        variant='filled'
+        sx={{
+          backgroundColor: 'white',
+          borderRadius: 2,
+        }}
+      />
       <TextField
         fullWidth
         label='tajne hesło'
@@ -61,6 +83,7 @@ const LoginScreen: FC = () => {
           type='submit'
           variant='contained'
           onClick={onLogin}
+          loading={loading}
         >
           Login
         </Button>
@@ -72,13 +95,13 @@ const LoginScreen: FC = () => {
           size='large'
           type='submit'
           variant='text'
-          href='/authentication/login-with-email'
+          href='/authentication/login'
         >
-          Abo maš samo account?
+          Nimam account...
         </Button>
       </Box>
     </Container>
   )
 }
 
-export default LoginScreen
+export default LoginWithEmailScreen

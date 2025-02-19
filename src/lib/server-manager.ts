@@ -40,7 +40,7 @@ export const getParseDataForYoutube = async (
     region: region,
     text: text,
   }
-
+  console.log({ youtubeData: data })
   const config = {
     method: 'post',
     maxBodyLength: Infinity,
@@ -53,7 +53,7 @@ export const getParseDataForYoutube = async (
 
   return axios
     .request(config)
-    .then((res) => {
+    .then(res => {
       console.log(res)
       return {
         seq,
@@ -62,7 +62,7 @@ export const getParseDataForYoutube = async (
         successfull: true,
       }
     })
-    .catch((err) => {
+    .catch(err => {
       console.error(err)
       return {
         seq,
