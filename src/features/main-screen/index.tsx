@@ -47,12 +47,20 @@ const initialSettings: Settings = {
 let settings: Settings = initialSettings
 let seq = 0
 
+type TranslationResponse = {
+  text: string
+  timestamp?: Date
+  successfull?: boolean
+  counter?: number
+  timestampDiff?: number
+}
+
 const MainScreen = () => {
   // const [audio] = useState<typeof Audio>()
   const [mediaStreamSettings, setMediaStreamSettings] =
     useState<Settings>(initialSettings)
   const [inputText, setInputText] = useState<string[]>([])
-  const [translation, setTranslation] = useState<string[]>([])
+  const [translation, setTranslation] = useState<TranslationResponse[]>([])
   const [youtubeSettings, setYoutubeSettings] = useState<YoutubeSettings>({
     streamingKey: undefined,
     timeOffset: parseInt(
@@ -90,7 +98,12 @@ const MainScreen = () => {
         if (trimmedText.length <= 0) return
         setInputText(prev => [...prev, trimmedText])
         if (settings.sotraModel === 'passthrough') {
-          setTranslation(prev => [...prev, trimmedText])
+          setTranslation(prev => [
+            ...prev,
+            {
+              text: parsed.text || '',
+            },
+          ])
           if (youtubeSettings.streamingKey) {
             const youtubePackages = createYoutubePackages(trimmedText, {
               start: parsed.start ? new Date(parsed.start) : new Date(),
@@ -115,14 +128,17 @@ const MainScreen = () => {
 
               setTranslation(prev =>
                 prev.map(p =>
-                  p === youtubeData.text
-                    ? `[${youtubeData.seq}]: ${p} ${
-                        youtubeData.successfull ? '✅' : '❌'
-                      } ${dayjs(youtubeData.timestamp)
-                        .tz(dayjs.tz.guess())
-                        .format('HH:mm:ss:SSS')} ${
-                        timeOffsetRef.current > 0 ? '+' : ''
-                      }${timeOffsetRef.current}s`
+                  p.text === youtubeData.text
+                    ? {
+                        text: youtubeData.text,
+                        timestamp: youtubeData.timestamp,
+                        successfull: youtubeData.successfull,
+                        counter: youtubeData.seq,
+                        timestampDiff:
+                          (new Date().getTime() -
+                            new Date(youtubeData.timestamp).getTime()) /
+                          1000,
+                      }
                     : p
                 )
               )
@@ -135,7 +151,10 @@ const MainScreen = () => {
               //   console.log(response.data)
               //   new Audio(response.data.audio).play()
               // }
-              setTranslation(prev => [...prev, response.data.translation])
+              setTranslation(prev => [
+                ...prev,
+                { text: response.data.translation },
+              ])
               if (youtubeSettings.streamingKey) {
                 const youtubePackages = createYoutubePackages(
                   response.data.translation,
@@ -163,14 +182,17 @@ const MainScreen = () => {
 
                   setTranslation(prev =>
                     prev.map(p =>
-                      p === youtubeData.text
-                        ? `[${youtubeData.seq}]: ${p} ${
-                            youtubeData.successfull ? '✅' : '❌'
-                          } ${dayjs(youtubeData.timestamp)
-                            .tz(dayjs.tz.guess())
-                            .format('HH:mm:ss:SSS')} ${
-                            timeOffsetRef.current > 0 ? '+' : ''
-                          }${timeOffsetRef.current}s`
+                      p.text === youtubeData.text
+                        ? {
+                            text: youtubeData.text,
+                            timestamp: youtubeData.timestamp,
+                            successfull: youtubeData.successfull,
+                            counter: youtubeData.seq,
+                            timestampDiff:
+                              (new Date().getTime() -
+                                new Date(youtubeData.timestamp).getTime()) /
+                              1000,
+                          }
                         : p
                     )
                   )
@@ -417,11 +439,42 @@ const MainScreen = () => {
           <div style={{ height: 1, width: '80%', backgroundColor: 'white' }} />
           <Box sx={{ padding: 2 }}>
             {translation.slice(-MAX_TEXT_LINES).map(t => (
-              <Typography>{t}</Typography>
+              <Typography>
+                {t.counter
+                  ? `[${t.counter}]: ${t.text} ${
+                      t.successfull ? '✅' : '❌'
+                    } ${dayjs(t.timestamp)
+                      .tz(dayjs.tz.guess())
+                      .format('HH:mm:ss:SSS')} ${
+                      timeOffsetRef.current > 0 ? '+' : ''
+                    }`
+                  : t.text}
+                {t.counter && (
+                  <Typography
+                    display='inline'
+                    sx={{
+                      color: !t.timestampDiff
+                        ? 'white'
+                        : t.timestampDiff < 20
+                        ? 'green'
+                        : t.timestampDiff < 40
+                        ? 'yellow'
+                        : 'red',
+                    }}
+                  >
+                    {t.timestampDiff ?? 0}s
+                  </Typography>
+                )}
+              </Typography>
             ))}
             {!isRecording && translation.length > 0 && (
               <Button
-                onClick={() => download(translation, 'prelozk')}
+                onClick={() =>
+                  download(
+                    translation.map(t => t.text),
+                    'prelozk'
+                  )
+                }
                 startIcon={<Download />}
               >
                 Download
