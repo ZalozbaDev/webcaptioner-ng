@@ -101,7 +101,8 @@ const MainScreen = () => {
           setTranslation(prev => [
             ...prev,
             {
-              text: parsed.text || '',
+              text: trimmedText,
+              counter: seq,
             },
           ])
           if (youtubeSettings.streamingKey) {
