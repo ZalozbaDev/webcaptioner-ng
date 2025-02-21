@@ -58,7 +58,7 @@ export const getParseDataForYoutube = async (
       return {
         seq,
         text: data.text,
-        timestamp: new Date(res.data.split('\n')[0] + '+00:00'),
+        timestamp: new Date(res.data + '+00:00'),
         successfull: true,
         errorMessage: null,
       }

@@ -1,48 +1,19 @@
-import { Event, Home, HowToReg, Person, PersonAddAlt1 } from '@mui/icons-material'
+import { RecordVoiceOver, History } from '@mui/icons-material'
 
 export const adminSections = [
   {
-    title: 'Home',
-    items: [{ title: 'Home', path: '/', icon: <Home fontSize='small' /> }]
-  },
-  {
-    title: 'Persons',
+    title: 'Webcaptioner',
     items: [
       {
-        title: 'Overview',
-        path: '/persons/true',
-        icon: <HowToReg fontSize='small' />
+        title: 'Record',
+        path: '/',
+        icon: <RecordVoiceOver fontSize='small' />,
       },
       {
-        title: 'Unlock',
-        path: '/persons/false',
-        icon: <PersonAddAlt1 fontSize='small' />
+        title: 'Historia',
+        path: '/history',
+        icon: <History fontSize='small' />,
       },
-      {
-        title: 'Add new',
-        path: '/register',
-        icon: <Person fontSize='small' />
-      }
-    ]
+    ],
   },
-  {
-    title: 'Purchases',
-    items: [
-      {
-        title: 'Overview',
-        path: '/purchases',
-        icon: <Home fontSize='small' />
-      },
-      {
-        title: 'Stats',
-        path: '/purchases/stats',
-        icon: <Event fontSize='small' />
-      },
-      {
-        title: 'New purchase',
-        path: '/create-purchase',
-        icon: <Event fontSize='small' />
-      }
-    ]
-  }
 ]
