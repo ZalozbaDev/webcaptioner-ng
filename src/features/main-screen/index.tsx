@@ -446,9 +446,8 @@ const MainScreen = () => {
                       t.successfull ? '✅' : '❌'
                     } ${dayjs(t.timestamp)
                       .tz(dayjs.tz.guess())
-                      .format('HH:mm:ss:SSS')} ${
-                      timeOffsetRef.current > 0 ? '+' : ''
-                    }`
+                      .format('HH:mm:ss:SSS')} 
+                    `
                   : t.text}
                 {t.counter && (
                   <Typography
@@ -456,13 +455,14 @@ const MainScreen = () => {
                     sx={{
                       color: !t.timestampDiff
                         ? 'white'
-                        : t.timestampDiff < 20
+                        : Math.abs(t.timestampDiff) < 20
                         ? 'green'
-                        : t.timestampDiff < 40
+                        : Math.abs(t.timestampDiff) < 40
                         ? 'yellow'
                         : 'red',
                     }}
                   >
+                    {t.timestampDiff && t.timestampDiff > 0 ? '+' : ''}
                     {t.timestampDiff ?? 0}s
                   </Typography>
                 )}
