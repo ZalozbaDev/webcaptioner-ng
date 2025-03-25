@@ -22,35 +22,17 @@ import { YoutubeSettings } from './components/record-buttons-container/youtube-c
 import { download } from '../../helper/download'
 import { axiosInstance } from '../../lib/axios'
 import { Settings } from '../../types/settings'
+import { MAX_TEXT_LINES, DEFAULT_SETTINGS, APP_VERSION } from '../../constants'
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
-const SAMPLE_RATE = 48000
 let processor: AudioWorkletNode
 let webSocket: WebSocket
 let source: MediaStreamAudioSourceNode
 let context: AudioContext
 let localeStream: MediaStream
 
-const MAX_TEXT_LINES = 10
-const DEFAULT_SPEAKER_ID = 'weronika'
-const APP_VERSION = '1.0.0'
-
-const initialSettings: Settings = {
-  autoGainControl: false,
-  noiseSuppression: false,
-  echoCancellation: false,
-  channelCount: 1,
-  sampleRate: SAMPLE_RATE,
-  sampleSize: 16,
-  deviceId: undefined,
-  bufferSize: 4096,
-  sotraModel: process.env
-    .REACT_APP_DEFAULT_SOTRA_MODEL as Settings['sotraModel'],
-  autoPlayAudio: false,
-  selectedSpeakerId: DEFAULT_SPEAKER_ID,
-}
-let settings: Settings = initialSettings
+let settings = DEFAULT_SETTINGS
 let seq = 0
 
 type TranslationResponse = {
@@ -64,7 +46,7 @@ type TranslationResponse = {
 const MainScreen = () => {
   // const [audio] = useState<typeof Audio>()
   const [mediaStreamSettings, setMediaStreamSettings] =
-    useState<Settings>(initialSettings)
+    useState<Settings>(DEFAULT_SETTINGS)
   const [inputText, setInputText] = useState<string[]>([])
   const [translation, setTranslation] = useState<TranslationResponse[]>([])
   const [youtubeSettings, setYoutubeSettings] = useState<YoutubeSettings>({
