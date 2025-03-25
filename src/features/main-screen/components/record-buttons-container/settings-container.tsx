@@ -7,22 +7,15 @@ import {
   MenuList,
   Select,
   Typography,
+  FormControlLabel,
+  Switch,
+  FormControl,
+  InputLabel,
 } from '@mui/material'
 import { FC } from 'react'
 import { MicrophoneSelector } from '../microphone-selector.tsx'
 import { parseSotraModelToText } from '../../../../helper/text-parser'
-
-export type Settings = {
-  autoGainControl: boolean
-  noiseSuppression: boolean
-  echoCancellation: boolean
-  channelCount: number
-  sampleRate: number
-  sampleSize: number
-  deviceId: undefined | string
-  bufferSize: number
-  sotraModel: SotraModel
-}
+import { Settings } from '../../../../types/settings'
 
 const menuItemWithCheckbox = (
   key: string,
@@ -168,9 +161,10 @@ export const SettingsContainer: FC<{
   disabled: boolean
   onClose: () => void
   settings: Settings
-  onChangeSetting: (key: keyof Settings, value: boolean | number) => void
+  onChangeSetting: (key: keyof Settings, value: any) => void
   onChangeMicrophone: (mic: MediaDeviceInfo) => void
   activeMicrophone: MediaDeviceInfo | null
+  speakers: BamborakSpeaker[]
 }> = ({
   anchorEl,
   open,
@@ -180,6 +174,7 @@ export const SettingsContainer: FC<{
   onChangeSetting,
   onChangeMicrophone,
   activeMicrophone,
+  speakers,
 }) => {
   return (
     <Menu
@@ -256,6 +251,45 @@ export const SettingsContainer: FC<{
             )
           return null
         })}
+        <FormControlLabel
+          control={
+            <Switch
+              checked={settings.autoPlayAudio}
+              onChange={e => onChangeSetting('autoPlayAudio', e.target.checked)}
+            />
+          }
+          disabled={disabled}
+          sx={{ paddingInline: 3 }}
+          label='Audio přełožk'
+        />
+        {settings.autoPlayAudio && (
+          <MenuItem disabled={disabled}>
+            <FormControl
+              margin='normal'
+              sx={{
+                backgroundColor: 'white',
+                borderRadius: 1,
+                width: '100%',
+              }}
+              disabled={disabled}
+            >
+              <InputLabel>Rěčnik</InputLabel>
+              <Select
+                value={settings.selectedSpeakerId}
+                onChange={e =>
+                  onChangeSetting('selectedSpeakerId', e.target.value)
+                }
+                label='Rěčnik'
+              >
+                {speakers.map(speaker => (
+                  <MenuItem key={speaker.id} value={speaker.id}>
+                    {speaker.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </MenuItem>
+        )}
         <Divider />
         <MenuItem disabled={disabled}>
           <MicrophoneSelector

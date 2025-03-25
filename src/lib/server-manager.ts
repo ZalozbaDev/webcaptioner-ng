@@ -78,3 +78,27 @@ export const getParseDataForYoutube = async (
       }
     })
 }
+
+export const getAudioFromText = async (text: string, speakerId: string) => {
+  const data = JSON.stringify({
+    text: text,
+    speaker_id: speakerId,
+  })
+  const url = `${process.env.REACT_APP_WEBCAPTIONER_SERVER}/bamborak`
+  const config = {
+    maxBodyLength: Infinity,
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+    },
+    data: data,
+    responseType: 'arraybuffer' as const,
+  }
+
+  return axios.post(url, data, config)
+}
+
+export const getSpeakersFromBamborak = async () => {
+  const url = `${process.env.REACT_APP_WEBCAPTIONER_SERVER}/bamborak-speakers`
+  return axios.get(url)
+}

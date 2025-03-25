@@ -1,6 +1,7 @@
 type SotraResponse = {
   translation: string
   model: string
+  audio: string | undefined | any
 }
 
 type VOSKResponse = {
@@ -9,4 +10,10 @@ type VOSKResponse = {
   listen: boolean
   start?: number
   stop?: number
+}
+
+type BamborakSpeaker = {
+  id: string
+  info: string
+  name: string
 }

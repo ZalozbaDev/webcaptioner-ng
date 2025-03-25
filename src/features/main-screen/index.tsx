@@ -4,11 +4,12 @@ import { initWebsocket } from './components/audio-recorder/handler/init-websocke
 import {
   getTranslation,
   getParseDataForYoutube,
+  getAudioFromText,
+  getSpeakersFromBamborak,
 } from '../../lib/server-manager'
 import { MicrophoneSelector } from './components/microphone-selector.tsx'
 import { RecordButtonsContainer } from './components/record-buttons-container'
 import { Box, Button, IconButton, Typography } from '@mui/material'
-import { Settings } from './components/record-buttons-container/settings-container'
 import { toast } from 'sonner'
 import { createYoutubePackages, typedVoskResponse } from '../../helper/vosk'
 import { Download, Logout } from '@mui/icons-material'
@@ -20,6 +21,7 @@ import timezone from 'dayjs/plugin/timezone'
 import { YoutubeSettings } from './components/record-buttons-container/youtube-container'
 import { download } from '../../helper/download'
 import { axiosInstance } from '../../lib/axios'
+import { Settings } from '../../types/settings'
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
@@ -31,6 +33,7 @@ let context: AudioContext
 let localeStream: MediaStream
 
 const MAX_TEXT_LINES = 10
+const DEFAULT_SPEAKER_ID = 'weronika'
 
 const initialSettings: Settings = {
   autoGainControl: false,
@@ -43,6 +46,8 @@ const initialSettings: Settings = {
   bufferSize: 4096,
   sotraModel: process.env
     .REACT_APP_DEFAULT_SOTRA_MODEL as Settings['sotraModel'],
+  autoPlayAudio: false,
+  selectedSpeakerId: DEFAULT_SPEAKER_ID,
 }
 let settings: Settings = initialSettings
 let seq = 0
@@ -75,6 +80,21 @@ const MainScreen = () => {
   const [isRecording, setIsRecording] = useState<boolean>(false)
   const [voskResponse, setVoskResponse] = useState(false)
   const { user, logout } = useAuth()
+
+  // Add new state for audio context
+  const [audioContext, setAudioContext] = useState<AudioContext | null>(null)
+  const [audioQueue, setAudioQueue] = useState<ArrayBuffer[]>([])
+  const [isAudioContextInitialized, setIsAudioContextInitialized] =
+    useState(false)
+
+  const [speakers, setSpeakers] = useState<BamborakSpeaker[]>([])
+
+  // Add this useEffect to fetch speakers
+  useEffect(() => {
+    getSpeakersFromBamborak().then(response => {
+      setSpeakers(response.data)
+    })
+  }, [])
 
   const onReceiveMessage = async (event: MessageEvent) => {
     if (event.data) {
@@ -145,13 +165,20 @@ const MainScreen = () => {
               )
             }
           }
-        } else
+        } else {
+          // Get bamborak audio file
           getTranslation(trimmedText, settings.sotraModel).then(
             async response => {
-              // if (response.data.audio) {
-              //   console.log(response.data)
-              //   new Audio(response.data.audio).play()
-              // }
+              if (settings.autoPlayAudio) {
+                getAudioFromText(
+                  response.data.translation,
+                  settings.selectedSpeakerId
+                ).then(response => {
+                  playAudioData(response.data)
+                })
+              }
+
+              // Save the translation
               setTranslation(prev => [
                 ...prev,
                 { text: response.data.translation },
@@ -201,6 +228,7 @@ const MainScreen = () => {
               }
             }
           )
+        }
       }
     }
   }
@@ -349,6 +377,44 @@ const MainScreen = () => {
   //   })
   // }, [])
 
+  // Add function to initialize audio context
+  const initializeAudioContext = () => {
+    if (!isAudioContextInitialized) {
+      const context = new AudioContext()
+      setAudioContext(context)
+      setIsAudioContextInitialized(true)
+
+      // Resume any queued audio
+      if (audioQueue.length > 0) {
+        audioQueue.forEach(audioData => playAudioData(audioData))
+        setAudioQueue([])
+      }
+    }
+  }
+
+  // Add function to play audio data
+  const playAudioData = async (audioData: ArrayBuffer) => {
+    if (!audioContext) {
+      setAudioQueue(prev => [...prev, audioData])
+      return
+    }
+
+    try {
+      const audioBuffer = await audioContext.decodeAudioData(audioData)
+      const source = audioContext.createBufferSource()
+      source.buffer = audioBuffer
+      source.connect(audioContext.destination)
+      source.start(0)
+    } catch (error) {
+      console.error('Error playing audio:', error)
+    }
+  }
+
+  // Add click handler to initialize audio context
+  const handleInitialInteraction = () => {
+    initializeAudioContext()
+  }
+
   return (
     <div
       style={{
@@ -360,6 +426,7 @@ const MainScreen = () => {
         gap: 2,
         backgroundColor: 'transparent',
       }}
+      onClick={handleInitialInteraction}
     >
       {!user && (
         <IconButton
@@ -423,6 +490,7 @@ const MainScreen = () => {
                   newSettings.counter
                 )
             }}
+            speakers={speakers}
           />
           <Box sx={{ padding: 2 }}>
             {inputText.slice(-MAX_TEXT_LINES).map(t => (

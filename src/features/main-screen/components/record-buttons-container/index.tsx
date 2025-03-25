@@ -8,8 +8,9 @@ import { Box, Button, IconButton, Typography } from '@mui/material'
 import { FC, useEffect, useMemo, useState } from 'react'
 import { Visualizer } from 'react-sound-visualizer'
 import { getDurationFromSeconds } from '../../../../helper/date-time-helper'
-import { Settings, SettingsContainer } from './settings-container'
+import { SettingsContainer } from './settings-container'
 import { YoutubeContainer, YoutubeSettings } from './youtube-container'
+import { Settings } from '../../../../types/settings'
 
 export const RecordButtonsContainer: FC<{
   voskResponse: boolean
@@ -17,7 +18,7 @@ export const RecordButtonsContainer: FC<{
   isDisabled: { record: boolean; pause: boolean; stop: boolean }
   isRecording: boolean
   settings: Settings
-  onChangeSetting: (key: keyof Settings, value: boolean | number) => void
+  onChangeSetting: (key: keyof Settings, value: any) => void
   onPressRecord: () => void
   onPressPause: () => void
   onPressStop: () => void
@@ -25,6 +26,7 @@ export const RecordButtonsContainer: FC<{
   activeMicrophone: MediaDeviceInfo | null
   youtubeSettings: YoutubeSettings
   onSaveYoutubeSettings: (settings: YoutubeSettings) => void
+  speakers: BamborakSpeaker[]
 }> = ({
   voskResponse,
   stream,
@@ -39,6 +41,7 @@ export const RecordButtonsContainer: FC<{
   activeMicrophone,
   youtubeSettings,
   onSaveYoutubeSettings,
+  speakers,
 }) => {
   const [totalTime, setTotalTime] = useState<number>(0)
 
@@ -99,6 +102,7 @@ export const RecordButtonsContainer: FC<{
         onChangeSetting={onChangeSetting}
         onChangeMicrophone={onChangeMicrophone}
         activeMicrophone={activeMicrophone}
+        speakers={speakers}
       />
     ),
     [
@@ -109,6 +113,7 @@ export const RecordButtonsContainer: FC<{
       settings,
       settingsAnchorEl,
       settingsOpen,
+      speakers,
     ]
   )
 
