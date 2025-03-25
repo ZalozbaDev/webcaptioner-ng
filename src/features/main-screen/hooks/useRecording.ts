@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { toast } from 'sonner'
 import { Settings } from '../../../types/settings'
 import { handleSuccess } from '../components/audio-recorder/handler/handle-success'
@@ -13,6 +13,7 @@ import {
 import { localStorage } from '../../../lib/local-storage'
 import dayjs from 'dayjs'
 import { TranslationResponse, YoutubeSettings } from '../types'
+import { audioQueueService } from '../../../services/AudioQueueService'
 
 export const useRecording = (
   settings: Settings,
@@ -37,6 +38,11 @@ export const useRecording = (
   let source: MediaStreamAudioSourceNode
   let context: AudioContext
   let seq = 0
+
+  // Initialize the audio service when the hook mounts
+  useEffect(() => {
+    audioQueueService.initialize(options.audioContext)
+  }, [options.audioContext])
 
   const onReceiveMessage = async (event: MessageEvent) => {
     if (event.data) {
@@ -115,8 +121,8 @@ export const useRecording = (
                 getAudioFromText(
                   response.data.translation,
                   settings.selectedSpeakerId
-                ).then(response => {
-                  options.audioContext.playAudioData(response.data)
+                ).then(audioResponse => {
+                  audioQueueService.addToQueue(audioResponse.data)
                 })
               }
 
@@ -252,6 +258,7 @@ export const useRecording = (
   }
 
   const breakRecording = (newState: 'stop' | 'pause') => {
+    console.log('breakRecording', newState)
     if (isRecording) {
       onStopRecording()
     }
