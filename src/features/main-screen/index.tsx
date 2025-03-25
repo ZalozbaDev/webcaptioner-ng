@@ -60,12 +60,6 @@ const MainScreen = () => {
     })
   }, [])
 
-  useEffect(() => {
-    return () => {
-      recording.breakRecording('stop')
-    }
-  }, [recording])
-
   const updateMediaStreamSettings = (
     key: keyof Settings,
     value: boolean | number
