@@ -34,6 +34,7 @@ let localeStream: MediaStream
 
 const MAX_TEXT_LINES = 10
 const DEFAULT_SPEAKER_ID = 'weronika'
+const APP_VERSION = '1.0.0'
 
 const initialSettings: Settings = {
   autoGainControl: false,
@@ -437,6 +438,17 @@ const MainScreen = () => {
           <Logout />
         </IconButton>
       )}
+      <Typography
+        variant='caption'
+        sx={{
+          position: 'absolute',
+          bottom: 5,
+          right: 5,
+          opacity: 0.7,
+        }}
+      >
+        v{APP_VERSION}
+      </Typography>
       <h1>Serbski Webcaptioner</h1>
 
       {/* {permission === 'granted' && ( */}
