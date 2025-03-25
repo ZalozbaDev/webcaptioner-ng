@@ -14,7 +14,7 @@ import { FC, useEffect, useState } from 'react'
 import { localStorage } from '../../../../lib/local-storage'
 
 export type YoutubeSettings = {
-  streamingKey: string | undefined
+  streamingKey?: string | undefined
   timeOffset: number
   counter: number
 }

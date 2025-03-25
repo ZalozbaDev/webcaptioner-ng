@@ -14,7 +14,7 @@ import { Settings } from '../../../../types/settings'
 
 export const RecordButtonsContainer: FC<{
   voskResponse: boolean
-  stream: MediaStream
+  stream: MediaStream | null
   isDisabled: { record: boolean; pause: boolean; stop: boolean }
   isRecording: boolean
   settings: Settings
@@ -78,7 +78,6 @@ export const RecordButtonsContainer: FC<{
         {({ canvasRef }) => <canvas ref={canvasRef} height={100} />}
       </Visualizer>
     ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [stream]
   )
 
