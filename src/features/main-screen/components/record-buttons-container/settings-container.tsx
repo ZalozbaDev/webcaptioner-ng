@@ -38,8 +38,8 @@ const menuItemWithSelection = (
   title: string,
   value: string | number,
   disabled: boolean,
-  options: SotraModel[],
-  onSetValue: (value: number) => void
+  options: { title: string; value: string | number }[],
+  onSetValue: (value: string | number) => void
 ) => (
   <MenuItem
     disabled={disabled}
@@ -68,12 +68,10 @@ const menuItemWithSelection = (
           type='number'
           defaultValue={value}
           title={title}
-          onChange={newValue =>
-            onSetValue(newValue.target.value as unknown as number)
-          }
+          onChange={newValue => onSetValue(newValue.target.value)}
         >
           {options.map(option => (
-            <MenuItem value={option}>{parseSotraModelToText(option)}</MenuItem>
+            <MenuItem value={option.value}>{option.title}</MenuItem>
           ))}
         </Select>
       </>
@@ -135,10 +133,19 @@ const menuTextItems: {
   key: keyof Settings
   title: string
   editable: boolean
+  options?: { title: string; value: string | number }[]
 }[] = [
   { key: 'bufferSize', title: 'Buffer Size', editable: true },
   { key: 'channelCount', title: 'Channel Count', editable: false },
-  { key: 'sampleRate', title: 'Sample Rate', editable: false },
+  {
+    key: 'sampleRate',
+    title: 'Sample Rate',
+    editable: true,
+    options: [
+      { title: '16000', value: 16000 },
+      { title: '48000', value: 48000 },
+    ],
+  },
   { key: 'sampleSize', title: 'Sample Size', editable: false },
   { key: 'deviceId', title: 'Device ID', editable: false },
 ]
@@ -146,12 +153,16 @@ const menuTextItems: {
 const menuSelectionItems: {
   key: keyof Settings
   title: string
-  options: SotraModel[]
+  options: { title: string; value: string }[]
 }[] = [
   {
     key: 'sotraModel',
     title: 'Sotra Model',
-    options: ['ctranslate', 'fairseq', 'passthrough'],
+    options: [
+      { title: parseSotraModelToText('ctranslate'), value: 'ctranslate' },
+      { title: parseSotraModelToText('fairseq'), value: 'fairseq' },
+      { title: parseSotraModelToText('passthrough'), value: 'passthrough' },
+    ],
   },
 ]
 
@@ -225,17 +236,29 @@ export const SettingsContainer: FC<{
             value => onChangeSetting(key, value)
           )
         })}
-        {menuTextItems.map(({ key, title, editable }) => {
+        {menuTextItems.map(({ key, title, editable, options }) => {
           const setting = settings[key]
-          if (setting !== undefined && typeof setting !== 'boolean')
-            return menuitemWithText(
-              key,
-              title,
-              setting,
-              disabled,
-              editable,
-              value => onChangeSetting(key, value)
-            )
+          if (setting !== undefined && typeof setting !== 'boolean') {
+            if (options) {
+              return menuItemWithSelection(
+                key,
+                title,
+                setting,
+                disabled,
+                options,
+                value => onChangeSetting(key, value)
+              )
+            } else {
+              return menuitemWithText(
+                key,
+                title,
+                setting,
+                disabled,
+                editable,
+                value => onChangeSetting(key, value)
+              )
+            }
+          }
           return null
         })}
         {menuSelectionItems.map(({ key, title, options }) => {
