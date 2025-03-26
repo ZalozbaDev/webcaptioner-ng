@@ -9,6 +9,7 @@ services:
       - REACT_APP_SEND_TIMESTAMP
       - REACT_APP_SEND_TIMESTAMP_COUNT
       - REACT_APP_MAX_LINES_IN_HISTORY
+      - REACT_APP_DEFAULT_VOSK_SAMPLE_RATE
   #    ports:
   #        - '80:3000'
 
