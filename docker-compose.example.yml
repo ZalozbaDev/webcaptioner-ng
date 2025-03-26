@@ -8,6 +8,7 @@ services:
       - REACT_APP_YOUTUBE_REGION
       - REACT_APP_SEND_TIMESTAMP
       - REACT_APP_SEND_TIMESTAMP_COUNT
+      - REACT_APP_MAX_LINES_IN_HISTORY
   #    ports:
   #        - '80:3000'
 
