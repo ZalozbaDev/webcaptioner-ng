@@ -244,6 +244,14 @@ export const useRecording = (
     webSocket.onopen = () => {
       try {
         toast.success('Websocket connected')
+        webSocket.send(
+          JSON.stringify({
+            config: {
+              sample_rate: settings.sampleRate,
+              buffer_size: settings.bufferSize,
+            },
+          })
+        )
         startRecordingWithNewStream()
       } catch (error) {
         toast.error('Error accessing microphone')
