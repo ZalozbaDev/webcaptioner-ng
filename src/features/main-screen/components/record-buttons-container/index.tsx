@@ -176,7 +176,9 @@ export const RecordButtonsContainer: FC<{
       >
         {visualizerArea}
       </Box>
-
+      <Typography variant='caption'>
+        {process.env.REACT_APP_RECORDING_INFORMATION_LINE}
+      </Typography>
       <Box>
         <Button
           onClick={onPressRecord}
