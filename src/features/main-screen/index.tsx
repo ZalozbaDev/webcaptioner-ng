@@ -55,9 +55,17 @@ const MainScreen = () => {
   const [speakers, setSpeakers] = useState<BamborakSpeaker[]>([])
 
   useEffect(() => {
-    getSpeakersFromBamborak().then(response => {
-      setSpeakers(response.data)
-    })
+    getSpeakersFromBamborak()
+      .then(response => {
+        if (response.status !== 200) {
+          console.error('Error fetching speakers:', response)
+          return
+        }
+        setSpeakers(response.data)
+      })
+      .catch(err => {
+        console.error('Error fetching speakers:', err)
+      })
   }, [])
 
   const updateMediaStreamSettings = (
