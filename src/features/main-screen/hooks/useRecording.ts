@@ -247,12 +247,7 @@ export const useRecording = (
       try {
         toast.success('Websocket connected')
         webSocketRef.current?.send(
-          JSON.stringify({
-            config: {
-              sample_rate: settings.sampleRate,
-              buffer_size: settings.bufferSize,
-            },
-          })
+          `sample_rate=${settings.sampleRate},buffer_size=${settings.bufferSize}`
         )
         startRecordingWithNewStream()
       } catch (error) {
