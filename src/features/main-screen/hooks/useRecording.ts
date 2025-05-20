@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { toast } from 'sonner'
 import { Settings } from '../../../types/settings'
 import { handleSuccess } from '../components/audio-recorder/handler/handle-success'
@@ -34,10 +34,12 @@ export const useRecording = (
   const [voskResponse, setVoskResponse] = useState(false)
   const [stream, setStream] = useState<MediaStream | null>(null)
   let processor: AudioWorkletNode
-  let webSocket: WebSocket
   let source: MediaStreamAudioSourceNode
   let context: AudioContext
   let seq = 0
+
+  // Replace local variable with a ref to persist the websocket
+  const webSocketRef = useRef<WebSocket | null>(null)
 
   // Initialize the audio service when the hook mounts
   useEffect(() => {
@@ -181,8 +183,8 @@ export const useRecording = (
   }
 
   const onStopRecording = () => {
-    webSocket?.send('{"eof" : 1}')
-    webSocket?.close()
+    webSocketRef.current?.send('{"eof" : 1}')
+    webSocketRef.current?.close()
 
     processor?.port.close()
     source?.disconnect(processor)
@@ -212,7 +214,7 @@ export const useRecording = (
           handleSuccess(
             stream,
             settings.sampleRate,
-            webSocket,
+            webSocketRef.current!,
             settings.bufferSize,
             (p: AudioWorkletNode) => {
               processor = p
@@ -236,14 +238,22 @@ export const useRecording = (
   }
 
   const startRecording = () => {
-    webSocket = initWebsocket(
+    webSocketRef.current = initWebsocket(
       `${process.env.REACT_APP_WEBCAPTIONER_SERVER!}/vosk`,
       onReceiveMessage
     )
 
-    webSocket.onopen = () => {
+    webSocketRef.current.onopen = () => {
       try {
         toast.success('Websocket connected')
+        webSocketRef.current?.send(
+          JSON.stringify({
+            config: {
+              sample_rate: settings.sampleRate,
+              buffer_size: settings.bufferSize,
+            },
+          })
+        )
         startRecordingWithNewStream()
       } catch (error) {
         toast.error('Error accessing microphone')
@@ -251,7 +261,7 @@ export const useRecording = (
       }
     }
 
-    webSocket.onerror = () => {
+    webSocketRef.current.onerror = () => {
       toast('Connection error. Please try again.')
       breakRecording('stop')
     }
