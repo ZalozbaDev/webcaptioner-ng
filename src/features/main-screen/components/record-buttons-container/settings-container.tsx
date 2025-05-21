@@ -310,7 +310,7 @@ export const SettingsContainer: FC<{
               >
                 {speakers.map(speaker => (
                   <MenuItem key={speaker.id} value={speaker.id}>
-                    {speaker.name}
+                    {speaker.name} - {speaker.language}
                   </MenuItem>
                 ))}
               </Select>
