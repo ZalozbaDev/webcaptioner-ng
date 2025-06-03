@@ -16,4 +16,5 @@ type AudioRecord = {
   createdAt: Date
   originalText: string[]
   translatedText: string[]
+  token: string
 }

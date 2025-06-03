@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 export const getTranslation = async (
+  audioRecordId: string | undefined,
   text: string,
   model: 'ctranslate' | 'fairseq',
   sourceLanguage: 'de' | 'hsb' = 'hsb',
@@ -11,6 +12,7 @@ export const getTranslation = async (
     model,
     sourceLanguage: sourceLanguage,
     targetLanguage: targetLanguage,
+    audioRecordId: audioRecordId,
   })
   const url = `${process.env.REACT_APP_WEBCAPTIONER_SERVER}/sotra`
   const config = {
@@ -101,4 +103,16 @@ export const getAudioFromText = async (text: string, speakerId: string) => {
 export const getSpeakersFromBamborak = async () => {
   const url = `${process.env.REACT_APP_WEBCAPTIONER_SERVER}/bamborak-speakers`
   return axios.get(url)
+}
+
+export const createAudioRecord = async () => {
+  const url = `${process.env.REACT_APP_WEBCAPTIONER_SERVER}/users/audioRecords`
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+    },
+  }
+
+  return axios.post<AudioRecord>(url, {}, config)
 }

@@ -9,6 +9,7 @@ import {
   getTranslation,
   getParseDataForYoutube,
   getAudioFromText,
+  createAudioRecord,
 } from '../../../lib/server-manager'
 import { localStorage } from '../../../lib/local-storage'
 import dayjs from 'dayjs'
@@ -28,7 +29,8 @@ export const useRecording = (
     audioContext: {
       playAudioData: (data: ArrayBuffer) => Promise<void>
     }
-  }
+  },
+  audioRecordId: string | undefined
 ) => {
   const [isRecording, setIsRecording] = useState(false)
   const [voskResponse, setVoskResponse] = useState(false)
@@ -117,7 +119,7 @@ export const useRecording = (
           }
         } else {
           // Get bamborak audio file
-          getTranslation(trimmedText, settings.sotraModel).then(
+          getTranslation(audioRecordId, trimmedText, settings.sotraModel).then(
             async response => {
               if (settings.autoPlayAudio) {
                 getAudioFromText(
@@ -237,28 +239,48 @@ export const useRecording = (
       })
   }
 
-  const startRecording = () => {
-    webSocketRef.current = initWebsocket(
-      `${process.env.REACT_APP_WEBCAPTIONER_SERVER!}/vosk`,
-      onReceiveMessage
-    )
+  const startRecording = async (
+    handleRecordCreated: (id: string, token: string) => void,
+    oldRecordId?: string
+  ) => {
+    try {
+      let recordId = oldRecordId
+      if (!recordId) {
+        // Create audio record first
+        const response = await createAudioRecord()
+        recordId = response.data._id
+        const token = response.data.token
 
-    webSocketRef.current.onopen = () => {
-      try {
-        toast.success('Websocket connected')
-        webSocketRef.current?.send(
-          `sample_rate=${settings.sampleRate},buffer_size=${settings.bufferSize}`
-        )
-        startRecordingWithNewStream()
-      } catch (error) {
-        toast.error('Error accessing microphone')
-        console.error('Error accessing microphone:', error)
+        // Notify parent component about the new record
+        handleRecordCreated(recordId, token)
       }
-    }
 
-    webSocketRef.current.onerror = () => {
-      toast('Connection error. Please try again.')
-      breakRecording('stop')
+      webSocketRef.current = initWebsocket(
+        `${process.env
+          .REACT_APP_WEBCAPTIONER_SERVER!}/vosk?recordId=${recordId}`,
+        onReceiveMessage
+      )
+
+      webSocketRef.current.onopen = () => {
+        try {
+          toast.success('Websocket connected')
+          webSocketRef.current?.send(
+            `sample_rate=${settings.sampleRate},buffer_size=${settings.bufferSize}`
+          )
+          startRecordingWithNewStream()
+        } catch (error) {
+          toast.error('Error accessing microphone')
+          console.error('Error accessing microphone:', error)
+        }
+      }
+
+      webSocketRef.current.onerror = () => {
+        toast('Connection error. Please try again.')
+        breakRecording('stop')
+      }
+    } catch (error) {
+      toast.error('Error creating audio record')
+      console.error('Error creating audio record:', error)
     }
   }
 
