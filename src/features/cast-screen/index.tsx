@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Box, Typography, TextField, Button, Container } from '@mui/material'
 import axios from 'axios'
+import { initWebsocket } from '../main-screen/components/audio-recorder/handler/init-websocket'
 
 interface AudioRecord {
   _id: string
@@ -19,6 +20,7 @@ const CastScreen = () => {
   const [error, setError] = useState<string | null>(null)
   const [inputToken, setInputToken] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const wsRef = useRef<WebSocket | null>(null)
 
   const validateToken = useCallback(
     async (tokenToValidate: string) => {
@@ -29,6 +31,41 @@ const CastScreen = () => {
           `${process.env.REACT_APP_WEBCAPTIONER_SERVER}/casts/${tokenToValidate}`
         )
         setCast(response.data)
+        // Open websocket for live translations
+
+        if (response.data?._id) {
+          if (wsRef.current) {
+            wsRef.current.close()
+          }
+
+          const wsUrl = `${process.env.REACT_APP_WEBCAPTIONER_SERVER?.replace(
+            'http',
+            'ws'
+          )}/translations?recordId=${response.data._id}`
+
+          wsRef.current = initWebsocket(wsUrl, (event: MessageEvent) => {
+            try {
+              const data = JSON.parse(event.data)
+
+              if (data.original && data.translation) {
+                setCast(prevCast =>
+                  prevCast
+                    ? {
+                        ...prevCast,
+                        originalText: [...prevCast.originalText, data.original],
+                        translatedText: [
+                          ...prevCast.translatedText,
+                          data.translation,
+                        ],
+                      }
+                    : prevCast
+                )
+              }
+            } catch (e) {
+              console.error('Invalid WS message', e)
+            }
+          })
+        }
         if (!urlToken) {
           navigate(`/cast/${tokenToValidate}`)
         }
@@ -47,6 +84,14 @@ const CastScreen = () => {
       validateToken(urlToken)
     }
   }, [urlToken, validateToken])
+
+  useEffect(() => {
+    return () => {
+      if (wsRef.current) {
+        wsRef.current.close()
+      }
+    }
+  }, [])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
