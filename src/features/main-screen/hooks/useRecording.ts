@@ -35,6 +35,7 @@ export const useRecording = (
   const [isRecording, setIsRecording] = useState(false)
   const [voskResponse, setVoskResponse] = useState(false)
   const [stream, setStream] = useState<MediaStream | null>(null)
+
   let processor: AudioWorkletNode
   let source: MediaStreamAudioSourceNode
   let context: AudioContext
@@ -48,7 +49,10 @@ export const useRecording = (
     audioQueueService.initialize(options.audioContext)
   }, [options.audioContext])
 
-  const onReceiveMessage = async (event: MessageEvent) => {
+  const onReceiveMessage = async (
+    event: MessageEvent,
+    recordId: string | undefined
+  ) => {
     if (event.data) {
       let parsed = typedVoskResponse(event.data)
       setVoskResponse(parsed.listen)
@@ -119,7 +123,7 @@ export const useRecording = (
           }
         } else {
           // Get bamborak audio file
-          getTranslation(audioRecordId, trimmedText, settings.sotraModel).then(
+          getTranslation(recordId, trimmedText, settings.sotraModel).then(
             async response => {
               if (settings.autoPlayAudio) {
                 getAudioFromText(
@@ -258,7 +262,7 @@ export const useRecording = (
       webSocketRef.current = initWebsocket(
         `${process.env
           .REACT_APP_WEBCAPTIONER_SERVER!}/vosk?recordId=${recordId}`,
-        onReceiveMessage
+        e => onReceiveMessage(e, recordId)
       )
 
       webSocketRef.current.onopen = () => {
