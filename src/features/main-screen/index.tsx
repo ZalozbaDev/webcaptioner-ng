@@ -33,6 +33,9 @@ const MainScreen = () => {
     useState<MediaDeviceInfo | null>(null)
   const [inputText, setInputText] = useState<string[]>([])
   const [translation, setTranslation] = useState<TranslationResponse[]>([])
+  const [record, setRecord] = useState<{ id: string; token: string } | null>(
+    null
+  )
   const [youtubeSettings, setYoutubeSettings] = useState<YoutubeSettings>({
     streamingKey: undefined,
     timeOffset: parseInt(
@@ -44,13 +47,18 @@ const MainScreen = () => {
 
   const { user, logout } = useAuth()
   const audioContext = useAudioContext()
-  const recording = useRecording(mediaStreamSettings, selectedMicrophone, {
-    youtubeSettings,
-    timeOffsetRef,
-    setInputText,
-    setTranslation,
-    audioContext,
-  })
+  const recording = useRecording(
+    mediaStreamSettings,
+    selectedMicrophone,
+    {
+      youtubeSettings,
+      timeOffsetRef,
+      setInputText,
+      setTranslation,
+      audioContext,
+    },
+    record?.id
+  )
 
   const [speakers, setSpeakers] = useState<BamborakSpeaker[]>([])
 
@@ -100,6 +108,8 @@ const MainScreen = () => {
           inputText={inputText}
           translation={translation}
           speakers={speakers}
+          record={record}
+          setRecord={setRecord}
         />
       )}
     </div>

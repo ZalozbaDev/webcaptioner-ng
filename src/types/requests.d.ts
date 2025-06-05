@@ -12,8 +12,11 @@ type VOSKResponse = {
   stop?: number
 }
 
+type Language = 'hsb' | 'de' | 'dsb'
+
 type BamborakSpeaker = {
   id: string
   info: string
   name: string
+  language: Language
 }

@@ -7,13 +7,18 @@ import { download } from '../../../helper/download'
 import { Typography } from '@mui/material'
 import { MAX_TEXT_LINES } from '../../../constants'
 import dayjs from 'dayjs'
+import { QRCode } from './qr-code'
+import { useState } from 'react'
 
 type MainContentProps = {
   recording: {
     isRecording: boolean
     voskResponse: boolean
     stream: MediaStream | null
-    startRecording: () => void
+    startRecording: (
+      handleRecordCreated: (id: string, token: string) => void,
+      oldRecordId?: string
+    ) => void
     breakRecording: (newState: 'stop' | 'pause') => void
   }
   selectedMicrophone: MediaDeviceInfo
@@ -24,6 +29,8 @@ type MainContentProps = {
   inputText: string[]
   translation: TranslationResponse[]
   speakers: BamborakSpeaker[]
+  record: { id: string; token: string } | null
+  setRecord: (record: { id: string; token: string }) => void
 }
 
 export const MainContent = ({
@@ -36,11 +43,20 @@ export const MainContent = ({
   inputText,
   translation,
   speakers,
+  record,
+  setRecord,
 }: MainContentProps) => {
+  const [showQrCode, setShowQrCode] = useState<boolean>(false)
+
+  const handleShare = () => {
+    setShowQrCode(prev => !prev)
+  }
+
   return (
     <Box
       sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
     >
+      <QRCode token={record?.token} show={showQrCode} />
       <RecordButtonsContainer
         voskResponse={recording.voskResponse}
         isDisabled={{
@@ -49,9 +65,14 @@ export const MainContent = ({
           stop: !recording.isRecording,
         }}
         isRecording={recording.isRecording}
+        isQrCodeVisible={showQrCode}
         settings={settings}
         onChangeSetting={onChangeSetting}
-        onPressRecord={recording.startRecording}
+        onPressRecord={() => {
+          recording.startRecording((recordId, token) => {
+            setRecord({ id: recordId, token })
+          }, record?.id)
+        }}
         onPressPause={() => recording.breakRecording('pause')}
         onPressStop={() => recording.breakRecording('stop')}
         onChangeMicrophone={() => {}} // Add proper handler
@@ -60,6 +81,7 @@ export const MainContent = ({
         onSaveYoutubeSettings={onChangeYoutubeSettings}
         speakers={speakers}
         stream={recording.stream}
+        onShare={handleShare}
       />
 
       <Box sx={{ padding: 2 }}>

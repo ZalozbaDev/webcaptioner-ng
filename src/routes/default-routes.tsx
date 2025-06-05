@@ -8,6 +8,7 @@ const Login = lazy(() => import('../features/auth/login'))
 // const Register = lazy(() => import('../features/authentication/register'))
 // const VerifyCode = lazy(() => import('../features/authentication/verify-code'))
 const GuestGuard = lazy(() => import('../components/guards/guest-guard'))
+const CastScreen = lazy(() => import('../features/cast-screen'))
 
 // const Imprint = lazy(() => import('../features/imprint'))
 // const DataProtection = lazy(() => import('../features/data-protection'))
@@ -53,6 +54,14 @@ export const defaultRoutes = [
       //   element: <VerifyCode />
       // }
     ],
+  },
+  {
+    path: 'cast',
+    element: <CastScreen />,
+  },
+  {
+    path: 'cast/:token',
+    element: <CastScreen />,
   },
   {
     path: 'login',

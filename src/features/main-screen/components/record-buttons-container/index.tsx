@@ -3,6 +3,7 @@ import {
   Settings as SettingsIcon,
   Stop,
   YouTube,
+  Share,
 } from '@mui/icons-material'
 import { Box, Button, IconButton, Typography } from '@mui/material'
 import { FC, useEffect, useMemo, useState } from 'react'
@@ -17,6 +18,7 @@ export const RecordButtonsContainer: FC<{
   stream: MediaStream | null
   isDisabled: { record: boolean; pause: boolean; stop: boolean }
   isRecording: boolean
+  isQrCodeVisible: boolean
   settings: Settings
   onChangeSetting: (key: keyof Settings, value: any) => void
   onPressRecord: () => void
@@ -27,11 +29,13 @@ export const RecordButtonsContainer: FC<{
   youtubeSettings: YoutubeSettings
   onSaveYoutubeSettings: (settings: YoutubeSettings) => void
   speakers: BamborakSpeaker[]
+  onShare: () => void
 }> = ({
   voskResponse,
   stream,
   isRecording,
   isDisabled,
+  isQrCodeVisible,
   settings,
   onChangeSetting,
   onPressRecord,
@@ -42,9 +46,9 @@ export const RecordButtonsContainer: FC<{
   youtubeSettings,
   onSaveYoutubeSettings,
   speakers,
+  onShare,
 }) => {
   const [totalTime, setTotalTime] = useState<number>(0)
-
   const [settingsAnchorEl, setSettingsAnchorEl] = useState<null | HTMLElement>(
     null
   )
@@ -160,6 +164,12 @@ export const RecordButtonsContainer: FC<{
         </Typography>
 
         <Box>
+          <IconButton
+            sx={{ color: isQrCodeVisible ? 'black' : 'white' }}
+            onClick={onShare}
+          >
+            <Share />
+          </IconButton>
           <IconButton sx={{ color: 'white' }} onClick={handleYoutubeOpen}>
             <YouTube />
           </IconButton>
@@ -198,24 +208,6 @@ export const RecordButtonsContainer: FC<{
           <Mic fontSize='small' />
           <Typography variant='body2'>Start</Typography>
         </Button>
-        {/* <Button
-          onClick={onPressPause}
-          disabled={isDisabled.pause}
-          size='large'
-          sx={{
-            '&.Mui-disabled': { color: 'gray', borderColor: 'white' },
-            color: 'white',
-            height: 40,
-            borderColor: 'white',
-            borderTop: 2,
-            borderLeft: 1,
-            borderRight: 1,
-            borderRadius: 0,
-          }}
-        >
-          <Pause fontSize='small' />
-          <Typography variant='body2'>Přestawka</Typography>
-        </Button> */}
         <Button
           onClick={() => {
             onPressStop()
