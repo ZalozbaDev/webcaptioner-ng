@@ -48,10 +48,7 @@ const CastScreen = () => {
     return saved ? parseInt(saved) : 50
   })
   const [isDragging, setIsDragging] = useState(false)
-  const [windowWidth, setWindowWidth] = useState(() => {
-    const saved = localStorage.getItem('castScreenWindowWidth')
-    return saved ? parseInt(saved) : 90 // Default to 90% of screen width
-  })
+
   const [fullscreenField, setFullscreenField] = useState<
     'none' | 'original' | 'translated'
   >('none')
@@ -68,10 +65,6 @@ const CastScreen = () => {
   useEffect(() => {
     localStorage.setItem('castScreenTextFieldSize', textFieldSize.toString())
   }, [textFieldSize])
-
-  useEffect(() => {
-    localStorage.setItem('castScreenWindowWidth', windowWidth.toString())
-  }, [windowWidth])
 
   useEffect(() => {
     if (autoscroll) {
@@ -315,7 +308,7 @@ const CastScreen = () => {
     <Container
       maxWidth={false}
       sx={{
-        width: `${windowWidth}%`,
+        width: '95%',
         maxWidth: 'none',
         margin: '0 auto',
       }}
@@ -365,35 +358,6 @@ const CastScreen = () => {
             size='small'
             sx={{ color: 'black' }}
             disabled={fontSize >= 128}
-          >
-            <ZoomIn />
-          </IconButton>
-        </Box>
-
-        {/* Window Width Controls */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Typography variant='body2' sx={{ color: 'black', fontWeight: 500 }}>
-            Width:
-          </Typography>
-          <IconButton
-            onClick={() => setWindowWidth(prev => Math.max(50, prev - 10))}
-            size='small'
-            sx={{ color: 'black' }}
-            disabled={windowWidth <= 50}
-          >
-            <ZoomOut />
-          </IconButton>
-          <Typography
-            variant='body2'
-            sx={{ color: 'black', minWidth: '40px', textAlign: 'center' }}
-          >
-            {windowWidth}%
-          </Typography>
-          <IconButton
-            onClick={() => setWindowWidth(prev => Math.min(95, prev + 10))}
-            size='small'
-            sx={{ color: 'black' }}
-            disabled={windowWidth >= 95}
           >
             <ZoomIn />
           </IconButton>
