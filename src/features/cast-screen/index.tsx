@@ -83,6 +83,18 @@ const CastScreen = () => {
         '[data-text-field="translated"]'
       )
 
+      // If in fullscreen mode, scroll the fullscreen container instead
+      if (fullscreenField === 'original' || fullscreenField === 'translated') {
+        const fullscreenContainer = document.querySelector(
+          '[data-fullscreen-content]'
+        )
+        if (fullscreenContainer) {
+          fullscreenContainer.scrollTop = fullscreenContainer.scrollHeight
+          return
+        }
+      }
+
+      // Normal mode - scroll both containers
       if (originalTextContainer) {
         originalTextContainer.scrollTop = originalTextContainer.scrollHeight
       }
@@ -90,7 +102,7 @@ const CastScreen = () => {
         translatedTextContainer.scrollTop = translatedTextContainer.scrollHeight
       }
     }
-  }, [cast?.originalText, cast?.translatedText, autoscroll])
+  }, [cast?.originalText, cast?.translatedText, autoscroll, fullscreenField])
 
   const increaseFontSize = () => {
     setFontSize(prev => Math.min(128, prev + 2))
@@ -480,6 +492,7 @@ const CastScreen = () => {
                 },
               },
             }}
+            data-fullscreen-content
           >
             {(fullscreenField === 'original'
               ? cast.originalText
