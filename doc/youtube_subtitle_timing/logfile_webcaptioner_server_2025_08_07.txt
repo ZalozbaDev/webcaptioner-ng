@@ -1,0 +1,611 @@
+Attaching to webcaptioner-ng_webcaptioner-ng-back_1
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T07:12:30.158793619Z /webcaptioner-ng-back /
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T07:12:30.173870071Z /
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T07:12:30.632003163Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T07:12:30.632022800Z > webcaptioner_server@1.0.0 dev
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T07:12:30.632026126Z > nodemon src/index.ts
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T07:12:30.632029408Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T07:12:30.761400404Z [33m[nodemon] 3.1.3[39m
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T07:12:30.761796921Z [33m[nodemon] to restart at any time, enter `rs`[39m
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T07:12:30.762314804Z [33m[nodemon] watching path(s): *.*[39m
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T07:12:30.762378160Z [33m[nodemon] watching extensions: ts,json[39m
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T07:12:30.762767981Z [32m[nodemon] starting `ts-node src/index.ts`[39m
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T07:12:34.506773552Z Server running at PORT:  4000
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T07:12:34.555098177Z 🚀 Connected to MongoDB
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T07:13:14.018223231Z Connecting ...
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T07:13:14.021613613Z Connection to Websocket established 🚀
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T07:13:54.785143133Z Disconnected from server
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T07:14:46.816470602Z Connecting ...
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T07:14:46.819662542Z Connection to Websocket established 🚀
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T07:14:59.795930641Z Disconnected from server
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T07:15:09.978006919Z Connecting ...
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T07:15:09.982058237Z Connection to Websocket established 🚀
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T07:15:13.122712223Z Disconnected from server
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T07:15:25.855129757Z Connecting ...
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T07:15:25.858920593Z Connection to Websocket established 🚀
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T07:15:41.717585473Z Disconnected from server
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T07:50:27.859840906Z Connecting ...
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T07:50:27.863541202Z Connection to Websocket established 🚀
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T07:50:49.091921531Z Disconnected from server
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:19:38.066823476Z Connecting ...
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:19:38.070667125Z Connection to Websocket established 🚀
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:19:49.382714033Z Disconnected from server
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:14.591354716Z Connecting ...
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:14.592455149Z Connection to Websocket established 🚀
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:14.999744622Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:14.999781894Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:14.999786609Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:14.999790938Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=2',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:14.999795552Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:14.999799544Z   data: '2025-08-07T11:20:16.810 region:reg1#cue1\n' +
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:14.999802914Z     '... -whisper-Korla-Whisper _ large _ v3 _ turbo _ hsb-gml-Model-bin…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:14.999807637Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:15.096798028Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:15.096838205Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:15.096841686Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:15.096844976Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=3',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:15.096847947Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:15.096850263Z   data: '2025-08-07T11:20:16.927 region:reg1#cue1\n' +
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:15.096852806Z     '.. -whisper-Korla-Whisper _ large _ v3 _ turbo _ hsb-gml-Model-bin…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:15.096856070Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:15.185594757Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:15.185630072Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:15.185634682Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:15.185649834Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=3',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:15.185652853Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:15.185659563Z   data: '2025-08-07T11:20:17.018 region:reg1#cue1\n' +
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:15.185662423Z     '.-whisper-Korla-Whisper _ large _ v3 _ turbo _ hsb-gml-Model-bin…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:15.185666061Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:15.736960095Z Youtube OK 2025-08-07T11:20:15.682
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:15.737020738Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:15.900156640Z Youtube OK 2025-08-07T11:20:15.846
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:15.900200408Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:16.065035977Z Youtube OK 2025-08-07T11:20:16.011
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:16.065077960Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:28.551844340Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:28.551862825Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:28.551865586Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:28.551867752Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=4',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:28.551870101Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:28.551872248Z   data: '2025-08-07T11:20:34.368 region:reg1#cue1\nThank you…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:28.551874863Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:29.292764385Z Youtube OK 2025-08-07T11:20:29.238
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:29.292830266Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:30.473653371Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:30.473674509Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:30.473677165Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:30.473679284Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=5',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:30.473681606Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:30.473683804Z   data: '2025-08-07T11:20:36.778 region:reg1#cue1\nThank you…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:30.473686778Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:30.713898713Z Youtube OK 2025-08-07T11:20:30.659
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:30.713991549Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:32.007452206Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:32.007472446Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:32.007475022Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:32.007476955Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=6',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:32.007479089Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:32.007480845Z   data: '2025-08-07T11:20:38.142 region:reg1#cue1\nThank you…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:32.007483060Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:32.242939628Z Youtube OK 2025-08-07T11:20:32.188
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:32.242990221Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:36.827105730Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:36.827157313Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:36.827166203Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:36.827172613Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=7',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:36.827179458Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:36.827185732Z   data: '2025-08-07T11:20:43.078 region:reg1#cue1\nThank you…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:36.827193029Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:37.071100319Z Youtube OK 2025-08-07T11:20:37.014
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:37.071151746Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:38.263630381Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:38.263656375Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:38.263659416Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:38.263661591Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=8',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:38.263664221Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:38.263666353Z   data: '2025-08-07T11:20:44.218 region:reg1#cue1\nThank you…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:38.263669358Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:38.500675123Z Youtube OK 2025-08-07T11:20:38.446
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:38.500734932Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:42.197323970Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:42.197349653Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:42.197366093Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:42.197368794Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=9',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:42.197371527Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:42.197373889Z   data: '2025-08-07T11:20:47.819 region:reg1#cue1\nThank you…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:42.197376931Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:42.441714429Z Youtube OK 2025-08-07T11:20:42.388
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:42.441750455Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:45.065081145Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:45.065102410Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:45.065104838Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:45.065106745Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=10',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:45.065120252Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:45.065122239Z   data: '2025-08-07T11:20:50.968 region:reg1#cue1\nEiner…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:45.065124639Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:45.303417392Z Youtube OK 2025-08-07T11:20:45.249
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:45.303476440Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:47.565647999Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:47.565670340Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:47.565674109Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:47.565677386Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=11',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:47.565680547Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:47.565683422Z   data: '2025-08-07T11:20:53.689 region:reg1#cue1\nZwei…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:47.565687140Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:47.802918371Z Youtube OK 2025-08-07T11:20:47.748
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:47.802962686Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:50.355351025Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:50.355373782Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:50.355378370Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:50.355397060Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=12',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:50.355400687Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:50.355403697Z   data: '2025-08-07T11:20:56.418 region:reg1#cue1\nDrei…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:50.355407618Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:50.596805504Z Youtube OK 2025-08-07T11:20:50.543
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:50.596836434Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:53.119351977Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:53.119367410Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:53.119370678Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:53.119373270Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=13',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:53.119376005Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:53.119378637Z   data: '2025-08-07T11:20:59.278 region:reg1#cue1\nVier…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:53.119381531Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:53.356547483Z Youtube OK 2025-08-07T11:20:53.302
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:53.356600937Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:55.730279176Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:55.730311704Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:55.730318651Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:55.730322876Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=14',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:55.730326850Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:55.730330509Z   data: '2025-08-07T11:21:02.098 region:reg1#cue1\nFünf…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:55.730347579Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:55.970447604Z Youtube OK 2025-08-07T11:20:55.917
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:55.970470979Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:20:58.439077470Z Disconnected from server
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:06.440849619Z Connecting ...
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:06.444061832Z Connection to Websocket established 🚀
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:06.847291892Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:06.847355081Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:06.847358872Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:06.847361661Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=2',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:06.847364716Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:06.847367026Z   data: '2025-08-07T11:21:08.656 region:reg1#cue1\n' +
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:06.847369471Z     '... -whisper-Korla-Whisper _ large _ v3 _ turbo _ hsb-gml-Model-bin…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:06.847372618Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:06.941268779Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:06.941316529Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:06.941323017Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:06.941327031Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=3',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:06.941330972Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:06.941334843Z   data: '2025-08-07T11:21:08.774 region:reg1#cue1\n' +
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:06.941338256Z     '.. -whisper-Korla-Whisper _ large _ v3 _ turbo _ hsb-gml-Model-bin…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:06.941341918Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:07.027819045Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:07.027846869Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:07.027849436Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:07.027851331Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=3',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:07.027853404Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:07.027855184Z   data: '2025-08-07T11:21:08.860 region:reg1#cue1\n' +
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:07.027857079Z     '.-whisper-Korla-Whisper _ large _ v3 _ turbo _ hsb-gml-Model-bin…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:07.027859740Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:07.590659356Z Youtube OK 2025-08-07T11:21:07.536
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:07.590715823Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:07.751888219Z Youtube OK 2025-08-07T11:21:07.699
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:07.751917935Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:07.841764608Z Youtube OK 2025-08-07T11:21:07.789
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:07.841779911Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:08.412751104Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:08.412769764Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:08.412772060Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:08.412774004Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=4',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:08.412788653Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:08.412800677Z   data: '2025-08-07T11:21:14.820 region:reg1#cue1\nThank you…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:08.412803275Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:08.646014380Z Youtube OK 2025-08-07T11:21:08.591
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:08.646068075Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:09.959887174Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:09.959929899Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:09.959932341Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:09.959934306Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=5',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:09.959936346Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:09.959938156Z   data: '2025-08-07T11:21:16.259 region:reg1#cue1\nEiner…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:09.959940389Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:10.197454893Z Youtube OK 2025-08-07T11:21:10.143
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:10.197498406Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:12.288819416Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:12.288842111Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:12.288845259Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:12.288847767Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=6',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:12.288850464Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:12.288852909Z   data: '2025-08-07T11:21:18.478 region:reg1#cue1\nEiner…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:12.288855858Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:12.527102225Z Youtube OK 2025-08-07T11:21:12.473
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:12.527157685Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:21:13.787248358Z Disconnected from server
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:12.529004410Z Connecting ...
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:12.532426935Z Connection to Websocket established 🚀
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:12.941247482Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:12.941280501Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:12.941290160Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:12.941294528Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=2',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:12.941299335Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:12.941319104Z   data: '2025-08-07T11:22:14.757 region:reg1#cue1\n' +
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:12.941324362Z     '... -whisper-Korla-Whisper _ large _ v3 _ turbo _ hsb-gml-Model-bin…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:12.941329583Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:13.028158024Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:13.028203007Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:13.028208648Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:13.028212875Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=3',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:13.028217143Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:13.028220947Z   data: '2025-08-07T11:22:14.861 region:reg1#cue1\n' +
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:13.028224960Z     '.. -whisper-Korla-Whisper _ large _ v3 _ turbo _ hsb-gml-Model-bin…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:13.028252010Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:13.126738948Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:13.126770401Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:13.126775376Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:13.126778586Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=3',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:13.126782710Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:13.126786301Z   data: '2025-08-07T11:22:14.961 region:reg1#cue1\n' +
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:13.126789908Z     '.-whisper-Korla-Whisper _ large _ v3 _ turbo _ hsb-gml-Model-bin…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:13.126793370Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:13.680355979Z Youtube OK 2025-08-07T11:22:13.627
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:13.680395038Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:13.863280863Z Youtube OK 2025-08-07T11:22:13.809
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:13.863371730Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:13.995793925Z Youtube OK 2025-08-07T11:22:13.941
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:13.995839374Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:15.062997402Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:15.063015052Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:15.063019155Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:15.063022037Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=4',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:15.063025193Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:15.063028059Z   data: '2025-08-07T11:22:21.177 region:reg1#cue1\nThank you…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:15.063031224Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:15.303528146Z Youtube OK 2025-08-07T11:22:15.249
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:15.303585421Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:17.149030669Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:17.149053932Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:17.149057924Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:17.149060933Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=5',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:17.149063988Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:17.149066794Z   data: '2025-08-07T11:22:23.218 region:reg1#cue1\nAlso…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:17.149070490Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:17.392572457Z Youtube OK 2025-08-07T11:22:17.338
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:17.392591807Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:21.043679223Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:21.043705054Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:21.043707878Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:21.043709872Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=6',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:21.043712293Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:21.043714215Z   data: '2025-08-07T11:22:26.208 region:reg1#cue1\nWir fangen nochmal an…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:21.043727490Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:21.287288423Z Youtube OK 2025-08-07T11:22:21.233
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:21.287383471Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:26.081446878Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:26.081488694Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:26.081492124Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:26.081495268Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=7',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:26.081498511Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:26.081501678Z   data: '2025-08-07T11:22:30.558 region:reg1#cue1\nJetzt haben wir Offset Null…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:26.081504903Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:26.321280040Z Youtube OK 2025-08-07T11:22:26.268
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:26.321297160Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:31.278198131Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:31.278223928Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:31.278227446Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:31.278230003Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=8',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:31.278232815Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:31.278235301Z   data: '2025-08-07T11:22:35.638 region:reg1#cue1\nUnd wir mal achten darauf…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:31.278238921Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:31.517525342Z Youtube OK 2025-08-07T11:22:31.463
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:31.517591890Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:36.115405527Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:36.115426703Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:36.115429302Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:36.115431642Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=9',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:36.115434202Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:36.115436331Z   data: '2025-08-07T11:22:40.518 region:reg1#cue1\nWie der Timinger wirklich ist…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:36.115438893Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:36.354441654Z Youtube OK 2025-08-07T11:22:36.301
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:36.354469125Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:41.077866352Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:41.077890476Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:41.077893520Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:41.077896017Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=10',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:41.077898659Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:41.077901001Z   data: '2025-08-07T11:22:47.238 region:reg1#cue1\nUnd…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:41.077903820Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:41.320707760Z Youtube OK 2025-08-07T11:22:41.267
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:41.320737224Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:46.981883461Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:46.981905074Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:46.981918570Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:46.981920798Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=11',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:46.981922982Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:46.981925028Z   data: '2025-08-07T11:22:51.708 region:reg1#cue1\nWie man da dann…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:46.981927786Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:47.714923165Z Youtube OK 2025-08-07T11:22:47.660
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:47.714967230Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:48.211262450Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:48.211282070Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:48.211285518Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:48.211288425Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=12',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:48.211291384Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:48.211294069Z   data: '2025-08-07T11:22:54.517 region:reg1#cue1\nHinweis…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:48.211298467Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:48.447296385Z Youtube OK 2025-08-07T11:22:48.393
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:48.447399025Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:51.878234756Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:51.878257140Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:51.878260813Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:51.878263958Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=13',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:51.878267283Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:51.878270336Z   data: '2025-08-07T11:22:58.128 region:reg1#cue1\nWas…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:51.878273898Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:52.116817379Z Youtube OK 2025-08-07T11:22:52.062
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:52.116869009Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:54.399740520Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:54.399754455Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:54.399757618Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:54.399760211Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=14',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:54.399763136Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:54.399765644Z   data: '2025-08-07T11:23:00.558 region:reg1#cue1\nDamit…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:54.399768602Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:54.635585395Z Youtube OK 2025-08-07T11:22:54.581
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:22:54.635632184Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:02.907772636Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:02.907823895Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:02.907828489Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:02.907832076Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=15',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:02.907836023Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:02.907839214Z   data: '2025-08-07T11:23:03.418 region:reg1#cue1\n' +
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:02.907867575Z     'Wird wenn ich die Potitle und das Logo und das alles auswerte…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:02.907870925Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:03.650034936Z Youtube OK 2025-08-07T11:23:03.596
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:03.650062362Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:06.139208865Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:06.139227107Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:06.139229691Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:06.139231828Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=16',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:06.139234158Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:06.139236422Z   data: '2025-08-07T11:23:12.242 region:reg1#cue1\nThank you…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:06.139239027Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:06.381299801Z Youtube OK 2025-08-07T11:23:06.326
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:06.381373715Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:10.618552280Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:10.618573667Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:10.618576544Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:10.618578555Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=17',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:10.618580636Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:10.618582509Z   data: '2025-08-07T11:23:16.798 region:reg1#cue1\nThank you…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:10.618584877Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:10.884173865Z Youtube OK 2025-08-07T11:23:10.830
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:10.884226982Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:16.940142134Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:16.940188437Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:16.940190818Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:16.940192729Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=18',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:16.940194811Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:16.940196599Z   data: '2025-08-07T11:23:19.437 region:reg1#cue1\nIch bin mal sehr neugierig…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:16.940198908Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:17.678122123Z Youtube OK 2025-08-07T11:23:17.623
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:17.678176368Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:19.117346758Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:19.117372167Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:19.117376441Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:19.117380076Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=19',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:19.117384030Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:19.117387675Z   data: '2025-08-07T11:23:24.717 region:reg1#cue1\nWie man sich…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:19.117391717Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:19.359775227Z Youtube OK 2025-08-07T11:23:19.305
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:19.359855359Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:21.155784042Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:21.155804456Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:21.155806819Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:21.155808708Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=20',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:21.155810781Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:21.155812568Z   data: '2025-08-07T11:23:27.477 region:reg1#cue1\nDas…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:21.155814791Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:21.402302025Z Youtube OK 2025-08-07T11:23:21.348
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:21.402399297Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:26.393515815Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:26.393537037Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:26.393539821Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:26.393542092Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=21',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:26.393544789Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:26.393547072Z   data: '2025-08-07T11:23:32.028 region:reg1#cue1\nZusammen…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:26.393550137Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:26.631827608Z Youtube OK 2025-08-07T11:23:26.577
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:26.631878967Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:28.762504122Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:28.762546429Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:28.762548702Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:28.762550731Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=22',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:28.762552825Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:28.762554655Z   data: '2025-08-07T11:23:34.257 region:reg1#cue1\nIn diesen Untertiteln…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:28.762556916Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:29.005373304Z Youtube OK 2025-08-07T11:23:28.952
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:29.005398328Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:31.607445802Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:31.607465819Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:31.607468194Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:31.607470118Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=23',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:31.607472427Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:31.607474301Z   data: '2025-08-07T11:23:36.747 region:reg1#cue1\nSchlägt nicht oder…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:31.607476852Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:31.842556097Z Youtube OK 2025-08-07T11:23:31.789
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:31.842574153Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:33.362608762Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:33.362628883Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:33.362643920Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:33.362645941Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=24',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:33.362657937Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:33.362660159Z   data: '2025-08-07T11:23:39.276 region:reg1#cue1\nWie sie es sind…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:33.362662734Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:33.602659684Z Youtube OK 2025-08-07T11:23:33.548
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:33.602714032Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:36.178373621Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:36.178398110Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:36.178401882Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:36.178404447Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=25',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:36.178419509Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:36.178421869Z   data: '2025-08-07T11:23:42.007 region:reg1#cue1\nKombiniert…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:36.178425069Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:36.435947445Z Youtube OK 2025-08-07T11:23:36.382
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:36.435974442Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:37.920494406Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:37.920514167Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:37.920516953Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:37.920519250Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=26',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:37.920521753Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:37.920523962Z   data: '2025-08-07T11:23:43.926 region:reg1#cue1\nOder auch…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:37.920526628Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:38.165121297Z Youtube OK 2025-08-07T11:23:38.110
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:38.165174020Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:39.338646866Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:39.338687142Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:39.338689494Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:39.338691434Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=27',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:39.338693514Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:39.338695336Z   data: '2025-08-07T11:23:45.027 region:reg1#cue1\nZerstückel…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:39.338697892Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:39.585743914Z Youtube OK 2025-08-07T11:23:39.531
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:39.585793470Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:40.875424366Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:40.875447747Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:40.875464042Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:40.875467077Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=28',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:40.875470050Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:40.875472778Z   data: '2025-08-07T11:23:46.607 region:reg1#cue1\nRosendorn…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:40.875475801Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:41.131253715Z Youtube OK 2025-08-07T11:23:41.078
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:41.131280146Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:42.496497206Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:42.496539984Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:42.496543655Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:42.496546999Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=29',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:42.496550232Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:42.496553326Z   data: '2025-08-07T11:23:48.218 region:reg1#cue1\nzerhackt…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:42.496556271Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:42.704295818Z Youtube OK 2025-08-07T11:23:42.650
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:42.704377013Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:43.893868762Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:43.893894656Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:43.893897503Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:43.893899887Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=30',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:43.893902252Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:43.893906880Z   data: '2025-08-07T11:23:49.777 region:reg1#cue1\nIch weiß nicht was…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:43.893909979Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:44.103775434Z Youtube OK 2025-08-07T11:23:44.049
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:44.103821622Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:46.186778663Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:46.186799732Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:46.186802294Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:46.186804390Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=31',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:46.186806654Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:46.186808674Z   data: '2025-08-07T11:23:51.737 region:reg1#cue1\nWas alles möglich ist…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:46.186811288Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:46.394168325Z Youtube OK 2025-08-07T11:23:46.339
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:46.394220448Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:47.777456404Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:47.777492698Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:47.777496174Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:47.777498697Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=32',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:47.777501473Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:47.777504075Z   data: '2025-08-07T11:23:53.966 region:reg1#cue1\nAber…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:47.777507061Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:47.998567193Z Youtube OK 2025-08-07T11:23:47.944
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:47.998622023Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:49.818344820Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:49.818378029Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:49.818383899Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:49.818404959Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=33',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:49.818410329Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:49.818414448Z   data: '2025-08-07T11:23:55.436 region:reg1#cue1\nWir werden es sehen…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:49.818419653Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:50.035573881Z Youtube OK 2025-08-07T11:23:49.982
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:50.035593481Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:53.483367775Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:53.483405427Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:53.483408158Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:53.483410037Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=34',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:53.483412075Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:53.483413794Z   data: '2025-08-07T11:23:57.557 region:reg1#cue1\n' +
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:53.483415578Z     'Ich hoffe nur, dass ich hier genug habe…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:53.483418113Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:53.724017818Z Youtube OK 2025-08-07T11:23:53.668
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:53.724078014Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:55.682380758Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:55.682430511Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:55.682446908Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:55.682460788Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=35',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:55.682472814Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:55.682482173Z   data: '2025-08-07T11:24:01.366 region:reg1#cue1\nGenug morto ist holo…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:55.682492787Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:55.918756885Z Youtube OK 2025-08-07T11:23:55.864
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:55.918812092Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:57.170280473Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:57.170298608Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:57.170313014Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:57.170317732Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=36',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:57.170321383Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:57.170324576Z   data: '2025-08-07T11:24:03.337 region:reg1#cue1\nDass das…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:57.170328372Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:57.408854710Z Youtube OK 2025-08-07T11:23:57.354
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:57.408910448Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:58.970759452Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:58.970784395Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:58.970803930Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:58.970807708Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=37',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:58.970811817Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:58.970838904Z   data: '2025-08-07T11:24:04.936 region:reg1#cue1\nDamit wir…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:58.970843298Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:59.202205144Z Youtube OK 2025-08-07T11:23:59.149
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:23:59.202226480Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:01.561288589Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:01.561360907Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:01.561371785Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:01.561379047Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=38',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:01.561386336Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:01.561393059Z   data: '2025-08-07T11:24:06.929 region:reg1#cue1\nIn diesem ganzen Rhythmus…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:01.561400928Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:01.800723524Z Youtube OK 2025-08-07T11:24:01.746
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:01.800790945Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:04.337381886Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:04.337403592Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:04.337405884Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:04.337407707Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=39',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:04.337409691Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:04.337411467Z   data: '2025-08-07T11:24:10.057 region:reg1#cue1\nEtwas gefunden…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:04.337413892Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:04.572632226Z Youtube OK 2025-08-07T11:24:04.518
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:04.572682377Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:07.449290895Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:07.449344081Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:07.449349642Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:07.449352437Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=40',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:07.449367832Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:07.449370075Z   data: '2025-08-07T11:24:12.587 region:reg1#cue1\nWas ausgewertet werden mag das…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:07.449373179Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:07.682349428Z Youtube OK 2025-08-07T11:24:07.628
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:07.682391799Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:08.856435608Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:08.856456870Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:08.856473494Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:08.856475368Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=41',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:08.856477679Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:08.856479466Z   data: '2025-08-07T11:24:15.036 region:reg1#cue1\nThank you…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:08.856481693Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:09.090734578Z Youtube OK 2025-08-07T11:24:09.036
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:09.090780614Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:11.684662364Z {
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:11.684684659Z   method: 'post',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:11.684687246Z   maxBodyLength: Infinity,
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:11.684689062Z   url: 'http://upload.youtube.com/closedcaption?cid=g4ue-4c83-xcjz-2xft-dam9&seq=42',
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:11.684691049Z   headers: { 'Content-Type': 'text/plain' },
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:11.684692796Z   data: '2025-08-07T11:24:16.456 region:reg1#cue1\n' +
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:11.684694766Z     'Daher werden wir hier sehr optimistisch sein…\n'
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:11.684697401Z }
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:11.927721236Z Youtube OK 2025-08-07T11:24:11.873
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:11.927785489Z 
+[36mwebcaptioner-ng-back_1           |[0m 2025-08-07T11:24:12.689754490Z Disconnected from server
