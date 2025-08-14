@@ -2,35 +2,49 @@ import { Box } from '@mui/material'
 
 interface DraggableDividerProps {
   onMouseDown: (e: React.MouseEvent) => void
+  onTouchStart: (e: React.TouchEvent) => void
   isDragging: boolean
   textFieldSize: number
 }
 
 export const DraggableDivider = ({
   onMouseDown,
+  onTouchStart,
   isDragging,
   textFieldSize,
 }: DraggableDividerProps) => {
   return (
     <Box
       sx={{
-        height: '12px',
+        height: { xs: '20px', sm: '12px' }, // Larger touch area on mobile
         cursor: 'ns-resize',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         position: 'relative',
         transition: 'background-color 0.2s ease',
+        touchAction: 'none', // Prevent default touch behaviors
+        '&:hover': {
+          '&::before': {
+            backgroundColor: 'rgba(150, 150, 150, 0.8)',
+          },
+        },
+        '&:active': {
+          '&::before': {
+            backgroundColor: 'rgba(100, 100, 100, 0.9)',
+          },
+        },
         '&::before': {
           content: '""',
-          width: '50px',
-          height: '6px',
+          width: { xs: '60px', sm: '50px' }, // Wider on mobile for better touch target
+          height: { xs: '8px', sm: '6px' }, // Slightly taller on mobile
           backgroundColor: 'rgba(207, 207, 207, 0.602)',
-          borderRadius: '3px',
+          borderRadius: { xs: '4px', sm: '3px' },
           transition: 'background-color 0.2s ease',
         },
       }}
       onMouseDown={onMouseDown}
+      onTouchStart={onTouchStart}
       title='Drag to resize text fields'
     >
       {/* Size indicator during dragging */}
