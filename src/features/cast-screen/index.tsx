@@ -288,6 +288,17 @@ const CastScreen = () => {
         originalText={cast.originalText}
         translatedText={cast.translatedText}
         originalFontSize={originalFontSize}
+        translatedFontSize={translatedFontSize}
+        onIncreaseFontSize={
+          fullscreenField === 'original'
+            ? increaseOriginalFontSize
+            : increaseTranslatedFontSize
+        }
+        onDecreaseFontSize={
+          fullscreenField === 'original'
+            ? decreaseOriginalFontSize
+            : decreaseTranslatedFontSize
+        }
       />
 
       {/* Vertical Text Fields with Draggable Divider */}

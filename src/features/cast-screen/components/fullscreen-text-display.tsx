@@ -1,5 +1,5 @@
 import { Box, Typography, IconButton } from '@mui/material'
-import { FullscreenExit } from '@mui/icons-material'
+import { FullscreenExit, ZoomIn, ZoomOut } from '@mui/icons-material'
 
 interface FullscreenTextDisplayProps {
   fullscreenField: 'none' | 'original' | 'translated'
@@ -7,6 +7,9 @@ interface FullscreenTextDisplayProps {
   originalText: string[]
   translatedText: string[]
   originalFontSize: number
+  translatedFontSize: number
+  onIncreaseFontSize: () => void
+  onDecreaseFontSize: () => void
 }
 
 export const FullscreenTextDisplay = ({
@@ -15,11 +18,16 @@ export const FullscreenTextDisplay = ({
   originalText,
   translatedText,
   originalFontSize,
+  translatedFontSize,
+  onIncreaseFontSize,
+  onDecreaseFontSize,
 }: FullscreenTextDisplayProps) => {
   if (fullscreenField === 'none') return null
 
   const texts = fullscreenField === 'original' ? originalText : translatedText
   const title = fullscreenField === 'original' ? 'Originalny tekst' : 'Přełožk'
+  const currentFontSize =
+    fullscreenField === 'original' ? originalFontSize : translatedFontSize
 
   return (
     <Box
@@ -49,18 +57,56 @@ export const FullscreenTextDisplay = ({
         <Typography variant='h5' sx={{ color: 'white', fontWeight: 600 }}>
           {title}
         </Typography>
-        <IconButton
-          onClick={() => setFullscreenField('none')}
-          size='large'
-          sx={{
-            color: 'white',
-            '&:hover': {
-              backgroundColor: 'rgba(255, 255, 255, 0.1)',
-            },
-          }}
-        >
-          <FullscreenExit />
-        </IconButton>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+          <Typography
+            variant='caption'
+            sx={{
+              color: 'rgba(255, 255, 255, 0.8)',
+              fontSize: '0.8rem',
+              fontWeight: 500,
+              minWidth: '35px',
+              textAlign: 'center',
+            }}
+          >
+            {currentFontSize}px
+          </Typography>
+          <IconButton
+            onClick={onDecreaseFontSize}
+            size='small'
+            sx={{
+              color: 'rgba(255, 255, 255, 0.8)',
+              padding: '4px',
+              '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' },
+            }}
+            disabled={currentFontSize <= 12}
+          >
+            <ZoomOut sx={{ fontSize: '1.2rem' }} />
+          </IconButton>
+          <IconButton
+            onClick={onIncreaseFontSize}
+            size='small'
+            sx={{
+              color: 'rgba(255, 255, 255, 0.8)',
+              padding: '4px',
+              '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' },
+            }}
+            disabled={currentFontSize >= 128}
+          >
+            <ZoomIn sx={{ fontSize: '1.2rem' }} />
+          </IconButton>
+          <IconButton
+            onClick={() => setFullscreenField('none')}
+            size='large'
+            sx={{
+              color: 'white',
+              '&:hover': {
+                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              },
+            }}
+          >
+            <FullscreenExit />
+          </IconButton>
+        </Box>
       </Box>
 
       {/* Fullscreen Content - Text fields positioned over the background */}
@@ -106,7 +152,7 @@ export const FullscreenTextDisplay = ({
               sx={{
                 mb: 2,
                 color: 'rgba(255, 255, 255, 0.7)',
-                fontSize: `${originalFontSize * 0.8}px`,
+                fontSize: `${currentFontSize * 0.8}px`,
                 lineHeight: 1.6,
                 wordBreak: 'break-word',
                 overflowWrap: 'break-word',
@@ -153,8 +199,8 @@ export const FullscreenTextDisplay = ({
               sx={{
                 mb: 2,
                 color: 'black',
-                fontSize: `${originalFontSize}px`,
-                lineHeight: 1.6,
+                fontSize: `${currentFontSize}px`,
+                lineHeight: '1.6',
                 wordBreak: 'break-word',
                 overflowWrap: 'break-word',
                 whiteSpace: 'pre-wrap',
