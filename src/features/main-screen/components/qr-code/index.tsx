@@ -119,6 +119,19 @@ export const QRCode: FC<QRCodeProps> = ({ token, show }) => {
       >
         {token}
       </Typography>
+      <Typography
+        variant='caption'
+        sx={{
+          mt: 0.5,
+          color: 'primary.main',
+          fontSize: '0.75rem',
+          fontWeight: 500,
+          textAlign: 'center',
+          opacity: 0.8,
+        }}
+      >
+        Klik tule za powjetšenje
+      </Typography>
     </Box>
   )
 }

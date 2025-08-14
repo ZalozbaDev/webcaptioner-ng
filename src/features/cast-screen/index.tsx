@@ -35,8 +35,12 @@ const CastScreen = () => {
   const [error, setError] = useState<string | null>(null)
   const [inputToken, setInputToken] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [fontSize, setFontSize] = useState(() => {
-    const saved = localStorage.getItem('castScreenFontSize')
+  const [originalFontSize, setOriginalFontSize] = useState(() => {
+    const saved = localStorage.getItem('castScreenOriginalFontSize')
+    return saved ? parseInt(saved) : 16
+  })
+  const [translatedFontSize, setTranslatedFontSize] = useState(() => {
+    const saved = localStorage.getItem('castScreenTranslatedFontSize')
     return saved ? parseInt(saved) : 16
   })
   const [autoscroll, setAutoscroll] = useState(() => {
@@ -48,18 +52,25 @@ const CastScreen = () => {
     return saved ? parseInt(saved) : 50
   })
   const [isDragging, setIsDragging] = useState(false)
-  const [windowWidth, setWindowWidth] = useState(() => {
-    const saved = localStorage.getItem('castScreenWindowWidth')
-    return saved ? parseInt(saved) : 90 // Default to 90% of screen width
-  })
+
   const [fullscreenField, setFullscreenField] = useState<
     'none' | 'original' | 'translated'
   >('none')
   const wsRef = useRef<WebSocket | null>(null)
 
   useEffect(() => {
-    localStorage.setItem('castScreenFontSize', fontSize.toString())
-  }, [fontSize])
+    localStorage.setItem(
+      'castScreenOriginalFontSize',
+      originalFontSize.toString()
+    )
+  }, [originalFontSize])
+
+  useEffect(() => {
+    localStorage.setItem(
+      'castScreenTranslatedFontSize',
+      translatedFontSize.toString()
+    )
+  }, [translatedFontSize])
 
   useEffect(() => {
     localStorage.setItem('castScreenAutoscroll', JSON.stringify(autoscroll))
@@ -68,10 +79,6 @@ const CastScreen = () => {
   useEffect(() => {
     localStorage.setItem('castScreenTextFieldSize', textFieldSize.toString())
   }, [textFieldSize])
-
-  useEffect(() => {
-    localStorage.setItem('castScreenWindowWidth', windowWidth.toString())
-  }, [windowWidth])
 
   useEffect(() => {
     if (autoscroll) {
@@ -83,6 +90,18 @@ const CastScreen = () => {
         '[data-text-field="translated"]'
       )
 
+      // If in fullscreen mode, scroll the fullscreen container instead
+      if (fullscreenField === 'original' || fullscreenField === 'translated') {
+        const fullscreenContainer = document.querySelector(
+          '[data-fullscreen-content]'
+        )
+        if (fullscreenContainer) {
+          fullscreenContainer.scrollTop = fullscreenContainer.scrollHeight
+          return
+        }
+      }
+
+      // Normal mode - scroll both containers
       if (originalTextContainer) {
         originalTextContainer.scrollTop = originalTextContainer.scrollHeight
       }
@@ -90,14 +109,22 @@ const CastScreen = () => {
         translatedTextContainer.scrollTop = translatedTextContainer.scrollHeight
       }
     }
-  }, [cast?.originalText, cast?.translatedText, autoscroll])
+  }, [cast?.originalText, cast?.translatedText, autoscroll, fullscreenField])
 
-  const increaseFontSize = () => {
-    setFontSize(prev => Math.min(128, prev + 2))
+  const increaseOriginalFontSize = () => {
+    setOriginalFontSize(prev => Math.min(128, prev + 2))
   }
 
-  const decreaseFontSize = () => {
-    setFontSize(prev => Math.max(12, prev - 2))
+  const decreaseOriginalFontSize = () => {
+    setOriginalFontSize(prev => Math.max(12, prev - 2))
+  }
+
+  const increaseTranslatedFontSize = () => {
+    setTranslatedFontSize(prev => Math.min(128, prev + 2))
+  }
+
+  const decreaseTranslatedFontSize = () => {
+    setTranslatedFontSize(prev => Math.max(12, prev - 2))
   }
 
   const handleDividerMouseDown = (e: React.MouseEvent) => {
@@ -117,8 +144,8 @@ const CastScreen = () => {
       const deltaY = moveEvent.clientY - startY
       const deltaPercentage = (deltaY / containerHeight) * 100
       const newTextFieldSize = Math.max(
-        25,
-        Math.min(75, startTextFieldSize + deltaPercentage)
+        10,
+        Math.min(90, startTextFieldSize + deltaPercentage)
       )
       setTextFieldSize(newTextFieldSize)
     }
@@ -303,96 +330,35 @@ const CastScreen = () => {
     <Container
       maxWidth={false}
       sx={{
-        width: `${windowWidth}%`,
+        width: '95%',
         maxWidth: 'none',
         margin: '0 auto',
+        position: 'relative',
       }}
     >
-      <Typography
-        variant='h5'
-        sx={{ color: 'white', mb: 3, textAlign: 'center' }}
-      >
-        {cast.title}
-      </Typography>
-
-      {/* Controls Section */}
+      {/* Top Controls */}
       <Box
         sx={{
+          position: 'absolute',
+          top: 0,
+          right: 16,
+          zIndex: 10,
           backgroundColor: 'rgba(255, 255, 255, 0.9)',
-          borderRadius: 2,
-          p: 2,
-          mb: 3,
+          borderRadius: '0 0 8px 8px',
+          padding: '8px 12px',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          gap: 2,
+          gap: 1,
         }}
       >
-        {/* Font Size Controls */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Typography variant='body2' sx={{ color: 'black', fontWeight: 500 }}>
-            Font size:
-          </Typography>
-          <IconButton
-            onClick={decreaseFontSize}
-            size='small'
-            sx={{ color: 'black' }}
-            disabled={fontSize <= 12}
-          >
-            <ZoomOut />
-          </IconButton>
-          <Typography
-            variant='body2'
-            sx={{ color: 'black', minWidth: '30px', textAlign: 'center' }}
-          >
-            {fontSize}px
-          </Typography>
-          <IconButton
-            onClick={increaseFontSize}
-            size='small'
-            sx={{ color: 'black' }}
-            disabled={fontSize >= 128}
-          >
-            <ZoomIn />
-          </IconButton>
-        </Box>
-
-        {/* Window Width Controls */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Typography variant='body2' sx={{ color: 'black', fontWeight: 500 }}>
-            Width:
-          </Typography>
-          <IconButton
-            onClick={() => setWindowWidth(prev => Math.max(50, prev - 10))}
-            size='small'
-            sx={{ color: 'black' }}
-            disabled={windowWidth <= 50}
-          >
-            <ZoomOut />
-          </IconButton>
-          <Typography
-            variant='body2'
-            sx={{ color: 'black', minWidth: '40px', textAlign: 'center' }}
-          >
-            {windowWidth}%
-          </Typography>
-          <IconButton
-            onClick={() => setWindowWidth(prev => Math.min(95, prev + 10))}
-            size='small'
-            sx={{ color: 'black' }}
-            disabled={windowWidth >= 95}
-          >
-            <ZoomIn />
-          </IconButton>
-        </Box>
-
         {/* Autoscroll Toggle */}
         <FormControlLabel
           control={
             <Switch
               checked={autoscroll}
               onChange={e => setAutoscroll(e.target.checked)}
+              size='small'
               sx={{
                 '& .MuiSwitch-switchBase.Mui-checked': {
                   color: '#1976d2',
@@ -400,19 +366,40 @@ const CastScreen = () => {
                 '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
                   backgroundColor: '#1976d2',
                 },
+                '& .MuiSwitch-root': {
+                  width: 32,
+                  height: 18,
+                },
+                '& .MuiSwitch-thumb': {
+                  width: 14,
+                  height: 14,
+                },
               }}
             />
           }
           label={
             <Typography
-              variant='body2'
-              sx={{ color: 'black', fontWeight: 500 }}
+              variant='caption'
+              sx={{
+                color: 'black',
+                fontWeight: 500,
+                fontSize: '0.75rem',
+                marginLeft: 0.5,
+              }}
             >
-              Auto-scroll
+              Auto
             </Typography>
           }
+          sx={{ margin: 0 }}
         />
       </Box>
+
+      <Typography
+        variant='h5'
+        sx={{ color: 'white', mb: 3, textAlign: 'center' }}
+      >
+        {cast.title}
+      </Typography>
 
       {/* Fullscreen Text Field View */}
       {fullscreenField !== 'none' && (
@@ -480,6 +467,7 @@ const CastScreen = () => {
                 },
               },
             }}
+            data-fullscreen-content
           >
             {(fullscreenField === 'original'
               ? cast.originalText
@@ -490,7 +478,7 @@ const CastScreen = () => {
                 sx={{
                   mb: 2,
                   color: 'black',
-                  fontSize: `${fontSize}px`,
+                  fontSize: `${originalFontSize}px`,
                   lineHeight: 1.6,
                   wordBreak: 'break-word',
                   overflowWrap: 'break-word',
@@ -545,22 +533,59 @@ const CastScreen = () => {
             >
               Originalny tekst
             </Typography>
-            <IconButton
-              onClick={() => toggleFullscreen('original')}
-              size='small'
-              sx={{
-                color: 'rgba(0, 0, 0, 0.6)',
-                '&:hover': {
-                  color: 'rgba(0, 0, 0, 0.8)',
-                },
-              }}
-            >
-              {fullscreenField === 'original' ? (
-                <FullscreenExit />
-              ) : (
-                <Fullscreen />
-              )}
-            </IconButton>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <Typography
+                variant='caption'
+                sx={{
+                  color: 'rgba(0, 0, 0, 0.6)',
+                  fontSize: '0.7rem',
+                  fontWeight: 500,
+                  minWidth: '30px',
+                  textAlign: 'center',
+                }}
+              >
+                {originalFontSize}px
+              </Typography>
+              <IconButton
+                onClick={decreaseOriginalFontSize}
+                size='small'
+                sx={{
+                  color: 'rgba(0, 0, 0, 0.6)',
+                  padding: '4px',
+                  '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.1)' },
+                }}
+                disabled={originalFontSize <= 12}
+              >
+                <ZoomOut sx={{ fontSize: '1rem' }} />
+              </IconButton>
+              <IconButton
+                onClick={increaseOriginalFontSize}
+                size='small'
+                sx={{
+                  color: 'rgba(0, 0, 0, 0.6)',
+                  padding: '4px',
+                  '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.1)' },
+                }}
+                disabled={originalFontSize >= 128}
+              >
+                <ZoomIn sx={{ fontSize: '1rem' }} />
+              </IconButton>
+              <IconButton
+                onClick={() => toggleFullscreen('original')}
+                size='small'
+                sx={{
+                  color: 'rgba(0, 0, 0, 0.6)',
+                  padding: '4px',
+                  '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.1)' },
+                }}
+              >
+                {fullscreenField === 'original' ? (
+                  <FullscreenExit sx={{ fontSize: '1rem' }} />
+                ) : (
+                  <Fullscreen sx={{ fontSize: '1rem' }} />
+                )}
+              </IconButton>
+            </Box>
           </Box>
           <Box
             data-text-field='original'
@@ -589,7 +614,7 @@ const CastScreen = () => {
                 sx={{
                   mb: 1,
                   color: 'black',
-                  fontSize: `${fontSize}px`,
+                  fontSize: `${originalFontSize}px`,
                   lineHeight: 1.6,
                   wordBreak: 'break-word',
                   overflowWrap: 'break-word',
@@ -680,22 +705,59 @@ const CastScreen = () => {
             >
               Přełožk
             </Typography>
-            <IconButton
-              onClick={() => toggleFullscreen('translated')}
-              size='small'
-              sx={{
-                color: 'rgba(0, 0, 0, 0.6)',
-                '&:hover': {
-                  color: 'rgba(0, 0, 0, 0.8)',
-                },
-              }}
-            >
-              {fullscreenField === 'translated' ? (
-                <FullscreenExit />
-              ) : (
-                <Fullscreen />
-              )}
-            </IconButton>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <Typography
+                variant='caption'
+                sx={{
+                  color: 'rgba(0, 0, 0, 0.6)',
+                  fontSize: '0.7rem',
+                  fontWeight: 500,
+                  minWidth: '30px',
+                  textAlign: 'center',
+                }}
+              >
+                {translatedFontSize}px
+              </Typography>
+              <IconButton
+                onClick={decreaseTranslatedFontSize}
+                size='small'
+                sx={{
+                  color: 'rgba(0, 0, 0, 0.6)',
+                  padding: '4px',
+                  '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.1)' },
+                }}
+                disabled={translatedFontSize <= 12}
+              >
+                <ZoomOut sx={{ fontSize: '1rem' }} />
+              </IconButton>
+              <IconButton
+                onClick={increaseTranslatedFontSize}
+                size='small'
+                sx={{
+                  color: 'rgba(0, 0, 0, 0.6)',
+                  padding: '4px',
+                  '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.1)' },
+                }}
+                disabled={translatedFontSize >= 128}
+              >
+                <ZoomIn sx={{ fontSize: '1rem' }} />
+              </IconButton>
+              <IconButton
+                onClick={() => toggleFullscreen('translated')}
+                size='small'
+                sx={{
+                  color: 'rgba(0, 0, 0, 0.6)',
+                  padding: '4px',
+                  '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.1)' },
+                }}
+              >
+                {fullscreenField === 'translated' ? (
+                  <FullscreenExit sx={{ fontSize: '1rem' }} />
+                ) : (
+                  <Fullscreen sx={{ fontSize: '1rem' }} />
+                )}
+              </IconButton>
+            </Box>
           </Box>
           <Box
             data-text-field='translated'
@@ -724,7 +786,7 @@ const CastScreen = () => {
                 sx={{
                   mb: 1,
                   color: 'black',
-                  fontSize: `${fontSize}px`,
+                  fontSize: `${translatedFontSize}px`,
                   lineHeight: 1.6,
                   wordBreak: 'break-word',
                   overflowWrap: 'break-word',
