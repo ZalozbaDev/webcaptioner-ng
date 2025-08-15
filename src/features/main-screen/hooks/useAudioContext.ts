@@ -20,7 +20,7 @@ export const useAudioContext = () => {
     }
   }
 
-  const playAudioData = async (audioData: ArrayBuffer) => {
+  const playAudioData = async (audioData: ArrayBuffer): Promise<void> => {
     if (!audioContext) {
       setAudioQueue(prev => [...prev, audioData])
       return
@@ -31,9 +31,17 @@ export const useAudioContext = () => {
       const source = audioContext.createBufferSource()
       source.buffer = audioBuffer
       source.connect(audioContext.destination)
-      source.start(0)
+
+      return new Promise<void>(resolve => {
+        source.onended = () => {
+          resolve()
+        }
+
+        source.start(0)
+      })
     } catch (error) {
       console.error('Error playing audio:', error)
+      throw error
     }
   }
 

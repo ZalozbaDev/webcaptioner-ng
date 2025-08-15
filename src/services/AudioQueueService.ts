@@ -32,9 +32,7 @@ class AudioQueueService {
     try {
       await this.audioContext.playAudioData(nextAudio!)
       this.isPlaying = false
-      setTimeout(() => {
-        this.playNextIfIdle()
-      }, 100)
+      this.playNextIfIdle()
     } catch (error) {
       console.error('Error playing audio:', error)
       this.isPlaying = false
