@@ -8,12 +8,8 @@ export const AutoscrollToggle: FC<{
   return (
     <Box
       sx={{
-        position: 'absolute',
-        top: 0,
-        right: 0,
-        zIndex: 10,
         backgroundColor: 'rgba(255, 255, 255, 0.9)',
-        borderRadius: '0 0 0 8px',
+        borderRadius: '4px',
         padding: '8px 12px',
         boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
         display: 'flex',

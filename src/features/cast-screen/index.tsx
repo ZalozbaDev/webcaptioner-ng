@@ -3,12 +3,16 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { Box, Typography, Container } from '@mui/material'
 import axios from 'axios'
 import { initWebsocket } from '../main-screen/components/audio-recorder/handler/init-websocket'
+import { getAudioFromText } from '../../lib/server-manager'
+import { audioQueueService } from '../../services/AudioQueueService'
+import { DEFAULT_SPEAKER_ID } from '../../constants'
 import {
   AutoscrollToggle,
   TokenInputForm,
   FullscreenTextDisplay,
   TextFieldWithControls,
   DraggableDivider,
+  AudioToggle,
 } from './components'
 
 interface AudioRecord {
@@ -18,6 +22,9 @@ interface AudioRecord {
   originalText: string[]
   translatedText: string[]
   token: string
+  settings?: {
+    autoPlayAudio?: boolean
+  }
 }
 
 const CastScreen = () => {
@@ -39,6 +46,12 @@ const CastScreen = () => {
     const saved = localStorage.getItem('castScreenAutoscroll')
     return saved ? JSON.parse(saved) : true
   })
+  const [audioEnabled, setAudioEnabled] = useState(() => {
+    const saved = localStorage.getItem('castScreenAudioEnabled')
+    const defaultValue = saved ? JSON.parse(saved) : true
+    console.log('Audio enabled initial state:', defaultValue)
+    return defaultValue
+  })
   const [textFieldSize, setTextFieldSize] = useState(() => {
     const saved = localStorage.getItem('castScreenTextFieldSize')
     return saved ? parseInt(saved) : 50
@@ -49,6 +62,9 @@ const CastScreen = () => {
     'none' | 'original' | 'translated'
   >('none')
   const wsRef = useRef<WebSocket | null>(null)
+  const audioContextRef = useRef<AudioContext | null>(null)
+  const castRef = useRef<AudioRecord | null>(null)
+  const audioEnabledRef = useRef<boolean>(false)
 
   useEffect(() => {
     localStorage.setItem(
@@ -69,8 +85,69 @@ const CastScreen = () => {
   }, [autoscroll])
 
   useEffect(() => {
+    localStorage.setItem('castScreenAudioEnabled', JSON.stringify(audioEnabled))
+  }, [audioEnabled])
+
+  useEffect(() => {
     localStorage.setItem('castScreenTextFieldSize', textFieldSize.toString())
   }, [textFieldSize])
+
+  // Initialize audio context and AudioQueueService
+  useEffect(() => {
+    if (!audioContextRef.current) {
+      console.log('Initializing audio context...')
+      const audioContext = new (window.AudioContext ||
+        (window as any).webkitAudioContext)()
+      audioContextRef.current = audioContext
+
+      // Create wrapper with playAudioData method
+      const audioContextWrapper = {
+        playAudioData: async (data: ArrayBuffer) => {
+          try {
+            console.log('Playing audio data, length:', data.byteLength)
+
+            // Resume audio context if it's suspended (browser autoplay policy)
+            if (audioContext.state === 'suspended') {
+              console.log('Audio context suspended, resuming...')
+              await audioContext.resume()
+            }
+
+            const audioBuffer = await audioContext.decodeAudioData(data)
+            const source = audioContext.createBufferSource()
+            source.buffer = audioBuffer
+            source.connect(audioContext.destination)
+            source.start()
+            console.log('Audio started successfully')
+          } catch (error) {
+            console.error('Error playing audio:', error)
+          }
+        },
+      }
+
+      console.log('Initializing AudioQueueService...')
+      audioQueueService.initialize(audioContextWrapper)
+      console.log('Audio context and queue service initialized')
+      console.log('Audio context state:', audioContext.state)
+      console.log('Audio context sample rate:', audioContext.sampleRate)
+    }
+  }, [])
+
+  // Update refs when state changes
+  useEffect(() => {
+    castRef.current = cast
+  }, [cast])
+
+  useEffect(() => {
+    console.log('Updating audioEnabledRef:', audioEnabled)
+    audioEnabledRef.current = audioEnabled
+  }, [audioEnabled])
+
+  // Automatically disable audio if cast settings don't allow it
+  useEffect(() => {
+    if (cast?.settings?.autoPlayAudio === false) {
+      setAudioEnabled(false)
+    }
+  }, [cast?.settings?.autoPlayAudio])
 
   useEffect(() => {
     if (autoscroll) {
@@ -225,8 +302,10 @@ const CastScreen = () => {
           )}/translations?recordId=${response.data._id}`
 
           wsRef.current = initWebsocket(wsUrl, (event: MessageEvent) => {
+            console.log('WebSocket message received:', event.data)
             try {
               const data = JSON.parse(event.data)
+              console.log('Parsed WebSocket data:', data)
 
               if (data.original && data.translation) {
                 setCast(prevCast =>
@@ -241,6 +320,37 @@ const CastScreen = () => {
                       }
                     : prevCast
                 )
+
+                // Play audio if enabled
+                console.log('Audio playback check:', {
+                  audioEnabled: audioEnabledRef.current,
+                  castSettings: castRef.current?.settings?.autoPlayAudio,
+                  shouldPlay:
+                    audioEnabledRef.current &&
+                    castRef.current?.settings?.autoPlayAudio !== false,
+                })
+
+                if (
+                  audioEnabledRef.current &&
+                  castRef.current?.settings?.autoPlayAudio !== false
+                ) {
+                  console.log(
+                    'Playing audio for translation:',
+                    data.translation,
+                    'with speaker ID:',
+                    DEFAULT_SPEAKER_ID
+                  )
+                  getAudioFromText(data.translation, DEFAULT_SPEAKER_ID)
+                    .then(audioResponse => {
+                      console.log('Audio response received, adding to queue')
+                      audioQueueService.addToQueue(audioResponse.data)
+                    })
+                    .catch(error => {
+                      console.error('Error playing audio:', error)
+                    })
+                } else {
+                  console.log('Audio playback skipped')
+                }
               }
             } catch (e) {
               console.error('Invalid WS message', e)
@@ -257,7 +367,7 @@ const CastScreen = () => {
         setIsLoading(false)
       }
     },
-    [navigate, urlToken]
+    [navigate, urlToken, audioEnabled]
   )
 
   useEffect(() => {
@@ -278,6 +388,17 @@ const CastScreen = () => {
     e.preventDefault()
     if (inputToken.trim()) {
       validateToken(inputToken.trim())
+    }
+  }
+
+  const handleUserInteraction = () => {
+    // Resume audio context on user interaction (required for autoplay)
+    if (
+      audioContextRef.current &&
+      audioContextRef.current.state === 'suspended'
+    ) {
+      console.log('Resuming audio context on user interaction')
+      audioContextRef.current.resume()
     }
   }
 
@@ -322,7 +443,28 @@ const CastScreen = () => {
         margin: '0 auto',
       }}
     >
-      <AutoscrollToggle autoscroll={autoscroll} setAutoscroll={setAutoscroll} />
+      <Box
+        sx={{
+          position: 'absolute',
+          top: 0,
+          right: 0,
+          zIndex: 10,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1,
+        }}
+      >
+        <AudioToggle
+          audioEnabled={audioEnabled}
+          setAudioEnabled={setAudioEnabled}
+          disabled={cast.settings?.autoPlayAudio === false}
+          onToggle={handleUserInteraction}
+        />
+        <AutoscrollToggle
+          autoscroll={autoscroll}
+          setAutoscroll={setAutoscroll}
+        />
+      </Box>
 
       <FullscreenTextDisplay
         fullscreenField={fullscreenField}
