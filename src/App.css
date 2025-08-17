@@ -1,13 +1,35 @@
+/* Global styles to handle iOS safe areas */
+html,
+body {
+  background-color: #282c34;
+  margin: 0;
+  padding: 0;
+}
+
+/* iOS safe area handling */
+@supports (padding: max(0px)) {
+  body {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+    padding-top: max(0px, env(safe-area-inset-top));
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
+  }
+}
+
 .App {
   text-align: center;
   background-color: #282c34;
   min-height: 100vh;
+  min-height: 100dvh; /* Use dynamic viewport height for mobile */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+  /* Ensure the app covers the full viewport including safe areas */
+  position: relative;
+  width: 100%;
 }
 
 .App-logo {
