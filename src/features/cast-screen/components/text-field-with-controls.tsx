@@ -5,6 +5,7 @@ import {
   Fullscreen,
   FullscreenExit,
 } from '@mui/icons-material'
+import { SpellCheckedText } from './spell-checked-text'
 
 interface TextFieldWithControlsProps {
   title: string
@@ -16,6 +17,8 @@ interface TextFieldWithControlsProps {
   isFullscreen: boolean
   dataTextField: string
   height: number
+  enableSpellCheck?: boolean
+  onTextChange?: (newText: string, index: number) => void
 }
 
 export const TextFieldWithControls = ({
@@ -28,7 +31,15 @@ export const TextFieldWithControls = ({
   isFullscreen,
   dataTextField,
   height,
+  enableSpellCheck = false,
+  onTextChange,
 }: TextFieldWithControlsProps) => {
+  const handleTextChange = (newText: string, index: number) => {
+    if (onTextChange) {
+      onTextChange(newText, index)
+    }
+  }
+
   return (
     <Box
       sx={{
@@ -139,19 +150,28 @@ export const TextFieldWithControls = ({
         }}
       >
         {texts.map((text: string, index: number) => (
-          <Typography
-            key={index}
-            sx={{
-              color: 'black',
-              fontSize: `${fontSize}px`,
-              lineHeight: 1.6,
-              wordBreak: 'break-word',
-              overflowWrap: 'break-word',
-              whiteSpace: 'pre-wrap',
-            }}
-          >
-            {text}
-          </Typography>
+          <Box key={index}>
+            {enableSpellCheck ? (
+              <SpellCheckedText
+                text={text}
+                fontSize={fontSize}
+                key={`${text}-${index}`} // Force re-render when text changes
+              />
+            ) : (
+              <Typography
+                sx={{
+                  color: 'black',
+                  fontSize: `${fontSize}px`,
+                  lineHeight: 1.6,
+                  wordBreak: 'break-word',
+                  overflowWrap: 'break-word',
+                  whiteSpace: 'pre-wrap',
+                }}
+              >
+                {text}
+              </Typography>
+            )}
+          </Box>
         ))}
       </Box>
     </Box>

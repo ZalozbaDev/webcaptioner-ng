@@ -234,44 +234,42 @@ const CastScreen = () => {
     document.addEventListener('mouseup', handleMouseUp)
   }
 
-  const handleDividerTouchStart = (e: React.TouchEvent) => {
-    e.preventDefault()
-
-    const startY = e.touches[0].clientY
-    const startTextFieldSize = textFieldSize
-    const containerHeight = (70 * window.innerHeight) / 100 // 70vh in pixels
-
+  const handleDividerTouchStart = (event: React.TouchEvent) => {
     setIsDragging(true)
-
-    // Prevent scrolling during touch drag
-    document.body.style.overflow = 'hidden'
-    document.body.style.userSelect = 'none'
-    document.body.style.touchAction = 'none'
-    document.body.classList.add('dragging')
+    const touch = event.touches[0]
+    const startY = touch.clientY
+    const startSize = textFieldSize
 
     const handleTouchMove = (moveEvent: TouchEvent) => {
-      moveEvent.preventDefault()
-      const deltaY = moveEvent.touches[0].clientY - startY
-      const deltaPercentage = (deltaY / containerHeight) * 100
-      const newTextFieldSize = Math.max(
+      const currentY = moveEvent.touches[0].clientY
+      const deltaY = currentY - startY
+      const windowHeight = window.innerHeight
+      const newSize = Math.max(
         10,
-        Math.min(90, startTextFieldSize + deltaPercentage)
+        Math.min(90, startSize + (deltaY / windowHeight) * 100)
       )
-      setTextFieldSize(newTextFieldSize)
+      setTextFieldSize(newSize)
     }
 
     const handleTouchEnd = () => {
+      setIsDragging(false)
       document.removeEventListener('touchmove', handleTouchMove)
       document.removeEventListener('touchend', handleTouchEnd)
-      document.body.style.overflow = ''
-      document.body.style.userSelect = ''
-      document.body.style.touchAction = ''
-      document.body.classList.remove('dragging')
-      setIsDragging(false)
     }
 
-    document.addEventListener('touchmove', handleTouchMove, { passive: false })
+    document.addEventListener('touchmove', handleTouchMove)
     document.addEventListener('touchend', handleTouchEnd)
+  }
+
+  const handleOriginalTextChange = (newText: string, index: number) => {
+    if (cast) {
+      const newOriginalText = [...cast.originalText]
+      newOriginalText[index] = newText
+      setCast({
+        ...cast,
+        originalText: newOriginalText,
+      })
+    }
   }
 
   const toggleFullscreen = (field: 'original' | 'translated') => {
@@ -507,6 +505,8 @@ const CastScreen = () => {
           isFullscreen={fullscreenField === 'original'}
           dataTextField='original'
           height={textFieldSize}
+          enableSpellCheck={true}
+          onTextChange={handleOriginalTextChange}
         />
 
         <DraggableDivider
