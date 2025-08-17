@@ -77,7 +77,7 @@ export const RecordButtonsContainer: FC<{
         audio={stream}
         mode='continuous'
         autoStart
-        strokeColor='white'
+        strokeColor='var(--text-primary)'
       >
         {({ canvasRef }) => <canvas ref={canvasRef} height={100} />}
       </Visualizer>
@@ -148,7 +148,7 @@ export const RecordButtonsContainer: FC<{
       sx={{
         backgroundColor: 'clear',
         borderRadius: 2,
-        border: '2px white solid',
+        border: '2px var(--border-color) solid',
         minWidth: 300,
       }}
     >
@@ -164,23 +164,26 @@ export const RecordButtonsContainer: FC<{
         </Typography>
 
         <Box>
-          <IconButton
-            sx={{ color: isQrCodeVisible ? 'black' : 'white' }}
-            onClick={onShare}
-          >
+          <IconButton sx={{ color: 'var(--text-primary)' }} onClick={onShare}>
             <Share />
           </IconButton>
-          <IconButton sx={{ color: 'white' }} onClick={handleYoutubeOpen}>
+          <IconButton
+            sx={{ color: 'var(--text-primary)' }}
+            onClick={handleYoutubeOpen}
+          >
             <YouTube />
           </IconButton>
-          <IconButton sx={{ color: 'white' }} onClick={handleSettingsOpen}>
+          <IconButton
+            sx={{ color: 'var(--text-primary)' }}
+            onClick={handleSettingsOpen}
+          >
             <SettingsIcon />
           </IconButton>
         </Box>
       </Box>
       <Box
         sx={{
-          borderTop: '2px white solid',
+          borderTop: '2px var(--border-color) solid',
           height: 100,
         }}
       >
@@ -195,12 +198,15 @@ export const RecordButtonsContainer: FC<{
           disabled={isDisabled.record}
           size='large'
           sx={{
-            '&.Mui-disabled': { color: 'gray', borderColor: 'white' },
-            color: 'white',
+            '&.Mui-disabled': {
+              color: 'gray',
+              borderColor: 'var(--border-color)',
+            },
+            color: 'var(--text-primary)',
             height: 40,
-            borderColor: 'white',
-            borderTop: 2,
-            borderRight: 1,
+            borderColor: 'var(--border-color)',
+            borderTop: '2px var(--border-color) solid',
+            borderRight: '1px var(--border-color) solid',
             borderRadius: 0,
             width: '50%',
           }}
@@ -216,12 +222,15 @@ export const RecordButtonsContainer: FC<{
           disabled={isDisabled.stop}
           size='large'
           sx={{
-            '&.Mui-disabled': { color: 'gray', borderColor: 'white' },
-            color: 'white',
+            '&.Mui-disabled': {
+              color: 'gray',
+              borderColor: 'var(--border-color)',
+            },
+            color: 'var(--text-primary)',
             height: 40,
-            borderColor: 'white',
-            borderTop: 2,
-            borderLeft: 1,
+            borderColor: 'var(--border-color)',
+            borderTop: '2px var(--border-color) solid',
+            borderLeft: '1px var(--border-color) solid',
             borderRadius: 0,
             width: '50%',
           }}

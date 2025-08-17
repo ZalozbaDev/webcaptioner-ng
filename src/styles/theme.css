@@ -1,0 +1,108 @@
+/* Additional theme variables and component styles */
+:root {
+  /* Additional light theme colors - improved contrast */
+  --success-color: #2e7d32;
+  --warning-color: #ed6c02;
+  --error-color: #d32f2f;
+  --info-color: #1976d2;
+  --card-bg: #ffffff;
+  --input-bg: #ffffff;
+  --button-hover: #e3f2fd;
+  --border-radius: 8px;
+  --box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+[data-theme='dark'] {
+  /* Additional dark theme colors */
+  --success-color: #66bb6a;
+  --warning-color: #ffb74d;
+  --error-color: #ef5350;
+  --info-color: #42a5f5;
+  --card-bg: #2d2d2d;
+  --input-bg: #3a3a3a;
+  --button-hover: #1e3a5f;
+  --border-radius: 8px;
+  --box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+/* Common component styles */
+.card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 4px 16px var(--shadow-color);
+}
+
+.input-field {
+  background-color: var(--input-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+.input-field:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(97, 218, 251, 0.2);
+}
+
+.button {
+  background-color: var(--accent-color);
+  color: var(--text-primary);
+  border: none;
+  border-radius: var(--border-radius);
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.button:hover {
+  background-color: var(--button-hover);
+  transform: translateY(-1px);
+}
+
+/* Status colors */
+.status-success {
+  color: var(--success-color);
+}
+
+.status-warning {
+  color: var(--warning-color);
+}
+
+.status-error {
+  color: var(--error-color);
+}
+
+.status-info {
+  color: var(--info-color);
+}
+
+/* Smooth transitions for all theme changes */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Scrollbar theming */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}

@@ -43,7 +43,7 @@ export const QRCode: FC<QRCodeProps> = ({ token, show }) => {
         <Box
           onClick={e => e.stopPropagation()}
           sx={{
-            backgroundColor: 'white',
+            backgroundColor: 'var(--card-bg)',
             padding: 6,
             borderRadius: 3,
             display: 'flex',
@@ -62,7 +62,7 @@ export const QRCode: FC<QRCodeProps> = ({ token, show }) => {
             variant='h5'
             sx={{
               mt: 3,
-              color: 'black',
+              color: 'var(--text-primary)',
               fontFamily: 'monospace',
               fontSize: '2rem',
               letterSpacing: '0.1em',
@@ -73,7 +73,7 @@ export const QRCode: FC<QRCodeProps> = ({ token, show }) => {
           <Typography
             variant='body1'
             sx={{
-              color: 'black',
+              color: 'var(--text-primary)',
               textAlign: 'center',
             }}
           >
@@ -90,7 +90,7 @@ export const QRCode: FC<QRCodeProps> = ({ token, show }) => {
         position: 'fixed',
         top: 10,
         right: 10,
-        backgroundColor: 'white',
+        backgroundColor: 'var(--card-bg)',
         padding: 1,
         borderRadius: 1,
         zIndex: 1000,
@@ -111,7 +111,7 @@ export const QRCode: FC<QRCodeProps> = ({ token, show }) => {
         variant='body1'
         sx={{
           mt: 1,
-          color: 'black',
+          color: 'var(--text-primary)',
           fontFamily: 'monospace',
           fontSize: '1rem',
           letterSpacing: '0.1em',

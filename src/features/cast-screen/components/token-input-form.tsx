@@ -19,7 +19,7 @@ export const TokenInputForm = ({
     <Container maxWidth='xs'>
       <Typography
         variant='h5'
-        sx={{ color: 'white', mb: 3, textAlign: 'center' }}
+        sx={{ color: 'var(--text-primary)', mb: 3, textAlign: 'center' }}
       >
         Zapodaj token
       </Typography>
@@ -34,23 +34,23 @@ export const TokenInputForm = ({
           disabled={isLoading}
           variant='filled'
           sx={{
-            backgroundColor: 'white',
+            backgroundColor: 'var(--input-bg)',
             borderRadius: 2,
             '& .MuiFormHelperText-root': {
-              color: '#ff6b6b',
+              color: 'var(--error-color)',
               marginLeft: 0,
               marginTop: 1,
               fontSize: '0.875rem',
               fontWeight: 500,
             },
             '& .MuiInputLabel-root': {
-              color: 'rgba(0, 0, 0, 0.6)',
+              color: 'var(--text-secondary)',
               fontSize: '1rem',
             },
             '& .MuiFilledInput-root': {
               fontSize: '1rem',
               '&:hover': {
-                backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                backgroundColor: 'var(--button-hover)',
               },
             },
           }}

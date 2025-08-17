@@ -1,6 +1,7 @@
 import { IconButton, Typography } from '@mui/material'
 import { Logout } from '@mui/icons-material'
 import { APP_VERSION } from '../../../constants'
+import ThemeToggle from '../../../components/theme-toggle'
 
 type HeaderProps = {
   user: User | null
@@ -19,6 +20,12 @@ export const Header = ({ user, onLogout }: HeaderProps) => {
           <Logout />
         </IconButton>
       )}
+
+      {/* Theme Toggle - positioned in top-right */}
+      <div style={{ position: 'absolute', top: 5, right: 5 }}>
+        <ThemeToggle />
+      </div>
+
       <Typography
         variant='caption'
         sx={{

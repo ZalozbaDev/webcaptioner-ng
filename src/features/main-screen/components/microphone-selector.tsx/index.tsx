@@ -30,7 +30,7 @@ export const MicrophoneSelector: FC<{
   return (
     <FormControl
       sx={{
-        backgroundColor: 'white',
+        backgroundColor: 'var(--input-bg)',
         borderRadius: 1,
         width: fullWidth ? '100%' : 'auto',
       }}

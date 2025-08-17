@@ -14,6 +14,7 @@ import {
   DraggableDivider,
   AudioToggle,
 } from './components'
+import ThemeToggle from '../../components/theme-toggle'
 
 interface AudioRecord {
   _id: string
@@ -427,7 +428,7 @@ const CastScreen = () => {
   if (!cast) {
     return (
       <Container maxWidth='xs'>
-        <Typography sx={{ color: 'white', textAlign: 'center' }}>
+        <Typography sx={{ color: 'var(--text-primary)', textAlign: 'center' }}>
           Loading...
         </Typography>
       </Container>
@@ -454,6 +455,7 @@ const CastScreen = () => {
           gap: 1,
         }}
       >
+        <ThemeToggle />
         <AudioToggle
           audioEnabled={audioEnabled}
           setAudioEnabled={setAudioEnabled}

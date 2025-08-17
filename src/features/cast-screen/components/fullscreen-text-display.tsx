@@ -51,17 +51,20 @@ export const FullscreenTextDisplay = ({
           alignItems: 'center',
           justifyContent: 'space-between',
           mb: 1,
-          color: 'white',
+          color: 'var(--text-primary)',
         }}
       >
-        <Typography variant='h5' sx={{ color: 'white', fontWeight: 600 }}>
+        <Typography
+          variant='h5'
+          sx={{ color: 'var(--text-primary)', fontWeight: 600 }}
+        >
           {title}
         </Typography>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
           <Typography
             variant='caption'
             sx={{
-              color: 'rgba(255, 255, 255, 0.8)',
+              color: 'var(--text-secondary)',
               fontSize: '0.8rem',
               fontWeight: 500,
               minWidth: '35px',
@@ -74,9 +77,9 @@ export const FullscreenTextDisplay = ({
             onClick={onDecreaseFontSize}
             size='small'
             sx={{
-              color: 'rgba(255, 255, 255, 0.8)',
+              color: 'var(--text-secondary)',
               padding: '4px',
-              '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' },
+              '&:hover': { backgroundColor: 'var(--button-hover)' },
             }}
             disabled={currentFontSize <= 12}
           >
@@ -86,9 +89,9 @@ export const FullscreenTextDisplay = ({
             onClick={onIncreaseFontSize}
             size='small'
             sx={{
-              color: 'rgba(255, 255, 255, 0.8)',
+              color: 'var(--text-secondary)',
               padding: '4px',
-              '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' },
+              '&:hover': { backgroundColor: 'var(--button-hover)' },
             }}
             disabled={currentFontSize >= 128}
           >
@@ -98,9 +101,9 @@ export const FullscreenTextDisplay = ({
             onClick={() => setFullscreenField('none')}
             size='large'
             sx={{
-              color: 'white',
+              color: 'var(--text-primary)',
               '&:hover': {
-                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                backgroundColor: 'var(--button-hover)',
               },
             }}
           >

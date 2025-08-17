@@ -1,0 +1,18 @@
+.theme-toggle-button {
+  transition: all 0.3s ease;
+}
+
+.theme-toggle-button:hover {
+  transform: scale(1.1);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Dark theme specific styles */
+[data-theme='dark'] .theme-toggle-button {
+  color: #ffffff;
+}
+
+/* Light theme specific styles */
+[data-theme='light'] .theme-toggle-button {
+  color: #333333;
+}

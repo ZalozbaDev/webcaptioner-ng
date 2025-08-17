@@ -1,5 +1,6 @@
 import React from 'react'
 import './App.css'
+import './styles/theme.css'
 import { Toaster } from 'sonner'
 import useAuth from './hooks/use-auth'
 import { useRoutes } from 'react-router-dom'

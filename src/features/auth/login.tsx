@@ -34,7 +34,7 @@ const LoginScreen: FC = () => {
         onChange={e => setPassword(e.target.value)}
         variant='filled'
         sx={{
-          backgroundColor: 'white',
+          backgroundColor: 'var(--input-bg)',
           borderRadius: 2,
         }}
         InputProps={{
@@ -67,7 +67,7 @@ const LoginScreen: FC = () => {
       </Box>
       <Box sx={{ mt: 2 }}>
         <Button
-          sx={{ color: 'white' }}
+          sx={{ color: 'var(--text-primary)' }}
           fullWidth
           size='large'
           type='submit'

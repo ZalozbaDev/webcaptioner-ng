@@ -32,7 +32,7 @@ export const TextFieldWithControls = ({
   return (
     <Box
       sx={{
-        backgroundColor: 'white',
+        backgroundColor: 'var(--card-bg)',
         borderRadius: 2,
         p: 3,
         boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
@@ -52,7 +52,7 @@ export const TextFieldWithControls = ({
         <Typography
           variant='h6'
           sx={{
-            color: 'black',
+            color: 'var(--text-primary)',
             fontWeight: 600,
             fontSize: '1.25rem',
             flexShrink: 0,
@@ -64,7 +64,7 @@ export const TextFieldWithControls = ({
           <Typography
             variant='caption'
             sx={{
-              color: 'rgba(0, 0, 0, 0.6)',
+              color: 'var(--text-secondary)',
               fontSize: '0.7rem',
               fontWeight: 500,
               minWidth: '30px',
@@ -77,9 +77,9 @@ export const TextFieldWithControls = ({
             onClick={onDecreaseFontSize}
             size='small'
             sx={{
-              color: 'rgba(0, 0, 0, 0.6)',
+              color: 'var(--text-secondary)',
               padding: '4px',
-              '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.1)' },
+              '&:hover': { backgroundColor: 'var(--button-hover)' },
             }}
             disabled={fontSize <= 12}
           >
@@ -89,9 +89,9 @@ export const TextFieldWithControls = ({
             onClick={onIncreaseFontSize}
             size='small'
             sx={{
-              color: 'rgba(0, 0, 0, 0.6)',
+              color: 'var(--text-secondary)',
               padding: '4px',
-              '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.1)' },
+              '&:hover': { backgroundColor: 'var(--button-hover)' },
             }}
             disabled={fontSize >= 128}
           >
@@ -101,9 +101,9 @@ export const TextFieldWithControls = ({
             onClick={onToggleFullscreen}
             size='small'
             sx={{
-              color: 'rgba(0, 0, 0, 0.6)',
+              color: 'var(--text-secondary)',
               padding: '4px',
-              '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.1)' },
+              '&:hover': { backgroundColor: 'var(--button-hover)' },
             }}
           >
             {isFullscreen ? (

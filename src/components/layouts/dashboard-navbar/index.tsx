@@ -14,7 +14,7 @@ import { NavigateFunction, Link as RouterLink } from 'react-router-dom'
 import MenuIcon from '@mui/icons-material/Menu'
 import { NAVBAR_HEIGHT } from '../constants'
 import useAuth from '../../../hooks/use-auth'
-import { toast } from 'sonner'
+import ThemeToggle from '../../theme-toggle'
 
 interface DashboardNavbarProps extends AppBarProps {
   onSidebarMobileOpen?: () => void
@@ -83,6 +83,12 @@ const DashboardNavbar: FC<DashboardNavbarProps> = props => {
             <MenuIcon />
           </IconButton>
         </Hidden>
+
+        {/* Theme Toggle - positioned in the center area */}
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <ThemeToggle />
+        </Box>
+
         <RouterLink to='/'>
           {/* <Logo
             style={{

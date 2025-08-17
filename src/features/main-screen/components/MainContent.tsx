@@ -98,7 +98,13 @@ export const MainContent = ({
         )}
       </Box>
 
-      <div style={{ height: 1, width: '80%', backgroundColor: 'white' }} />
+      <div
+        style={{
+          height: 1,
+          width: '80%',
+          backgroundColor: 'var(--border-color)',
+        }}
+      />
 
       <Box sx={{ padding: 2 }}>
         {translation.slice(-MAX_TEXT_LINES).map((t, i) => (
@@ -116,12 +122,12 @@ export const MainContent = ({
                 display='inline'
                 sx={{
                   color: !t.timestampDiff
-                    ? 'white'
+                    ? 'var(--text-primary)'
                     : Math.abs(t.timestampDiff) < 20
-                    ? 'green'
+                    ? '#4caf50'
                     : Math.abs(t.timestampDiff) < 40
-                    ? 'yellow'
-                    : 'red',
+                    ? '#ff9800'
+                    : '#f44336',
                 }}
               >
                 {t.timestampDiff && t.timestampDiff > 0 ? '+' : ''}

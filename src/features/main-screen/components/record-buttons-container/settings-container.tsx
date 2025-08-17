@@ -294,7 +294,7 @@ export const SettingsContainer: FC<{
             <FormControl
               margin='normal'
               sx={{
-                backgroundColor: 'white',
+                backgroundColor: 'var(--input-bg)',
                 borderRadius: 1,
                 width: '100%',
               }}

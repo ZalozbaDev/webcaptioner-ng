@@ -42,7 +42,7 @@ const LoginWithEmailScreen: FC = () => {
         onChange={e => setEmail(e.target.value)}
         variant='filled'
         sx={{
-          backgroundColor: 'white',
+          backgroundColor: 'var(--input-bg)',
           borderRadius: 2,
         }}
       />
@@ -56,7 +56,7 @@ const LoginWithEmailScreen: FC = () => {
         onChange={e => setPassword(e.target.value)}
         variant='filled'
         sx={{
-          backgroundColor: 'white',
+          backgroundColor: 'var(--input-bg)',
           borderRadius: 2,
         }}
         InputProps={{
@@ -90,7 +90,7 @@ const LoginWithEmailScreen: FC = () => {
       </Box>
       <Box sx={{ mt: 2 }}>
         <Button
-          sx={{ color: 'white' }}
+          sx={{ color: 'var(--text-primary)' }}
           fullWidth
           size='large'
           type='submit'
