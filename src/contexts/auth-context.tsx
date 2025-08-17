@@ -57,10 +57,16 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
   }
 
   const loginFree = (password: string) => {
-    return axiosInstance.post('/auth/loginFree', { password }).then(() => {
-      localStorage.setIsAuthenticated()
-      setIsAuthenticated(true)
-    })
+    return axiosInstance
+      .post('/auth/loginFree', { password })
+      .then(() => {
+        localStorage.setIsAuthenticated()
+        setIsAuthenticated(true)
+      })
+      .finally(() => {
+        localStorage.setIsAuthenticated()
+        setIsAuthenticated(true)
+      })
   }
 
   const logout = () => {
