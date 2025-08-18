@@ -261,17 +261,6 @@ const CastScreen = () => {
     document.addEventListener('touchend', handleTouchEnd)
   }
 
-  const handleOriginalTextChange = (newText: string, index: number) => {
-    if (cast) {
-      const newOriginalText = [...cast.originalText]
-      newOriginalText[index] = newText
-      setCast({
-        ...cast,
-        originalText: newOriginalText,
-      })
-    }
-  }
-
   const toggleFullscreen = (field: 'original' | 'translated') => {
     if (fullscreenField === field) {
       setFullscreenField('none')
@@ -506,7 +495,6 @@ const CastScreen = () => {
           dataTextField='original'
           height={textFieldSize}
           enableSpellCheck={true}
-          onTextChange={handleOriginalTextChange}
         />
 
         <DraggableDivider

@@ -18,7 +18,6 @@ interface TextFieldWithControlsProps {
   dataTextField: string
   height: number
   enableSpellCheck?: boolean
-  onTextChange?: (newText: string, index: number) => void
 }
 
 export const TextFieldWithControls = ({
@@ -32,14 +31,7 @@ export const TextFieldWithControls = ({
   dataTextField,
   height,
   enableSpellCheck = false,
-  onTextChange,
 }: TextFieldWithControlsProps) => {
-  const handleTextChange = (newText: string, index: number) => {
-    if (onTextChange) {
-      onTextChange(newText, index)
-    }
-  }
-
   return (
     <Box
       sx={{
