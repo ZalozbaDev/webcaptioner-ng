@@ -62,7 +62,7 @@ export const QRCode: FC<QRCodeProps> = ({ token, show }) => {
             variant='h5'
             sx={{
               mt: 3,
-              color: 'var(--text-primary)',
+              color: 'var(--card-text-color)',
               fontFamily: 'monospace',
               fontSize: '2rem',
               letterSpacing: '0.1em',
@@ -73,7 +73,7 @@ export const QRCode: FC<QRCodeProps> = ({ token, show }) => {
           <Typography
             variant='body1'
             sx={{
-              color: 'var(--text-primary)',
+              color: 'var(--card-text-color)',
               textAlign: 'center',
             }}
           >
@@ -111,7 +111,7 @@ export const QRCode: FC<QRCodeProps> = ({ token, show }) => {
         variant='body1'
         sx={{
           mt: 1,
-          color: 'var(--text-primary)',
+          color: 'var(--card-text-color)',
           fontFamily: 'monospace',
           fontSize: '1rem',
           letterSpacing: '0.1em',

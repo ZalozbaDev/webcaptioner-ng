@@ -12,6 +12,7 @@ import { getDurationFromSeconds } from '../../../../helper/date-time-helper'
 import { SettingsContainer } from './settings-container'
 import { YoutubeContainer, YoutubeSettings } from './youtube-container'
 import { Settings } from '../../../../types/settings'
+import { useTheme } from '../../../../contexts/theme-context'
 
 export const RecordButtonsContainer: FC<{
   voskResponse: boolean
@@ -52,6 +53,8 @@ export const RecordButtonsContainer: FC<{
   const [settingsAnchorEl, setSettingsAnchorEl] = useState<null | HTMLElement>(
     null
   )
+  const { theme } = useTheme()
+
   const settingsOpen = Boolean(settingsAnchorEl)
   const handleSettingsOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setSettingsAnchorEl(event.currentTarget)
@@ -77,12 +80,12 @@ export const RecordButtonsContainer: FC<{
         audio={stream}
         mode='continuous'
         autoStart
-        strokeColor='var(--text-primary)'
+        strokeColor={theme === 'dark' ? 'white' : 'black'}
       >
         {({ canvasRef }) => <canvas ref={canvasRef} height={100} />}
       </Visualizer>
     ),
-    [stream]
+    [stream, theme]
   )
 
   useEffect(() => {
