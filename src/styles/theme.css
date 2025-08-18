@@ -6,6 +6,8 @@
   --error-color: #d32f2f;
   --info-color: #1976d2;
   --card-bg: #ffffff;
+  --card-text-color: #000000;
+  --text-container-bg: #ffffff;
   --input-bg: #ffffff;
   --button-hover: #e3f2fd;
   --border-radius: 8px;
@@ -18,7 +20,9 @@
   --warning-color: #ffb74d;
   --error-color: #ef5350;
   --info-color: #42a5f5;
-  --card-bg: #2d2d2d;
+  --card-bg: #ffffff;
+  --card-text-color: #000000;
+  --text-container-bg: #3a3a3a;
   --input-bg: #3a3a3a;
   --button-hover: #1e3a5f;
   --border-radius: 8px;

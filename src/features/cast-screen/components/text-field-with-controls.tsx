@@ -6,6 +6,7 @@ import {
   FullscreenExit,
 } from '@mui/icons-material'
 import { SpellCheckedText } from './spell-checked-text'
+import { useTheme } from '../../../contexts/theme-context'
 
 interface TextFieldWithControlsProps {
   title: string
@@ -32,6 +33,8 @@ export const TextFieldWithControls = ({
   height,
   enableSpellCheck = false,
 }: TextFieldWithControlsProps) => {
+  const { theme } = useTheme()
+
   return (
     <Box
       sx={{
@@ -55,7 +58,7 @@ export const TextFieldWithControls = ({
         <Typography
           variant='h6'
           sx={{
-            color: 'var(--text-primary)',
+            color: 'var(--card-text-color)',
             fontWeight: 600,
             fontSize: '1.25rem',
             flexShrink: 0,
@@ -67,7 +70,7 @@ export const TextFieldWithControls = ({
           <Typography
             variant='caption'
             sx={{
-              color: 'var(--text-secondary)',
+              color: 'var(--card-text-color)',
               fontSize: '0.7rem',
               fontWeight: 500,
               minWidth: '30px',
@@ -80,7 +83,7 @@ export const TextFieldWithControls = ({
             onClick={onDecreaseFontSize}
             size='small'
             sx={{
-              color: 'var(--text-secondary)',
+              color: 'var(--card-text-color)',
               padding: '4px',
               '&:hover': { backgroundColor: 'var(--button-hover)' },
             }}
@@ -92,7 +95,7 @@ export const TextFieldWithControls = ({
             onClick={onIncreaseFontSize}
             size='small'
             sx={{
-              color: 'var(--text-secondary)',
+              color: 'var(--card-text-color)',
               padding: '4px',
               '&:hover': { backgroundColor: 'var(--button-hover)' },
             }}
@@ -104,7 +107,7 @@ export const TextFieldWithControls = ({
             onClick={onToggleFullscreen}
             size='small'
             sx={{
-              color: 'var(--text-secondary)',
+              color: 'var(--card-text-color)',
               padding: '4px',
               '&:hover': { backgroundColor: 'var(--button-hover)' },
             }}
@@ -125,18 +128,23 @@ export const TextFieldWithControls = ({
           display: 'flex',
           flexDirection: 'column',
           gap: 1,
+          borderRadius: 1,
+          p: 1,
           '&::-webkit-scrollbar': {
             width: '6px',
           },
           '&::-webkit-scrollbar-track': {
-            backgroundColor: 'rgba(0, 0, 0, 0.1)',
+            backgroundColor:
+              theme === 'dark' ? '#e0e0e0' : 'var(--bg-secondary)',
             borderRadius: '3px',
           },
           '&::-webkit-scrollbar-thumb': {
-            backgroundColor: 'rgba(0, 0, 0, 0.3)',
+            backgroundColor:
+              theme === 'dark' ? '#b0b0b0' : 'var(--border-color)',
             borderRadius: '3px',
             '&:hover': {
-              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              backgroundColor:
+                theme === 'dark' ? '#909090' : 'var(--text-secondary)',
             },
           },
         }}
@@ -152,7 +160,7 @@ export const TextFieldWithControls = ({
             ) : (
               <Typography
                 sx={{
-                  color: 'black',
+                  color: 'var(--card-text-color)',
                   fontSize: `${fontSize}px`,
                   lineHeight: 1.6,
                   wordBreak: 'break-word',
