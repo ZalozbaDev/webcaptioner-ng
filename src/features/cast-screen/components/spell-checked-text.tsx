@@ -58,59 +58,51 @@ export const SpellCheckedText: React.FC<SpellCheckedTextProps> = ({
 
     const words = text.split(/(\s+)/)
 
-    return words.map((word, index) => {
-      if (/\s+/.test(word)) {
-        // This is whitespace, render as-is
-        return <span key={index}>{word}</span>
-      }
+    return (
+      <Typography
+        sx={{
+          color: 'black',
+          fontSize: `${fontSize}px`,
+          lineHeight: 1.6,
+          wordBreak: 'break-word',
+          overflowWrap: 'break-word',
+          whiteSpace: 'pre-wrap',
+        }}
+      >
+        {words.map((word, index) => {
+          if (/\s+/.test(word)) {
+            // This is whitespace, render as-is
+            return <span key={index}>{word}</span>
+          }
 
-      // Clean word for spell checking (remove punctuation and special characters)
-      const cleanWord = word.replace(
-        /[^\w\u0107\u010D\u0111\u0119\u0142\u0144\u00F3\u015B\u017A\u017C\u0106\u010C\u0110\u0118\u0141\u0143\u00D3\u015A\u0179\u017A]/g,
-        ''
-      )
+          // Clean word for spell checking (remove punctuation and special characters)
+          const cleanWord = word.replace(
+            /[^\w\u0107\u010D\u0111\u0119\u0142\u0144\u00F3\u015B\u017A\u017C\u0106\u010C\u0110\u0118\u0141\u0143\u00D3\u015A\u0179\u017A]/g,
+            ''
+          )
 
-      const spellResult = spellCheckResults.find(
-        result => result.word.toLowerCase() === cleanWord.toLowerCase()
-      )
+          const spellResult = spellCheckResults.find(
+            result => result.word.toLowerCase() === cleanWord.toLowerCase()
+          )
 
-      if (spellResult && !spellResult.isCorrect) {
-        return (
-          <Typography
-            component='span'
-            sx={{
-              color: 'black',
-              fontSize: `${fontSize}px`,
-              lineHeight: 1.6,
-              wordBreak: 'break-word',
-              overflowWrap: 'break-word',
-              whiteSpace: 'pre-wrap',
-              textDecoration: 'underline wavy red',
-            }}
-          >
-            {word}
-          </Typography>
-        )
-      }
+          if (spellResult && !spellResult.isCorrect) {
+            return (
+              <span
+                key={index}
+                style={{
+                  textDecoration: 'underline wavy red',
+                }}
+              >
+                {word}
+              </span>
+            )
+          }
 
-      // Correctly spelled word
-      return (
-        <Typography
-          key={index}
-          component='span'
-          sx={{
-            color: 'black',
-            fontSize: `${fontSize}px`,
-            lineHeight: 1.6,
-            wordBreak: 'break-word',
-            overflowWrap: 'break-word',
-            whiteSpace: 'pre-wrap',
-          }}
-        >
-          {word}
-        </Typography>
-      )
-    })
+          // Correctly spelled word
+          return <span key={index}>{word}</span>
+        })}
+      </Typography>
+    )
   }
 
   return (

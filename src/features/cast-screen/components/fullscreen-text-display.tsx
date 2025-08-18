@@ -204,8 +204,8 @@ export const FullscreenTextDisplay = ({
                 color: 'black',
                 fontSize: `${currentFontSize}px`,
                 lineHeight: '1.6',
-                wordBreak: 'break-word',
-                overflowWrap: 'break-word',
+                wordBreak: 'normal',
+                overflowWrap: 'normal',
                 whiteSpace: 'pre-wrap',
               }}
             >
