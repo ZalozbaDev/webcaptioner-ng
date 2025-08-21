@@ -28,7 +28,7 @@ export const useRecording = (
     ) => void
     audioContext: {
       playAudioData: (data: ArrayBuffer) => Promise<void>
-    }
+    } | null
   },
   audioRecordId: string | undefined
 ) => {
@@ -44,9 +44,11 @@ export const useRecording = (
   // Replace local variable with a ref to persist the websocket
   const webSocketRef = useRef<WebSocket | null>(null)
 
-  // Initialize the audio service when the hook mounts
+  // Initialize the audio service when the hook mounts, only if audioContext is provided
   useEffect(() => {
-    audioQueueService.initialize(options.audioContext)
+    if (options.audioContext) {
+      audioQueueService.initialize(options.audioContext)
+    }
   }, [options.audioContext])
 
   const onReceiveMessage = async (
@@ -125,7 +127,8 @@ export const useRecording = (
           // Get bamborak audio file
           getTranslation(recordId, trimmedText, settings.sotraModel).then(
             async response => {
-              if (settings.autoPlayAudio) {
+              // Only play audio if autoPlayAudio is enabled AND audioContext is provided
+              if (settings.autoPlayAudio && options.audioContext) {
                 getAudioFromText(
                   response.data.translation,
                   settings.selectedSpeakerId

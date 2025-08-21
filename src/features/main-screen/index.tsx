@@ -8,7 +8,6 @@ import timezone from 'dayjs/plugin/timezone'
 import { YoutubeSettings } from './components/record-buttons-container/youtube-container'
 import { Settings } from '../../types/settings'
 import { DEFAULT_SETTINGS } from '../../constants'
-import { useAudioContext } from './hooks/useAudioContext'
 import { useRecording } from './hooks/useRecording'
 import { Header } from './components/Header'
 import { MainContent } from './components/MainContent'
@@ -46,7 +45,6 @@ const MainScreen = () => {
   const timeOffsetRef = useRef<number>(youtubeSettings.timeOffset)
 
   const { user, logout } = useAuth()
-  const audioContext = useAudioContext()
   const recording = useRecording(
     mediaStreamSettings,
     selectedMicrophone,
@@ -55,7 +53,7 @@ const MainScreen = () => {
       timeOffsetRef,
       setInputText,
       setTranslation,
-      audioContext,
+      audioContext: null,
     },
     record?.id
   )
@@ -86,7 +84,7 @@ const MainScreen = () => {
   }
 
   return (
-    <div className='main-screen' onClick={audioContext.initializeAudioContext}>
+    <div className='main-screen'>
       <Header user={user} onLogout={logout} />
 
       {!selectedMicrophone ? (
