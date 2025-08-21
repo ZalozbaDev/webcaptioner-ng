@@ -82,6 +82,7 @@ export const MainContent = ({
         speakers={speakers}
         stream={recording.stream}
         onShare={handleShare}
+        record={record}
       />
 
       <Box sx={{ padding: 2 }}>

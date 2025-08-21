@@ -31,6 +31,7 @@ export const RecordButtonsContainer: FC<{
   onSaveYoutubeSettings: (settings: YoutubeSettings) => void
   speakers: BamborakSpeaker[]
   onShare: () => void
+  record: { id: string; token: string } | null
 }> = ({
   voskResponse,
   stream,
@@ -48,6 +49,7 @@ export const RecordButtonsContainer: FC<{
   onSaveYoutubeSettings,
   speakers,
   onShare,
+  record,
 }) => {
   const [totalTime, setTotalTime] = useState<number>(0)
   const [settingsAnchorEl, setSettingsAnchorEl] = useState<null | HTMLElement>(
@@ -109,6 +111,7 @@ export const RecordButtonsContainer: FC<{
         onChangeMicrophone={onChangeMicrophone}
         activeMicrophone={activeMicrophone}
         speakers={speakers}
+        record={record}
       />
     ),
     [
@@ -120,6 +123,7 @@ export const RecordButtonsContainer: FC<{
       settingsAnchorEl,
       settingsOpen,
       speakers,
+      record,
     ]
   )
 

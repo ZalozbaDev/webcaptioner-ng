@@ -16,6 +16,7 @@ import { FC } from 'react'
 import { MicrophoneSelector } from '../microphone-selector.tsx'
 import { parseSotraModelToText } from '../../../../helper/text-parser'
 import { Settings } from '../../../../types/settings'
+import { updateAudioRecord } from '../../../../lib/server-manager'
 
 const menuItemWithCheckbox = (
   key: string,
@@ -176,6 +177,7 @@ export const SettingsContainer: FC<{
   onChangeMicrophone: (mic: MediaDeviceInfo) => void
   activeMicrophone: MediaDeviceInfo | null
   speakers: BamborakSpeaker[]
+  record: { id: string; token: string } | null
 }> = ({
   anchorEl,
   open,
@@ -186,7 +188,46 @@ export const SettingsContainer: FC<{
   onChangeMicrophone,
   activeMicrophone,
   speakers,
+  record,
 }) => {
+  const handleSpeakerChange = async (speakerId: string) => {
+    // Update local settings
+    onChangeSetting('selectedSpeakerId', speakerId)
+
+    // Update audio record in server if we have an active record
+    if (record && record.id) {
+      try {
+        await updateAudioRecord(record.id, speakerId)
+      } catch (error) {
+        console.error('Error updating audio record with speakerId:', error)
+      }
+    }
+  }
+
+  const handleAutoPlayAudioChange = async (enabled: boolean) => {
+    // Update local settings
+    onChangeSetting('autoPlayAudio', enabled)
+    console.log(
+      'handleAutoPlayAudioChange',
+      record,
+      enabled,
+      settings.selectedSpeakerId
+    )
+    // Update audio record in server if we have an active record
+    if (record && record.id) {
+      try {
+        if (enabled && settings.selectedSpeakerId) {
+          await updateAudioRecord(record.id, settings.selectedSpeakerId)
+        } else {
+          // When autoPlayAudio is disabled, set speakerId to null
+          await updateAudioRecord(record.id, null)
+        }
+      } catch (error) {
+        console.error('Error updating audio record speakerId:', error)
+      }
+    }
+  }
+
   return (
     <Menu
       onClose={onClose}
@@ -282,7 +323,7 @@ export const SettingsContainer: FC<{
           control={
             <Switch
               checked={settings.autoPlayAudio}
-              onChange={e => onChangeSetting('autoPlayAudio', e.target.checked)}
+              onChange={e => handleAutoPlayAudioChange(e.target.checked)}
             />
           }
           disabled={disabled}
@@ -303,9 +344,7 @@ export const SettingsContainer: FC<{
               <InputLabel>Rěčnik</InputLabel>
               <Select
                 value={settings.selectedSpeakerId}
-                onChange={e =>
-                  onChangeSetting('selectedSpeakerId', e.target.value)
-                }
+                onChange={e => handleSpeakerChange(e.target.value)}
                 label='Rěčnik'
               >
                 {speakers.map(speaker => (

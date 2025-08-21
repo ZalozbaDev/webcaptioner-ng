@@ -116,3 +116,18 @@ export const createAudioRecord = async () => {
 
   return axios.post<AudioRecord>(url, {}, config)
 }
+
+export const updateAudioRecord = async (
+  recordId: string,
+  speakerId: string | null
+) => {
+  const url = `${process.env.REACT_APP_WEBCAPTIONER_SERVER}/users/audioRecords/${recordId}`
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+    },
+  }
+
+  return axios.put<AudioRecord>(url, { speakerId }, config)
+}
