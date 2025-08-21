@@ -16,18 +16,6 @@ import {
 } from './components'
 import ThemeToggle from '../../components/theme-toggle'
 
-interface AudioRecord {
-  _id: string
-  title: string
-  createdAt: Date
-  originalText: string[]
-  translatedText: string[]
-  token: string
-  settings?: {
-    autoPlayAudio?: boolean
-  }
-}
-
 const CastScreen = () => {
   const { token: urlToken } = useParams<{ token: string }>()
   const navigate = useNavigate()
@@ -130,10 +118,10 @@ const CastScreen = () => {
 
   // Automatically disable audio if cast settings don't allow it
   useEffect(() => {
-    if (cast?.settings?.autoPlayAudio === false) {
+    if (cast?.speakerId === null) {
       setAudioEnabled(false)
     }
-  }, [cast?.settings?.autoPlayAudio])
+  }, [cast?.speakerId])
 
   useEffect(() => {
     if (autoscroll) {
@@ -294,9 +282,13 @@ const CastScreen = () => {
 
                 if (
                   audioEnabledRef.current &&
-                  castRef.current?.settings?.autoPlayAudio !== false
+                  castRef.current?.speakerId !== null &&
+                  castRef.current?.speakerId !== undefined
                 ) {
-                  getAudioFromText(data.translation, DEFAULT_SPEAKER_ID)
+                  getAudioFromText(
+                    data.translation,
+                    castRef.current?.speakerId.toString()
+                  )
                     .then(audioResponse => {
                       audioQueueService.addToQueue(audioResponse.data)
                     })
@@ -410,7 +402,7 @@ const CastScreen = () => {
         <AudioToggle
           audioEnabled={audioEnabled}
           setAudioEnabled={setAudioEnabled}
-          disabled={cast.settings?.autoPlayAudio === false}
+          disabled={cast.speakerId === null}
           onToggle={handleUserInteraction}
         />
         <AutoscrollToggle
