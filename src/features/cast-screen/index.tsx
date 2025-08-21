@@ -5,7 +5,6 @@ import axios from 'axios'
 import { initWebsocket } from '../main-screen/components/audio-recorder/handler/init-websocket'
 import { getAudioFromText } from '../../lib/server-manager'
 import { audioQueueService } from '../../services/AudioQueueService'
-import { DEFAULT_SPEAKER_ID } from '../../constants'
 import {
   AutoscrollToggle,
   TokenInputForm,
@@ -312,7 +311,7 @@ const CastScreen = () => {
         setIsLoading(false)
       }
     },
-    [navigate, urlToken, audioEnabled]
+    [navigate, urlToken]
   )
 
   useEffect(() => {
