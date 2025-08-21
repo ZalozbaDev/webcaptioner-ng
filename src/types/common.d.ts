@@ -17,4 +17,5 @@ type AudioRecord = {
   originalText: string[]
   translatedText: string[]
   token: string
+  speakerId: number | null
 }
