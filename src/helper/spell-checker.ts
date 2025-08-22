@@ -1,62 +1,69 @@
 // Custom spell checker for Upper Sorbian text
-// This reads the actual Hunspell dictionary files to get the complete vocabulary
+// This uses the hunspell-spellchecker package with both .aff and .dic files
+
+import HunspellSpellchecker from 'hunspell-spellchecker'
+import { Buffer } from 'buffer'
 
 export interface SpellCheckResult {
   word: string
   isCorrect: boolean
 }
 
-// Dictionary storage
-let UPPER_SORBIAN_DICTIONARY: Set<string> | null = null
-let isInitialized = false
-
-// Parse the dictionary file content
-const parseDictionaryFile = (dicContent: string): Set<string> => {
-  const words = new Set<string>()
-  const lines = dicContent.split('\n')
-
-  // Skip the first line (word count)
-  for (let i = 1; i < lines.length; i++) {
-    const line = lines[i].trim()
-    if (line && !line.startsWith('#')) {
-      // Extract the word part (before any flags or slashes)
-      const word = line.split('/')[0].split(' ')[0].trim()
-      if (word && word.length > 0) {
-        words.add(word.toLowerCase())
-      }
-    }
-  }
-
-  return words
-}
-
-// Load and parse the dictionary files
-const loadDictionary = async (): Promise<Set<string>> => {
-  try {
-    console.log('Loading Upper Sorbian dictionary...')
-
-    // Load the dictionary file
-    const dicResponse = await fetch('/hunspell/hsb_DE.dic')
-    const dicContent = await dicResponse.text()
-
-    console.log('Dictionary file loaded, parsing...')
-    const dictionary = parseDictionaryFile(dicContent)
-
-    console.log(`Dictionary loaded with ${dictionary.size} words`)
-    return dictionary
-  } catch (error) {
-    console.error('Failed to load dictionary:', error)
-    // Fallback to a basic dictionary if loading fails
-    return new Set([])
-  }
-}
+let spellchecker: HunspellSpellchecker | null = null
+let isInitialized: boolean = false
+let initializationPromise: Promise<void> | null = null
 
 export class SpellChecker {
   private static async initialize() {
+    // If already initialized, return immediately
     if (isInitialized) return
 
+    // If initialization is already in progress, wait for it
+    if (initializationPromise) {
+      await initializationPromise
+      return
+    }
+
+    // Start initialization and store the promise
+    initializationPromise = this.performInitialization()
+
     try {
-      UPPER_SORBIAN_DICTIONARY = await loadDictionary()
+      await initializationPromise
+    } finally {
+      // Clear the promise reference after completion (success or failure)
+      initializationPromise = null
+    }
+  }
+
+  private static async performInitialization() {
+    try {
+      console.log('Loading dictionary files...')
+
+      // Fetch the dictionary files from the public folder
+      const [affResponse, dicResponse] = await Promise.all([
+        fetch('/hunspell/hsb_DE_soblex_w8_3.09.11.aff'),
+        fetch('/hunspell/hsb_DE_soblex_w8_3.09.11.dic'),
+      ])
+
+      if (!affResponse.ok || !dicResponse.ok) {
+        throw new Error('Failed to load dictionary files')
+      }
+
+      const affContent = await affResponse.arrayBuffer()
+      const dicContent = await dicResponse.arrayBuffer()
+
+      // Create a new spellchecker instance
+      spellchecker = new HunspellSpellchecker()
+
+      // Parse an hunspell dictionary that can be serialized as JSON
+      const DICT = spellchecker.parse({
+        aff: Buffer.from(affContent),
+        dic: Buffer.from(dicContent),
+      })
+
+      // Load a dictionary
+      spellchecker.use(DICT)
+
       isInitialized = true
       console.log('Spell checker initialized successfully')
     } catch (error) {
@@ -66,16 +73,18 @@ export class SpellChecker {
   }
 
   static async checkWord(word: string): Promise<SpellCheckResult> {
-    await this.initialize()
+    // Ensure initialization is complete before checking words
+    if (!isInitialized) {
+      await this.initialize()
+    }
 
-    if (!UPPER_SORBIAN_DICTIONARY) {
+    if (!spellchecker) {
       throw new Error('Spell checker not initialized')
     }
 
     try {
-      const cleanWord = word.toLowerCase().trim()
-      const isCorrect = UPPER_SORBIAN_DICTIONARY.has(cleanWord)
-
+      const cleanWord = word.trim()
+      const isCorrect = spellchecker.check(cleanWord)
       return {
         word: cleanWord,
         isCorrect,
@@ -90,9 +99,12 @@ export class SpellChecker {
   }
 
   static async checkText(text: string): Promise<SpellCheckResult[]> {
-    await this.initialize()
+    // Ensure initialization is complete before checking text
+    if (!isInitialized) {
+      await this.initialize()
+    }
 
-    if (!UPPER_SORBIAN_DICTIONARY) {
+    if (!spellchecker) {
       throw new Error('Spell checker not initialized')
     }
 
@@ -102,16 +114,8 @@ export class SpellChecker {
       const results: SpellCheckResult[] = []
 
       for (const word of words) {
-        // Clean word for spell checking (remove punctuation)
-        const cleanWord = word.replace(
-          /[^\w\u0107\u010D\u0111\u0119\u0142\u0144\u00F3\u015B\u017A\u017C\u0106\u010C\u0110\u0118\u0141\u0143\u00D3\u015A\u0179\u017A]/g,
-          ''
-        )
-
-        if (cleanWord.length > 0) {
-          const result = await this.checkWord(cleanWord)
-          results.push(result)
-        }
+        const result = await this.checkWord(word)
+        results.push(result)
       }
 
       return results

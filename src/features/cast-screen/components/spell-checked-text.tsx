@@ -14,6 +14,7 @@ export const SpellCheckedText: React.FC<SpellCheckedTextProps> = ({
   const [spellCheckResults, setSpellCheckResults] = useState<
     SpellCheckResult[]
   >([])
+
   const [isLoading, setIsLoading] = useState(false)
 
   const checkSpelling = useCallback(async (textToCheck: string) => {
@@ -75,14 +76,8 @@ export const SpellCheckedText: React.FC<SpellCheckedTextProps> = ({
             return <span key={index}>{word}</span>
           }
 
-          // Clean word for spell checking (remove punctuation and special characters)
-          const cleanWord = word.replace(
-            /[^\w\u0107\u010D\u0111\u0119\u0142\u0144\u00F3\u015B\u017A\u017C\u0106\u010C\u0110\u0118\u0141\u0143\u00D3\u015A\u0179\u017A]/g,
-            ''
-          )
-
           const spellResult = spellCheckResults.find(
-            result => result.word.toLowerCase() === cleanWord.toLowerCase()
+            result => result.word.toLowerCase() === word.toLowerCase()
           )
 
           if (spellResult && !spellResult.isCorrect) {
@@ -90,7 +85,9 @@ export const SpellCheckedText: React.FC<SpellCheckedTextProps> = ({
               <span
                 key={index}
                 style={{
-                  textDecoration: 'underline wavy red',
+                  textDecoration: 'underline',
+                  textDecorationStyle: 'wavy',
+                  textDecorationColor: 'red',
                 }}
               >
                 {word}
