@@ -105,7 +105,10 @@ export const getSpeakersFromBamborak = async () => {
   return axios.get(url)
 }
 
-export const createAudioRecord = async () => {
+export const createAudioRecord = async (
+  autoPlayAudio?: boolean,
+  speakerId?: string | null
+) => {
   const url = `${process.env.REACT_APP_WEBCAPTIONER_SERVER}/users/audioRecords`
   const config = {
     headers: {
@@ -114,7 +117,12 @@ export const createAudioRecord = async () => {
     },
   }
 
-  return axios.post<AudioRecord>(url, {}, config)
+  const data: { speakerId?: string } = {}
+  if (autoPlayAudio && speakerId) {
+    data.speakerId = speakerId
+  }
+
+  return axios.post<AudioRecord>(url, data, config)
 }
 
 export const updateAudioRecord = async (

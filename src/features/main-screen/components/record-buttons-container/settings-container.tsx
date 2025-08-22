@@ -213,7 +213,9 @@ export const SettingsContainer: FC<{
       enabled,
       settings.selectedSpeakerId
     )
-    // Update audio record in server if we have an active record
+
+    // Only try to update audio record in server if we have an active record
+    // If no record exists yet, the settings will be applied when recording starts
     if (record && record.id) {
       try {
         if (enabled && settings.selectedSpeakerId) {

@@ -253,8 +253,11 @@ export const useRecording = (
     try {
       let recordId = oldRecordId
       if (!recordId) {
-        // Create audio record first
-        const response = await createAudioRecord()
+        // Create audio record first with current autoPlayAudio settings
+        const response = await createAudioRecord(
+          settings.autoPlayAudio,
+          settings.selectedSpeakerId
+        )
         recordId = response.data._id
         const token = response.data.token
 
