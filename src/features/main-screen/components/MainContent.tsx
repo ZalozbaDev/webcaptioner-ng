@@ -9,6 +9,7 @@ import { MAX_TEXT_LINES } from '../../../constants'
 import dayjs from 'dayjs'
 import { QRCode } from './qr-code'
 import { useState } from 'react'
+import { createAudioRecord } from '../../../lib/server-manager'
 
 type MainContentProps = {
   recording: {
@@ -48,8 +49,28 @@ export const MainContent = ({
 }: MainContentProps) => {
   const [showQrCode, setShowQrCode] = useState<boolean>(false)
 
-  const handleShare = () => {
-    setShowQrCode(prev => !prev)
+  const handleShare = async () => {
+    if (!showQrCode) {
+      // If we're showing the QR code for the first time, create a new record
+      try {
+        const response = await createAudioRecord(
+          settings.autoPlayAudio,
+          settings.selectedSpeakerId
+        )
+        const newRecord = { id: response.data._id, token: response.data.token }
+        setRecord(newRecord)
+        setShowQrCode(true)
+      } catch (error) {
+        console.error('Error creating audio record:', error)
+        // Still show QR code if there's an existing record
+        if (record) {
+          setShowQrCode(true)
+        }
+      }
+    } else {
+      // If QR code is already visible, hide it
+      setShowQrCode(false)
+    }
   }
 
   return (
