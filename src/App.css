@@ -6,6 +6,8 @@
   --text-primary: #1a1a1a;
   --text-secondary: #4a4a4a;
   --accent-color: #1976d2;
+  --accent-bg: rgba(25, 118, 210, 0.1);
+  --accent-hover: rgba(25, 118, 210, 0.2);
   --border-color: #d0d0d0;
   --shadow-color: rgba(0, 0, 0, 0.15);
 }
@@ -17,6 +19,8 @@
   --text-primary: #ffffff;
   --text-secondary: #cccccc;
   --accent-color: #61dafb;
+  --accent-bg: rgba(97, 218, 251, 0.1);
+  --accent-hover: rgba(97, 218, 251, 0.2);
   --border-color: #ffffff;
   --shadow-color: rgba(0, 0, 0, 0.3);
 }

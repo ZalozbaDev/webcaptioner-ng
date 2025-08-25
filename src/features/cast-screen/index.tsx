@@ -12,6 +12,7 @@ import {
   TextFieldWithControls,
   DraggableDivider,
   AudioToggle,
+  SpellCheckerToggle,
 } from './components'
 import ThemeToggle from '../../components/theme-toggle'
 
@@ -35,6 +36,10 @@ const CastScreen = () => {
     return saved ? JSON.parse(saved) : true
   })
   const [audioEnabled, setAudioEnabled] = useState(false)
+  const [spellCheckerEnabled, setSpellCheckerEnabled] = useState(() => {
+    const saved = localStorage.getItem('castScreenSpellCheckerEnabled')
+    return saved ? JSON.parse(saved) : false
+  })
   const [textFieldSize, setTextFieldSize] = useState(() => {
     const saved = localStorage.getItem('castScreenTextFieldSize')
     return saved ? parseInt(saved) : 50
@@ -70,6 +75,13 @@ const CastScreen = () => {
   useEffect(() => {
     localStorage.setItem('castScreenAudioEnabled', JSON.stringify(audioEnabled))
   }, [audioEnabled])
+
+  useEffect(() => {
+    localStorage.setItem(
+      'castScreenSpellCheckerEnabled',
+      JSON.stringify(spellCheckerEnabled)
+    )
+  }, [spellCheckerEnabled])
 
   useEffect(() => {
     localStorage.setItem('castScreenTextFieldSize', textFieldSize.toString())
@@ -408,6 +420,10 @@ const CastScreen = () => {
           autoscroll={autoscroll}
           setAutoscroll={setAutoscroll}
         />
+        <SpellCheckerToggle
+          spellCheckerEnabled={spellCheckerEnabled}
+          setSpellCheckerEnabled={setSpellCheckerEnabled}
+        />
       </Box>
 
       <FullscreenTextDisplay
@@ -427,6 +443,7 @@ const CastScreen = () => {
             ? decreaseOriginalFontSize
             : decreaseTranslatedFontSize
         }
+        enableSpellCheck={spellCheckerEnabled}
       />
 
       {/* Vertical Text Fields with Draggable Divider */}
@@ -449,7 +466,7 @@ const CastScreen = () => {
           isFullscreen={fullscreenField === 'original'}
           dataTextField='original'
           height={textFieldSize}
-          enableSpellCheck={true}
+          enableSpellCheck={spellCheckerEnabled}
         />
 
         <DraggableDivider
