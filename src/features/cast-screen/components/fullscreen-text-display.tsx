@@ -186,7 +186,7 @@ export const FullscreenTextDisplay = ({
             left: '8px',
             right: '8px',
             bottom: '8px',
-            backgroundColor: 'white',
+            backgroundColor: 'var(--card-bg)',
             borderRadius: 2,
             p: 2,
             boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
@@ -219,7 +219,7 @@ export const FullscreenTextDisplay = ({
                 key={index}
                 sx={{
                   mb: 2,
-                  color: 'black',
+                  color: 'var(--card-text-color)',
                   fontSize: `${currentFontSize}px`,
                   lineHeight: '1.6',
                   wordBreak: 'normal',

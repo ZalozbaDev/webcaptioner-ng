@@ -58,7 +58,17 @@ export const TokenInputForm = ({
         />
         <Box sx={{ mt: 2 }}>
           <Button
-            color='primary'
+            sx={{
+              backgroundColor: 'var(--accent-color)',
+              color: 'white',
+              '&:hover': {
+                backgroundColor: 'var(--accent-hover)',
+              },
+              '&:disabled': {
+                backgroundColor: 'var(--text-secondary)',
+                color: 'var(--bg-primary)',
+              },
+            }}
             fullWidth
             size='large'
             type='submit'

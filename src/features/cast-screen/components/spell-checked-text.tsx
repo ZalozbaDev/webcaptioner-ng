@@ -44,7 +44,7 @@ export const SpellCheckedText: React.FC<SpellCheckedTextProps> = ({
       return (
         <Typography
           sx={{
-            color: 'black',
+            color: 'var(--card-text-color)',
             fontSize: `${fontSize}px`,
             lineHeight: 1.6,
             wordBreak: 'break-word',
@@ -62,7 +62,7 @@ export const SpellCheckedText: React.FC<SpellCheckedTextProps> = ({
     return (
       <Typography
         sx={{
-          color: 'black',
+          color: 'var(--card-text-color)',
           fontSize: `${fontSize}px`,
           lineHeight: 1.6,
           wordBreak: 'break-word',

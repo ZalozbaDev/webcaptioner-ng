@@ -1,6 +1,6 @@
 import { FC } from 'react'
 import { useFetchMicrophones } from '../../../../hooks/use-get-microphones'
-import { FormControl, MenuItem, Select } from '@mui/material'
+import { FormControl, MenuItem, Select, Typography } from '@mui/material'
 
 export const MicrophoneSelector: FC<{
   activeMicrophone: MediaDeviceInfo | null
@@ -42,7 +42,9 @@ export const MicrophoneSelector: FC<{
         onChange={handleChange}
       >
         <MenuItem disabled value={''} key={'Mikro0'}>
-          <em>Wuzwoleny Mikrofon</em>
+          <Typography variant='body1' color='var(--text-secondary)'>
+            Wuzwoleny Mikrofon
+          </Typography>
         </MenuItem>
         {microphones.map(mic => (
           <MenuItem key={mic.deviceId} value={mic.deviceId}>
