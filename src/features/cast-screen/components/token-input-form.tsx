@@ -49,6 +49,7 @@ export const TokenInputForm = ({
             },
             '& .MuiFilledInput-root': {
               fontSize: '1rem',
+              color: 'var(--text-primary)',
               '&:hover': {
                 backgroundColor: 'var(--button-hover)',
               },
