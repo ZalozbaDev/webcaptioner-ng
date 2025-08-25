@@ -107,9 +107,17 @@ const CastScreen = () => {
             const source = audioContext.createBufferSource()
             source.buffer = audioBuffer
             source.connect(audioContext.destination)
-            source.start()
+
+            return new Promise<void>(resolve => {
+              source.onended = () => {
+                resolve()
+              }
+
+              source.start()
+            })
           } catch (error) {
             console.error('Error playing audio:', error)
+            throw error
           }
         },
       }
