@@ -1,17 +1,19 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export const useWakeLock = () => {
   const wakeLockRef = useRef<WakeLockSentinel | null>(null)
+  const [isWakeLockActive, setIsWakeLockActive] = useState(false)
 
   const requestWakeLock = async () => {
     try {
-      // Check if wake lock is supported
-      if ('wakeLock' in navigator) {
-        wakeLockRef.current = await navigator.wakeLock.request('screen')
+      if ('wakeLock' in navigator && navigator.wakeLock) {
+        const sentinel = await navigator.wakeLock.request('screen')
+        wakeLockRef.current = sentinel
+        setIsWakeLockActive(true)
 
-        // Handle wake lock release (e.g., when tab becomes inactive)
-        wakeLockRef.current.addEventListener('release', () => {
+        sentinel.addEventListener('release', () => {
           console.log('Wake lock was released')
+          setIsWakeLockActive(false)
         })
 
         console.log('Wake lock activated')
@@ -28,6 +30,7 @@ export const useWakeLock = () => {
       try {
         await wakeLockRef.current.release()
         wakeLockRef.current = null
+        setIsWakeLockActive(false)
         console.log('Wake lock released')
       } catch (err) {
         console.error('Failed to release wake lock:', err)
@@ -36,18 +39,17 @@ export const useWakeLock = () => {
   }
 
   useEffect(() => {
-    // Request wake lock when component mounts
     requestWakeLock()
 
-    // Cleanup: release wake lock when component unmounts
     return () => {
       releaseWakeLock()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return {
     requestWakeLock,
     releaseWakeLock,
-    isWakeLockActive: wakeLockRef.current !== null,
+    isWakeLockActive,
   }
 }
