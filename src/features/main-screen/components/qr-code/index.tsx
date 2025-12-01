@@ -16,15 +16,21 @@ export const QRCode: FC<QRCodeProps> = ({ token, show }) => {
     setIsFullScreen(!isFullScreen)
   }
 
-  const handleFullScreenClick = (e: React.MouseEvent) => {
+  const handleCloseFullScreenClick = (e: React.MouseEvent) => {
     e.stopPropagation()
     setIsFullScreen(false)
+  }
+
+  const handleOpenLinkClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    setIsFullScreen(false)
+    window.open(`${window.location.origin}/cast/${token}`, '_blank')
   }
 
   if (isFullScreen) {
     return (
       <Box
-        onClick={handleFullScreenClick}
+        onClick={handleCloseFullScreenClick}
         sx={{
           position: 'fixed',
           top: 0,
@@ -41,7 +47,7 @@ export const QRCode: FC<QRCodeProps> = ({ token, show }) => {
         }}
       >
         <Box
-          onClick={e => e.stopPropagation()}
+          onClick={handleOpenLinkClick}
           sx={{
             backgroundColor: 'var(--card-bg)',
             padding: 6,
