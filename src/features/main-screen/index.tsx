@@ -11,6 +11,7 @@ import { DEFAULT_SETTINGS } from '../../constants'
 import { useRecording } from './hooks/useRecording'
 import { Header } from './components/Header'
 import { MainContent } from './components/MainContent'
+import { useWakeLock } from '../../hooks/use-wakelock'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -26,6 +27,7 @@ type TranslationResponse = {
 }
 
 const MainScreen = () => {
+  useWakeLock()
   const [mediaStreamSettings, setMediaStreamSettings] =
     useState<Settings>(DEFAULT_SETTINGS)
   const [selectedMicrophone, setSelectedMicrophone] =

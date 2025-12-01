@@ -15,10 +15,14 @@ import {
   SpellCheckerToggle,
 } from './components'
 import ThemeToggle from '../../components/theme-toggle'
+import { useWakeLock } from '../../hooks/use-wakelock'
 
 const CastScreen = () => {
   const { token: urlToken } = useParams<{ token: string }>()
   const navigate = useNavigate()
+
+  useWakeLock()
+
   const [cast, setCast] = useState<AudioRecord | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [inputToken, setInputToken] = useState('')
