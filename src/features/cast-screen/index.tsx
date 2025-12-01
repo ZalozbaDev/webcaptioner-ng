@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { Box, Typography, Container } from '@mui/material'
 import axios from 'axios'
 import { initWebsocket } from '../main-screen/components/audio-recorder/handler/init-websocket'
-import { getAudioFromText } from '../../lib/server-manager'
+import { getAudioFromText, getAudioRecord } from '../../lib/server-manager'
 import { audioQueueService } from '../../services/AudioQueueService'
 import {
   AutoscrollToggle,
@@ -76,6 +76,77 @@ const CastScreen = () => {
     localStorage.setItem('castScreenAudioEnabled', JSON.stringify(audioEnabled))
   }, [audioEnabled])
 
+  // Refetch audio record when audio state changes to ensure synchronization
+  useEffect(() => {
+    if (cast?._id && audioEnabled) {
+      // When audio is enabled, check if it's actually available on the server
+      getAudioRecord(cast._id)
+        .then(response => {
+          const updatedCast = response.data
+          if (updatedCast.speakerId === null && audioEnabled) {
+            // If server shows audio is disabled, update local state
+            setAudioEnabled(false)
+            setCast(updatedCast)
+          }
+        })
+        .catch(error => {
+          console.error('Error checking audio availability:', error)
+        })
+    }
+  }, [audioEnabled, cast?._id])
+
+  // Debounced refetch to avoid too many API calls
+  useEffect(() => {
+    if (!cast?._id) return
+
+    const timeoutId = setTimeout(async () => {
+      try {
+        const response = await getAudioRecord(cast._id)
+        const updatedCast = response.data
+
+        // Only update if there are actual changes
+        if (updatedCast.speakerId !== cast.speakerId) {
+          setCast(updatedCast)
+
+          // If audio is disabled on the main screen (speakerId is null), disable it on cast screen
+          if (updatedCast.speakerId === null && audioEnabled) {
+            setAudioEnabled(false)
+          }
+        }
+      } catch (error) {
+        console.error('Error in debounced audio record refetch:', error)
+      }
+    }, 1000) // 1 second delay
+
+    return () => clearTimeout(timeoutId)
+  }, [cast?._id, cast?.speakerId, audioEnabled])
+
+  // Debounced refetch to avoid too many API calls
+  useEffect(() => {
+    if (!cast?._id) return
+
+    const timeoutId = setTimeout(async () => {
+      try {
+        const response = await getAudioRecord(cast._id)
+        const updatedCast = response.data
+
+        // Only update if there are actual changes
+        if (updatedCast.speakerId !== cast.speakerId) {
+          setCast(updatedCast)
+
+          // If audio is disabled on the main screen (speakerId is null), disable it on cast screen
+          if (updatedCast.speakerId === null && audioEnabled) {
+            setAudioEnabled(false)
+          }
+        }
+      } catch (error) {
+        console.error('Error in debounced audio record refetch:', error)
+      }
+    }, 1000) // 1 second delay
+
+    return () => clearTimeout(timeoutId)
+  }, [cast?._id, cast?.speakerId, audioEnabled])
+
   useEffect(() => {
     localStorage.setItem(
       'castScreenSpellCheckerEnabled',
@@ -141,6 +212,32 @@ const CastScreen = () => {
       setAudioEnabled(false)
     }
   }, [cast?.speakerId])
+
+  // Poll for audio setting changes from the main screen
+  useEffect(() => {
+    if (!cast?._id) return
+
+    const pollInterval = setInterval(async () => {
+      try {
+        const response = await getAudioRecord(cast._id)
+        const updatedCast = response.data
+
+        // Check if audio settings have changed
+        if (updatedCast.speakerId !== cast.speakerId) {
+          setCast(updatedCast)
+
+          // If audio is disabled on the main screen (speakerId is null), disable it on cast screen
+          if (updatedCast.speakerId === null && audioEnabled) {
+            setAudioEnabled(false)
+          }
+        }
+      } catch (error) {
+        console.error('Error polling for audio record updates:', error)
+      }
+    }, 5000) // Check every 5 seconds
+
+    return () => clearInterval(pollInterval)
+  }, [cast?._id, cast?.speakerId, audioEnabled])
 
   useEffect(() => {
     if (autoscroll) {
@@ -271,6 +368,16 @@ const CastScreen = () => {
         )
         setCast(response.data)
 
+        // Immediately refetch to ensure we have the latest audio settings
+        if (response.data?._id) {
+          try {
+            const latestResponse = await getAudioRecord(response.data._id)
+            setCast(latestResponse.data)
+          } catch (error) {
+            console.error('Error fetching latest audio record:', error)
+          }
+        }
+
         if (response.data?._id) {
           if (wsRef.current) {
             wsRef.current.close()
@@ -299,6 +406,30 @@ const CastScreen = () => {
                     : prevCast
                 )
 
+                // Immediately refetch the audio record to get the latest settings
+                if (castRef.current?._id) {
+                  getAudioRecord(castRef.current._id)
+                    .then(response => {
+                      const updatedCast = response.data
+                      if (
+                        updatedCast.speakerId !== castRef.current?.speakerId
+                      ) {
+                        setCast(updatedCast)
+
+                        // If audio is disabled on the main screen, disable it on cast screen
+                        if (
+                          updatedCast.speakerId === null &&
+                          audioEnabledRef.current
+                        ) {
+                          setAudioEnabled(false)
+                        }
+                      }
+                    })
+                    .catch(error => {
+                      console.error('Error refetching audio record:', error)
+                    })
+                }
+
                 if (
                   audioEnabledRef.current &&
                   castRef.current?.speakerId !== null &&
@@ -320,6 +451,19 @@ const CastScreen = () => {
               console.error('Invalid WS message', e)
             }
           })
+
+          // Immediately refetch audio record after websocket connection to get latest settings
+          if (response.data?._id) {
+            try {
+              const latestResponse = await getAudioRecord(response.data._id)
+              setCast(latestResponse.data)
+            } catch (error) {
+              console.error(
+                'Error fetching latest audio record after websocket connection:',
+                error
+              )
+            }
+          }
         }
         if (!urlToken) {
           navigate(`/cast/${tokenToValidate}`)
@@ -422,6 +566,7 @@ const CastScreen = () => {
           audioEnabled={audioEnabled}
           setAudioEnabled={setAudioEnabled}
           disabled={cast.speakerId === null}
+          disabledByMainScreen={cast.speakerId === null}
           onToggle={handleUserInteraction}
         />
         <AutoscrollToggle
@@ -433,6 +578,25 @@ const CastScreen = () => {
           setSpellCheckerEnabled={setSpellCheckerEnabled}
         />
       </Box>
+
+      {/* Audio status message */}
+      {cast.speakerId === null && (
+        <Box
+          sx={{
+            position: 'absolute',
+            top: 60,
+            right: 0,
+            zIndex: 10,
+            padding: 1,
+            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+            borderRadius: 1,
+            fontSize: '0.75rem',
+            color: '#666',
+          }}
+        >
+          Audio disabled by main screen
+        </Box>
+      )}
 
       <FullscreenTextDisplay
         fullscreenField={fullscreenField}

@@ -139,3 +139,15 @@ export const updateAudioRecord = async (
 
   return axios.put<AudioRecord>(url, { speakerId }, config)
 }
+
+export const getAudioRecord = async (recordId: string) => {
+  const url = `${process.env.REACT_APP_WEBCAPTIONER_SERVER}/users/audioRecords/${recordId}`
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+    },
+  }
+
+  return axios.get<AudioRecord>(url, config)
+}

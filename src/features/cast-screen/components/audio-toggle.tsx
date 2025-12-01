@@ -7,31 +7,50 @@ export const AudioToggle: FC<{
   setAudioEnabled: (enabled: boolean) => void
   disabled?: boolean
   onToggle?: () => void
-}> = ({ audioEnabled, setAudioEnabled, disabled = false, onToggle }) => {
+  disabledByMainScreen?: boolean
+}> = ({
+  audioEnabled,
+  setAudioEnabled,
+  disabled = false,
+  onToggle,
+  disabledByMainScreen = false,
+}) => {
+  const getTooltipTitle = () => {
+    if (disabledByMainScreen) {
+      return 'Audio disabled by main screen settings'
+    }
+    if (disabled) {
+      return 'Audio playback not available'
+    }
+    return 'Toggle audio playback'
+  }
+
   return (
-    <Tooltip
-      title={
-        disabled ? 'Audio playback not available' : 'Toggle audio playback'
-      }
-    >
+    <Tooltip title={getTooltipTitle()}>
       <IconButton
         onClick={() => {
-          if (!disabled) {
+          if (!disabled && !disabledByMainScreen) {
             setAudioEnabled(!audioEnabled)
             onToggle?.()
           }
         }}
-        disabled={disabled}
+        disabled={disabled || disabledByMainScreen}
         size='small'
         sx={{
-          color: disabled ? '#999' : audioEnabled ? '#1976d2' : '#666',
+          color:
+            disabled || disabledByMainScreen
+              ? '#999'
+              : audioEnabled
+              ? '#1976d2'
+              : '#666',
           backgroundColor: 'rgba(255, 255, 255, 0.9)',
           borderRadius: '4px',
           padding: '6px',
           '&:hover': {
-            backgroundColor: disabled
-              ? 'rgba(255, 255, 255, 0.9)'
-              : 'rgba(255, 255, 255, 1)',
+            backgroundColor:
+              disabled || disabledByMainScreen
+                ? 'rgba(255, 255, 255, 0.9)'
+                : 'rgba(255, 255, 255, 1)',
           },
           '&:disabled': {
             opacity: 0.5,

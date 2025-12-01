@@ -5,7 +5,7 @@ export const initWebsocket = (
   const webSocket = new WebSocket(url)
   // webSocket.binaryType = 'arraybuffer'
 
-  webSocket.onerror = (error) => console.error('WebSocket error:', error)
+  webSocket.onerror = error => console.error('WebSocket error:', error)
 
   webSocket.onmessage = onReceiveMessage
 
