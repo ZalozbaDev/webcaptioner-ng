@@ -51,6 +51,10 @@ export const MainContent = ({
 
   const handleShare = async () => {
     if (!showQrCode) {
+      if (record) {
+        setShowQrCode(true)
+        return
+      }
       // If we're showing the QR code for the first time, create a new record
       try {
         const response = await createAudioRecord(
