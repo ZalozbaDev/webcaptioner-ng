@@ -10,6 +10,13 @@ type VOSKResponse = {
   listen: boolean
   start?: number
   stop?: number
+  result?: Array<{
+    conf: number
+    end: number
+    spell: boolean
+    start: number
+    word: string
+  }>
 }
 
 type Language = 'hsb' | 'de' | 'dsb'

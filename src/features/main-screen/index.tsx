@@ -12,6 +12,7 @@ import { useRecording } from './hooks/useRecording'
 import { Header } from './components/Header'
 import { MainContent } from './components/MainContent'
 import { useWakeLock } from '../../hooks/use-wakelock'
+import { InputLine } from './types'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -32,15 +33,15 @@ const MainScreen = () => {
     useState<Settings>(DEFAULT_SETTINGS)
   const [selectedMicrophone, setSelectedMicrophone] =
     useState<MediaDeviceInfo | null>(null)
-  const [inputText, setInputText] = useState<string[]>([])
+  const [inputText, setInputText] = useState<InputLine[]>([])
   const [translation, setTranslation] = useState<TranslationResponse[]>([])
   const [record, setRecord] = useState<{ id: string; token: string } | null>(
-    null
+    null,
   )
   const [youtubeSettings, setYoutubeSettings] = useState<YoutubeSettings>({
     streamingKey: undefined,
     timeOffset: parseInt(
-      process.env.REACT_APP_DEFAULT_YOUTUBE_TIME_OFFSET ?? '8'
+      process.env.REACT_APP_DEFAULT_YOUTUBE_TIME_OFFSET ?? '8',
     ),
     counter: 0,
   })
@@ -57,7 +58,7 @@ const MainScreen = () => {
       setTranslation,
       audioContext: null,
     },
-    record?.id
+    record?.id,
   )
 
   const [speakers, setSpeakers] = useState<BamborakSpeaker[]>([])
@@ -78,7 +79,7 @@ const MainScreen = () => {
 
   const updateMediaStreamSettings = (
     key: keyof Settings,
-    value: boolean | number
+    value: boolean | number,
   ) => {
     recording.breakRecording('pause')
     setMediaStreamSettings(prev => ({ ...prev, [key]: value }))
