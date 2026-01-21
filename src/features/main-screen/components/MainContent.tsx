@@ -3,6 +3,7 @@ import { Download } from '@mui/icons-material'
 import { RecordButtonsContainer } from './record-buttons-container'
 import { Settings } from '../../../types/settings'
 import { TranslationResponse, YoutubeSettings } from '../types'
+import { InputLine } from '../types'
 import { download } from '../../../helper/download'
 import { Typography } from '@mui/material'
 import { MAX_TEXT_LINES } from '../../../constants'
@@ -18,7 +19,7 @@ type MainContentProps = {
     stream: MediaStream | null
     startRecording: (
       handleRecordCreated: (id: string, token: string) => void,
-      oldRecordId?: string
+      oldRecordId?: string,
     ) => void
     breakRecording: (newState: 'stop' | 'pause') => void
   }
@@ -27,11 +28,46 @@ type MainContentProps = {
   onChangeSetting: (key: keyof Settings, value: boolean | number) => void
   youtubeSettings: YoutubeSettings
   onChangeYoutubeSettings: (settings: YoutubeSettings) => void
-  inputText: string[]
+  inputText: InputLine[]
   translation: TranslationResponse[]
   speakers: BamborakSpeaker[]
   record: { id: string; token: string } | null
   setRecord: (record: { id: string; token: string }) => void
+}
+
+const clamp01 = (value: number) => Math.max(0, Math.min(1, value))
+
+const confToColor = (conf: number) => {
+  if (conf >= 0.9) return '#16a34a'
+  const redness = clamp01((0.9 - conf) / 0.9)
+  const lightness = 75 - 35 * redness
+  return `hsl(0, 85%, ${lightness}%)`
+}
+
+const renderInputLine = (line: InputLine) => {
+  if (!line.tokens?.length) return line.plain
+
+  return line.tokens.map((w, i) => {
+    const isMisspelled = w.spell === false
+    const style: React.CSSProperties = {
+      color: confToColor(w.conf),
+      ...(isMisspelled
+        ? {
+            textDecorationLine: 'underline',
+            textDecorationStyle: 'wavy',
+            textDecorationColor: '#ef4444',
+            textDecorationThickness: '2px',
+          }
+        : null),
+    }
+
+    return (
+      <span key={`${w.word}-${i}`} style={style}>
+        {w.word}
+        {i < line.tokens!.length - 1 ? ' ' : ''}
+      </span>
+    )
+  })
 }
 
 export const MainContent = ({
@@ -59,7 +95,7 @@ export const MainContent = ({
       try {
         const response = await createAudioRecord(
           settings.autoPlayAudio,
-          settings.selectedSpeakerId
+          settings.selectedSpeakerId,
         )
         const newRecord = { id: response.data._id, token: response.data.token }
         setRecord(newRecord)
@@ -112,11 +148,16 @@ export const MainContent = ({
 
       <Box sx={{ padding: 2 }}>
         {inputText.slice(-MAX_TEXT_LINES).map((t, i) => (
-          <Typography key={i}>{t}</Typography>
+          <Typography key={i}>{renderInputLine(t)}</Typography>
         ))}
         {!recording.isRecording && inputText.length > 0 && (
           <Button
-            onClick={() => download(inputText, 'original')}
+            onClick={() =>
+              download(
+                inputText.map(t => t.plain),
+                'original',
+              )
+            }
             startIcon={<Download />}
           >
             Download
@@ -150,10 +191,10 @@ export const MainContent = ({
                   color: !t.timestampDiff
                     ? 'var(--text-primary)'
                     : Math.abs(t.timestampDiff) < 20
-                    ? '#4caf50'
-                    : Math.abs(t.timestampDiff) < 40
-                    ? '#ff9800'
-                    : '#f44336',
+                      ? '#4caf50'
+                      : Math.abs(t.timestampDiff) < 40
+                        ? '#ff9800'
+                        : '#f44336',
                 }}
               >
                 {t.timestampDiff && t.timestampDiff > 0 ? '+' : ''}
@@ -167,7 +208,7 @@ export const MainContent = ({
             onClick={() =>
               download(
                 translation.map(t => t.text),
-                'prelozk'
+                'prelozk',
               )
             }
             startIcon={<Download />}

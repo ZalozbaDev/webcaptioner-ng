@@ -5,6 +5,17 @@ export const typedVoskResponse = (data: any): VOSKResponse => {
   const stopMs = typed.stopMs ? ('000' + typed.stopMs).slice(-3) : '000'
   typed.start = typed.start ? parseInt(`${typed.start}${startMs}`) : undefined
   typed.stop = typed.stop ? parseInt(`${typed.stop}${stopMs}`) : undefined
+  typed.result = typed.result?.map((word: any) => ({
+    ...word,
+    conf: parseFloat(word.conf),
+    start: parseInt(word.start),
+    end: parseInt(word.end),
+    spell:
+      word.spell === true ||
+      word.spell === 1 ||
+      word.spell === '1' ||
+      word.spell === 'true',
+  }))
 
   // console.log({
   //   text: typed.text,
@@ -21,7 +32,7 @@ const MAX_LENGTH_SECONDS = 5
 
 export const createYoutubePackages = (
   text: string,
-  timestamps: { start: Date; stop: Date }
+  timestamps: { start: Date; stop: Date },
 ) => {
   const duration = timestamps.stop.getTime() - timestamps.start.getTime()
   // const textLength = text.length

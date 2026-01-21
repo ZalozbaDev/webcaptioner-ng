@@ -13,7 +13,7 @@ import {
 } from '../../../lib/server-manager'
 import { localStorage } from '../../../lib/local-storage'
 import dayjs from 'dayjs'
-import { TranslationResponse, YoutubeSettings } from '../types'
+import { InputLine, TranslationResponse, YoutubeSettings } from '../types'
 import { audioQueueService } from '../../../services/AudioQueueService'
 
 export const useRecording = (
@@ -22,15 +22,15 @@ export const useRecording = (
   options: {
     youtubeSettings: YoutubeSettings
     timeOffsetRef: React.RefObject<number>
-    setInputText: (cb: (prev: string[]) => string[]) => void
+    setInputText: (cb: (prev: InputLine[]) => InputLine[]) => void
     setTranslation: (
-      cb: (prev: TranslationResponse[]) => TranslationResponse[]
+      cb: (prev: TranslationResponse[]) => TranslationResponse[],
     ) => void
     audioContext: {
       playAudioData: (data: ArrayBuffer) => Promise<void>
     } | null
   },
-  audioRecordId: string | undefined
+  audioRecordId: string | undefined,
 ) => {
   const [isRecording, setIsRecording] = useState(false)
   const [voskResponse, setVoskResponse] = useState(false)
@@ -53,7 +53,7 @@ export const useRecording = (
 
   const onReceiveMessage = async (
     event: MessageEvent,
-    recordId: string | undefined
+    recordId: string | undefined,
   ) => {
     if (event.data) {
       let parsed = typedVoskResponse(event.data)
@@ -68,24 +68,28 @@ export const useRecording = (
           seq += 1
           localStorage.setCounterForYoutubeStreaming(
             options.youtubeSettings.streamingKey,
-            seq
+            seq,
           )
         }
 
+        const tokens = (parsed.result ?? []).filter(w => !!w?.word?.trim())
         const trimmedText = parsed.text.slice(2, -2).trim()
-        if (trimmedText.length <= 0) return
-        options.setInputText(prev => [...prev, trimmedText])
+        const plainText = tokens.length
+          ? tokens.map(w => w.word).join(' ')
+          : trimmedText
+        if (plainText.length <= 0) return
 
+        options.setInputText(prev => [...prev, { plain: plainText, tokens }])
         if (settings.sotraModel === 'passthrough') {
           options.setTranslation(prev => [
             ...prev,
             {
-              text: trimmedText,
+              text: plainText,
               counter: seq,
             },
           ])
           if (options.youtubeSettings.streamingKey) {
-            const youtubePackages = createYoutubePackages(trimmedText, {
+            const youtubePackages = createYoutubePackages(plainText, {
               start: parsed.start ? new Date(parsed.start) : new Date(),
               stop: parsed.stop ? new Date(parsed.stop) : new Date(),
             })
@@ -97,7 +101,7 @@ export const useRecording = (
                 dayjs(youtubePackage.date)
                   .add(options.timeOffsetRef.current ?? 0, 'seconds')
                   .toDate(),
-                options.youtubeSettings.streamingKey
+                options.youtubeSettings.streamingKey,
               )
 
               if (youtubeData.errorMessage) {
@@ -118,20 +122,20 @@ export const useRecording = (
                             new Date(youtubeData.timestamp).getTime()) /
                           1000,
                       }
-                    : p
-                )
+                    : p,
+                ),
               )
             }
           }
         } else {
           // Get bamborak audio file
-          getTranslation(recordId, trimmedText, settings.sotraModel).then(
+          getTranslation(recordId, plainText, settings.sotraModel).then(
             async response => {
               // Only play audio if autoPlayAudio is enabled AND audioContext is provided
               if (settings.autoPlayAudio && options.audioContext) {
                 getAudioFromText(
                   response.data.translation,
-                  settings.selectedSpeakerId
+                  settings.selectedSpeakerId,
                 ).then(audioResponse => {
                   audioQueueService.addToQueue(audioResponse.data)
                 })
@@ -148,7 +152,7 @@ export const useRecording = (
                   {
                     start: parsed.start ? new Date(parsed.start) : new Date(),
                     stop: parsed.stop ? new Date(parsed.stop) : new Date(),
-                  }
+                  },
                 )
 
                 for (const youtubePackage of youtubePackages) {
@@ -158,7 +162,7 @@ export const useRecording = (
                     dayjs(youtubePackage.date)
                       .add(options.timeOffsetRef.current ?? 0, 'seconds')
                       .toDate(),
-                    options.youtubeSettings.streamingKey
+                    options.youtubeSettings.streamingKey,
                   )
 
                   if (youtubeData.errorMessage) {
@@ -179,12 +183,12 @@ export const useRecording = (
                                 new Date(youtubeData.timestamp).getTime()) /
                               1000,
                           }
-                        : p
-                    )
+                        : p,
+                    ),
                   )
                 }
               }
-            }
+            },
           )
         }
       }
@@ -234,21 +238,21 @@ export const useRecording = (
             (c: AudioContext) => {
               context = c
             },
-            onStopRecording
+            onStopRecording,
           )
         }
       })
       .catch(error => {
         toast.error(
           `Error accessing microphone ${selectedMicrophone?.label}`,
-          error.message
+          error.message,
         )
       })
   }
 
   const startRecording = async (
     handleRecordCreated: (id: string, token: string) => void,
-    oldRecordId?: string
+    oldRecordId?: string,
   ) => {
     try {
       let recordId = oldRecordId
@@ -256,7 +260,7 @@ export const useRecording = (
         // Create audio record first with current autoPlayAudio settings
         const response = await createAudioRecord(
           settings.autoPlayAudio,
-          settings.selectedSpeakerId
+          settings.selectedSpeakerId,
         )
         recordId = response.data._id
         const token = response.data.token
@@ -268,14 +272,14 @@ export const useRecording = (
       webSocketRef.current = initWebsocket(
         `${process.env
           .REACT_APP_WEBCAPTIONER_SERVER!}/vosk?recordId=${recordId}`,
-        e => onReceiveMessage(e, recordId)
+        e => onReceiveMessage(e, recordId),
       )
 
       webSocketRef.current.onopen = () => {
         try {
           toast.success('Websocket connected')
           webSocketRef.current?.send(
-            `sample_rate=${settings.sampleRate},buffer_size=${settings.bufferSize}`
+            `sample_rate=${settings.sampleRate},buffer_size=${settings.bufferSize}`,
           )
           startRecordingWithNewStream()
         } catch (error) {
