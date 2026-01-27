@@ -12,12 +12,40 @@ import {
   Button,
   IconButton,
   Box,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  CircularProgress,
 } from '@mui/material'
-import { ArrowForward, Download } from '@mui/icons-material'
+import { ArrowForward, Delete, Download } from '@mui/icons-material'
 import { download } from '../../helper/download'
 
 const HistoryScreen = () => {
   const [data, setData] = useState<AudioRecord[]>([])
+  const [recordToDelete, setRecordToDelete] = useState<AudioRecord | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
+
+  const deleteRecord = async (recordId: string) => {
+    try {
+      setIsDeleting(true)
+      await axiosInstance.delete(`/users/audioRecords/${recordId}`)
+      setData(prev => prev.filter(r => r._id !== recordId))
+      toast.success('Zapisk je zhašeny')
+    } catch (err) {
+      console.error(err)
+      toast.error('Zmylk při zhašenju zapiska')
+    } finally {
+      setIsDeleting(false)
+      setRecordToDelete(null)
+    }
+  }
+
+  const onConfirmDelete = async () => {
+    if (!recordToDelete) return
+    await deleteRecord(recordToDelete._id)
+  }
 
   const getUsersHistory = async () => {
     axiosInstance
@@ -56,7 +84,7 @@ const HistoryScreen = () => {
             <TableBody>
               {data.map(record => (
                 <TableRow
-                  key={`${record.createdAt}`}
+                  key={record._id}
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
                   <TableCell component='th' scope='row'>
@@ -80,7 +108,7 @@ const HistoryScreen = () => {
                       onClick={() => {
                         download(
                           record.originalText,
-                          `${record.title}-original.txt`
+                          `${record.title}-original.txt`,
                         )
                       }}
                     >
@@ -92,7 +120,7 @@ const HistoryScreen = () => {
                       onClick={() => {
                         download(
                           record.translatedText,
-                          `${record.title}-prelozk.txt`
+                          `${record.title}-prelozk.txt`,
                         )
                       }}
                     >
@@ -101,6 +129,14 @@ const HistoryScreen = () => {
                     <IconButton onClick={() => console.log('detail')}>
                       <ArrowForward />
                     </IconButton>
+                    <IconButton
+                      color='error'
+                      aria-label='delete record'
+                      disabled={isDeleting}
+                      onClick={() => setRecordToDelete(record)}
+                    >
+                      <Delete />
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               ))}
@@ -108,6 +144,35 @@ const HistoryScreen = () => {
           </Table>
         </TableContainer>
       </Box>
+
+      <Dialog
+        open={Boolean(recordToDelete)}
+        onClose={() => {
+          if (!isDeleting) setRecordToDelete(null)
+        }}
+      >
+        <DialogTitle>Zapisk zhašeć?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Chceš tutu zapisk woprawdźe zhašeć?
+            {recordToDelete?.title ? ` ("${recordToDelete.title}")` : ''}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button disabled={isDeleting} onClick={() => setRecordToDelete(null)}>
+            Přetorhnyć
+          </Button>
+          <Button
+            color='error'
+            variant='contained'
+            disabled={isDeleting}
+            startIcon={isDeleting ? <CircularProgress size={16} /> : <Delete />}
+            onClick={onConfirmDelete}
+          >
+            Zhašeć
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   )
 }
