@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { Typography, Box } from '@mui/material'
 import { SpellChecker, SpellCheckResult } from '../../../helper/spell-checker'
+import { getSpellCheckTokenStyle } from '../../../styles/token-highlighting'
 
 interface SpellCheckedTextProps {
   text: string
@@ -77,26 +78,17 @@ export const SpellCheckedText: React.FC<SpellCheckedTextProps> = ({
           }
 
           const spellResult = spellCheckResults.find(
-            result => result.word.toLowerCase() === word.toLowerCase()
+            result => result.word.toLowerCase() === word.toLowerCase(),
           )
 
-          if (spellResult && !spellResult.isCorrect) {
-            return (
-              <span
-                key={index}
-                style={{
-                  textDecoration: 'underline',
-                  textDecorationStyle: 'wavy',
-                  textDecorationColor: 'red',
-                }}
-              >
-                {word}
-              </span>
-            )
-          }
+          if (!spellResult) return <span key={index}>{word}</span>
 
-          // Correctly spelled word
-          return <span key={index}>{word}</span>
+          const style = getSpellCheckTokenStyle(spellResult.isCorrect)
+          return (
+            <span key={index} style={style}>
+              {word}
+            </span>
+          )
         })}
       </Typography>
     )

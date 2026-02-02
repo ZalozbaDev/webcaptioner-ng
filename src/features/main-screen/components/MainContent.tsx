@@ -11,6 +11,7 @@ import dayjs from 'dayjs'
 import { QRCode } from './qr-code'
 import { useState } from 'react'
 import { createAudioRecord } from '../../../lib/server-manager'
+import { getConfidenceTokenStyle } from '../../../styles/token-highlighting'
 
 type MainContentProps = {
   recording: {
@@ -35,31 +36,12 @@ type MainContentProps = {
   setRecord: (record: { id: string; token: string }) => void
 }
 
-const clamp01 = (value: number) => Math.max(0, Math.min(1, value))
-
-const confToColor = (conf: number) => {
-  if (conf >= 0.9) return '#16a34a'
-  const redness = clamp01((0.9 - conf) / 0.9)
-  const lightness = 75 - 35 * redness
-  return `hsl(0, 85%, ${lightness}%)`
-}
-
 const renderInputLine = (line: InputLine) => {
   if (!line.tokens?.length) return line.plain
 
   return line.tokens.map((w, i) => {
     const isMisspelled = w.spell === false
-    const style: React.CSSProperties = {
-      color: confToColor(w.conf),
-      ...(isMisspelled
-        ? {
-            textDecorationLine: 'underline',
-            textDecorationStyle: 'wavy',
-            textDecorationColor: '#ef4444',
-            textDecorationThickness: '2px',
-          }
-        : null),
-    }
+    const style = getConfidenceTokenStyle(w.conf, isMisspelled)
 
     return (
       <span key={`${w.word}-${i}`} style={style}>
