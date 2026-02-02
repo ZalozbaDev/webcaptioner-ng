@@ -1,11 +1,12 @@
 import axios from 'axios'
+import { axiosInstance } from './axios'
 
 export const getTranslation = async (
   audioRecordId: string | undefined,
   text: string,
   model: 'ctranslate' | 'fairseq',
   sourceLanguage: 'de' | 'hsb' = 'hsb',
-  targetLanguage: 'de' | 'hsb' = 'de'
+  targetLanguage: 'de' | 'hsb' = 'de',
 ) => {
   const data = JSON.stringify({
     text,
@@ -33,7 +34,7 @@ export const getParseDataForYoutube = async (
   seq: number,
   text: string,
   date: Date,
-  youtubeStreamingKey: string
+  youtubeStreamingKey: string,
 ) => {
   const data = {
     cid: youtubeStreamingKey,
@@ -107,27 +108,30 @@ export const getSpeakersFromBamborak = async () => {
 
 export const createAudioRecord = async (
   autoPlayAudio?: boolean,
-  speakerId?: string | null
+  speakerId?: string | null,
 ) => {
-  const url = `${process.env.REACT_APP_WEBCAPTIONER_SERVER}/users/audioRecords`
-  const config = {
-    headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
-    },
+  const data: {
+    speakerId?: string | null
+    originalText: string[]
+    translatedText: string[]
+  } = {
+    originalText: [],
+    translatedText: [],
   }
 
-  const data: { speakerId?: string } = {}
-  if (autoPlayAudio && speakerId) {
+  // Persist selected speaker even when autoPlayAudio is off
+  if (speakerId !== undefined) {
     data.speakerId = speakerId
   }
 
-  return axios.post<AudioRecord>(url, data, config)
+  console.log({ createAudioRecordData: data })
+
+  return axiosInstance.post<AudioRecord>('/users/audioRecords', data)
 }
 
 export const updateAudioRecord = async (
   recordId: string,
-  speakerId: string | null
+  speakerId: string | null,
 ) => {
   const url = `${process.env.REACT_APP_WEBCAPTIONER_SERVER}/users/audioRecords/${recordId}`
   const config = {

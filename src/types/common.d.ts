@@ -13,7 +13,7 @@ type User = {
 type AudioRecord = {
   _id: string
   title: string
-  createdAt: Date
+  createdAt: string
   originalText: string[]
   translatedText: string[]
   token: string

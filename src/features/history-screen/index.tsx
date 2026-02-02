@@ -18,14 +18,26 @@ import {
   DialogContentText,
   DialogActions,
   CircularProgress,
+  TablePagination,
 } from '@mui/material'
 import { ArrowForward, Delete, Download } from '@mui/icons-material'
 import { download } from '../../helper/download'
+
+type PaginatedResponse<T> = {
+  items: T[]
+  total: number
+  page: number
+  limit: number
+}
 
 const HistoryScreen = () => {
   const [data, setData] = useState<AudioRecord[]>([])
   const [recordToDelete, setRecordToDelete] = useState<AudioRecord | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [page, setPage] = useState(0)
+  const [rowsPerPage, setRowsPerPage] = useState(10)
+  const [total, setTotal] = useState(0)
 
   const deleteRecord = async (recordId: string) => {
     try {
@@ -45,23 +57,44 @@ const HistoryScreen = () => {
   const onConfirmDelete = async () => {
     if (!recordToDelete) return
     await deleteRecord(recordToDelete._id)
+    await getUsersHistory(page, rowsPerPage)
   }
 
-  const getUsersHistory = async () => {
-    axiosInstance
-      .get<AudioRecord[]>('/users/audioRecords')
-      .then(response => {
-        setData(response.data)
+  const getUsersHistory = async (nextPage = page, nextLimit = rowsPerPage) => {
+    try {
+      setIsLoading(true)
+      const response = await axiosInstance.get<
+        AudioRecord[] | PaginatedResponse<AudioRecord>
+      >('/users/audioRecords', {
+        params: {
+          page: nextPage,
+          limit: nextLimit,
+        },
       })
-      .catch(err => {
-        console.error(err)
-        toast.error('Zmylk z twojej historiju')
-      })
+
+      const payload = response.data
+      if (Array.isArray(payload)) {
+        setData(payload)
+        setTotal(payload.length)
+        setPage(0)
+      } else {
+        setData(payload.items)
+        setTotal(payload.total)
+        setPage(payload.page)
+        setRowsPerPage(payload.limit)
+      }
+    } catch (err) {
+      console.error(err)
+      toast.error('Zmylk z twojej historiju')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   useEffect(() => {
-    getUsersHistory()
-  }, [])
+    getUsersHistory(page, rowsPerPage)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, rowsPerPage])
 
   return (
     <div>
@@ -74,6 +107,7 @@ const HistoryScreen = () => {
             <TableHead>
               <TableRow>
                 <TableCell>Titul</TableCell>
+                <TableCell>Datum</TableCell>
                 <TableCell>Original</TableCell>
                 <TableCell>Přełožk</TableCell>
                 <TableCell width={200} align='center'>
@@ -82,66 +116,95 @@ const HistoryScreen = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {data.map(record => (
-                <TableRow
-                  key={record._id}
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                >
-                  <TableCell component='th' scope='row'>
-                    {record.title}
-                  </TableCell>
-                  <TableCell>{record.originalText.at(0) ?? '-'} ...</TableCell>
-                  <TableCell>
-                    {record.translatedText.at(0) ?? '-'} ...
-                  </TableCell>
-                  <TableCell
-                    style={{
-                      display: 'flex',
-                      gap: 5,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <Button
-                      variant='outlined'
-                      endIcon={<Download />}
-                      onClick={() => {
-                        download(
-                          record.originalText,
-                          `${record.title}-original.txt`,
-                        )
-                      }}
-                    >
-                      original
-                    </Button>
-                    <Button
-                      variant='outlined'
-                      endIcon={<Download />}
-                      onClick={() => {
-                        download(
-                          record.translatedText,
-                          `${record.title}-prelozk.txt`,
-                        )
-                      }}
-                    >
-                      Přełožk
-                    </Button>
-                    <IconButton onClick={() => console.log('detail')}>
-                      <ArrowForward />
-                    </IconButton>
-                    <IconButton
-                      color='error'
-                      aria-label='delete record'
-                      disabled={isDeleting}
-                      onClick={() => setRecordToDelete(record)}
-                    >
-                      <Delete />
-                    </IconButton>
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={5} align='center'>
+                    <CircularProgress size={20} />
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                data.map(record => (
+                  <TableRow
+                    key={record._id}
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                  >
+                    <TableCell component='th' scope='row'>
+                      {record.title}
+                    </TableCell>
+                    <TableCell>
+                      {record.createdAt
+                        ? new Date(record.createdAt).toLocaleString()
+                        : '-'}
+                    </TableCell>
+                    <TableCell>
+                      {record.originalText.at(0) ?? '-'} ...
+                    </TableCell>
+                    <TableCell>
+                      {record.translatedText.at(0) ?? '-'} ...
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        display: 'flex',
+                        gap: 5,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <Button
+                        variant='outlined'
+                        endIcon={<Download />}
+                        onClick={() => {
+                          download(
+                            record.originalText,
+                            `${record.title}-original.txt`,
+                          )
+                        }}
+                      >
+                        original
+                      </Button>
+                      <Button
+                        variant='outlined'
+                        endIcon={<Download />}
+                        onClick={() => {
+                          download(
+                            record.translatedText,
+                            `${record.title}-prelozk.txt`,
+                          )
+                        }}
+                      >
+                        Přełožk
+                      </Button>
+                      <IconButton onClick={() => console.log('detail')}>
+                        <ArrowForward />
+                      </IconButton>
+                      <IconButton
+                        color='error'
+                        aria-label='delete record'
+                        disabled={isDeleting}
+                        onClick={() => setRecordToDelete(record)}
+                      >
+                        <Delete />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
+
+          <TablePagination
+            component='div'
+            count={total}
+            page={page}
+            onPageChange={(_, nextPage) => setPage(nextPage)}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={event => {
+              const next = Number.parseInt(event.target.value, 10)
+              setRowsPerPage(next)
+              setPage(0)
+            }}
+            rowsPerPageOptions={[5, 10, 25, 50]}
+          />
         </TableContainer>
       </Box>
 
