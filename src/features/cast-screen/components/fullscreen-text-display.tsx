@@ -1,17 +1,17 @@
 import { Box, Typography, IconButton } from '@mui/material'
 import { FullscreenExit, ZoomIn, ZoomOut } from '@mui/icons-material'
 import { SpellCheckedText } from './spell-checked-text'
+import type { TranscriptLine } from '../../../types/transcript'
 
 interface FullscreenTextDisplayProps {
   fullscreenField: 'none' | 'original' | 'translated'
   setFullscreenField: (field: 'none' | 'original' | 'translated') => void
-  originalText: string[]
-  translatedText: string[]
+  originalText: TranscriptLine[]
+  translatedText: TranscriptLine[]
   originalFontSize: number
   translatedFontSize: number
   onIncreaseFontSize: () => void
   onDecreaseFontSize: () => void
-  enableSpellCheck?: boolean
 }
 
 export const FullscreenTextDisplay = ({
@@ -23,7 +23,6 @@ export const FullscreenTextDisplay = ({
   translatedFontSize,
   onIncreaseFontSize,
   onDecreaseFontSize,
-  enableSpellCheck = false,
 }: FullscreenTextDisplayProps) => {
   if (fullscreenField === 'none') return null
 
@@ -152,30 +151,13 @@ export const FullscreenTextDisplay = ({
           }}
           data-fullscreen-content
         >
-          {texts.map((text: string, index: number) =>
-            enableSpellCheck ? (
-              <SpellCheckedText
-                key={index}
-                text={text}
-                fontSize={Math.floor(currentFontSize * 0.8)}
-              />
-            ) : (
-              <Typography
-                key={index}
-                sx={{
-                  mb: 2,
-                  color: 'rgba(255, 255, 255, 0.7)',
-                  fontSize: `${currentFontSize * 0.8}px`,
-                  lineHeight: 1.6,
-                  wordBreak: 'break-word',
-                  overflowWrap: 'break-word',
-                  whiteSpace: 'pre-wrap',
-                }}
-              >
-                {text}
-              </Typography>
-            )
-          )}
+          {texts.map((line, index) => (
+            <SpellCheckedText
+              key={index}
+              line={line}
+              fontSize={Math.floor(currentFontSize * 0.8)}
+            />
+          ))}
         </Box>
 
         {/* Foreground text fields with minimal padding */}
@@ -207,30 +189,13 @@ export const FullscreenTextDisplay = ({
             },
           }}
         >
-          {texts.map((text: string, index: number) =>
-            enableSpellCheck ? (
-              <SpellCheckedText
-                key={index}
-                text={text}
-                fontSize={currentFontSize}
-              />
-            ) : (
-              <Typography
-                key={index}
-                sx={{
-                  mb: 2,
-                  color: 'var(--card-text-color)',
-                  fontSize: `${currentFontSize}px`,
-                  lineHeight: '1.6',
-                  wordBreak: 'normal',
-                  overflowWrap: 'normal',
-                  whiteSpace: 'pre-wrap',
-                }}
-              >
-                {text}
-              </Typography>
-            )
-          )}
+          {texts.map((line, index) => (
+            <SpellCheckedText
+              key={index}
+              line={line}
+              fontSize={currentFontSize}
+            />
+          ))}
         </Box>
       </Box>
     </Box>

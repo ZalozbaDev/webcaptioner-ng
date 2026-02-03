@@ -12,10 +12,10 @@ import {
   TextFieldWithControls,
   DraggableDivider,
   AudioToggle,
-  SpellCheckerToggle,
 } from './components'
 import ThemeToggle from '../../components/theme-toggle'
 import { useWakeLock } from '../../hooks/use-wakelock'
+import type { TranscriptLine } from '../../types/transcript'
 
 const CastScreen = () => {
   const { token: urlToken } = useParams<{ token: string }>()
@@ -40,10 +40,6 @@ const CastScreen = () => {
     return saved ? JSON.parse(saved) : true
   })
   const [audioEnabled, setAudioEnabled] = useState(false)
-  const [spellCheckerEnabled, setSpellCheckerEnabled] = useState(() => {
-    const saved = localStorage.getItem('castScreenSpellCheckerEnabled')
-    return saved ? JSON.parse(saved) : false
-  })
   const [textFieldSize, setTextFieldSize] = useState(() => {
     const saved = localStorage.getItem('castScreenTextFieldSize')
     return saved ? parseInt(saved) : 50
@@ -150,13 +146,6 @@ const CastScreen = () => {
 
     return () => clearTimeout(timeoutId)
   }, [cast?._id, cast?.speakerId, audioEnabled])
-
-  useEffect(() => {
-    localStorage.setItem(
-      'castScreenSpellCheckerEnabled',
-      JSON.stringify(spellCheckerEnabled),
-    )
-  }, [spellCheckerEnabled])
 
   useEffect(() => {
     localStorage.setItem('castScreenTextFieldSize', textFieldSize.toString())
@@ -398,14 +387,16 @@ const CastScreen = () => {
               const data = JSON.parse(event.data)
 
               if (data.original && data.translation) {
+                const originalLine = data.original as TranscriptLine
+                const translatedLine = data.translation as TranscriptLine
                 setCast(prevCast =>
                   prevCast
                     ? {
                         ...prevCast,
-                        originalText: [...prevCast.originalText, data.original],
+                        originalText: [...prevCast.originalText, originalLine],
                         translatedText: [
                           ...prevCast.translatedText,
-                          data.translation,
+                          translatedLine,
                         ],
                       }
                     : prevCast,
@@ -578,10 +569,6 @@ const CastScreen = () => {
           autoscroll={autoscroll}
           setAutoscroll={setAutoscroll}
         />
-        <SpellCheckerToggle
-          spellCheckerEnabled={spellCheckerEnabled}
-          setSpellCheckerEnabled={setSpellCheckerEnabled}
-        />
       </Box>
 
       {/* Audio status message */}
@@ -620,7 +607,6 @@ const CastScreen = () => {
             ? decreaseOriginalFontSize
             : decreaseTranslatedFontSize
         }
-        enableSpellCheck={spellCheckerEnabled}
       />
 
       {/* Vertical Text Fields with Draggable Divider */}
@@ -643,7 +629,6 @@ const CastScreen = () => {
           isFullscreen={fullscreenField === 'original'}
           dataTextField='original'
           height={textFieldSize}
-          enableSpellCheck={spellCheckerEnabled}
         />
 
         <DraggableDivider
@@ -665,7 +650,6 @@ const CastScreen = () => {
           isFullscreen={fullscreenField === 'translated'}
           dataTextField='translated'
           height={100 - textFieldSize}
-          enableSpellCheck={spellCheckerEnabled}
         />
       </Box>
     </Container>

@@ -129,67 +129,72 @@ export const useRecording = (
           }
         } else {
           // Get bamborak audio file
-          getTranslation(recordId, plainText, settings.sotraModel).then(
-            async response => {
-              // Only play audio if autoPlayAudio is enabled AND audioContext is provided
-              if (settings.autoPlayAudio && options.audioContext) {
-                getAudioFromText(
-                  response.data.translation,
-                  settings.selectedSpeakerId,
-                ).then(audioResponse => {
-                  audioQueueService.addToQueue(audioResponse.data)
-                })
-              }
+          getTranslation(
+            recordId,
+            plainText,
+            settings.sotraModel,
+            'hsb',
+            'de',
+            tokens,
+          ).then(async response => {
+            // Only play audio if autoPlayAudio is enabled AND audioContext is provided
+            if (settings.autoPlayAudio && options.audioContext) {
+              getAudioFromText(
+                response.data.translation,
+                settings.selectedSpeakerId,
+              ).then(audioResponse => {
+                audioQueueService.addToQueue(audioResponse.data)
+              })
+            }
 
-              // Save the translation
-              options.setTranslation(prev => [
-                ...prev,
-                { text: response.data.translation },
-              ])
-              if (options.youtubeSettings.streamingKey) {
-                const youtubePackages = createYoutubePackages(
-                  response.data.translation,
-                  {
-                    start: parsed.start ? new Date(parsed.start) : new Date(),
-                    stop: parsed.stop ? new Date(parsed.stop) : new Date(),
-                  },
+            // Save the translation
+            options.setTranslation(prev => [
+              ...prev,
+              { text: response.data.translation },
+            ])
+            if (options.youtubeSettings.streamingKey) {
+              const youtubePackages = createYoutubePackages(
+                response.data.translation,
+                {
+                  start: parsed.start ? new Date(parsed.start) : new Date(),
+                  stop: parsed.stop ? new Date(parsed.stop) : new Date(),
+                },
+              )
+
+              for (const youtubePackage of youtubePackages) {
+                const youtubeData = await getParseDataForYoutube(
+                  seq,
+                  youtubePackage.text,
+                  dayjs(youtubePackage.date)
+                    .add(options.timeOffsetRef.current ?? 0, 'seconds')
+                    .toDate(),
+                  options.youtubeSettings.streamingKey,
                 )
 
-                for (const youtubePackage of youtubePackages) {
-                  const youtubeData = await getParseDataForYoutube(
-                    seq,
-                    youtubePackage.text,
-                    dayjs(youtubePackage.date)
-                      .add(options.timeOffsetRef.current ?? 0, 'seconds')
-                      .toDate(),
-                    options.youtubeSettings.streamingKey,
-                  )
-
-                  if (youtubeData.errorMessage) {
-                    console.error(youtubeData.errorMessage)
-                    toast.error(youtubeData.errorMessage)
-                  }
-
-                  options.setTranslation(prev =>
-                    prev.map(p =>
-                      p.text === youtubeData.text
-                        ? {
-                            text: youtubeData.text,
-                            timestamp: youtubeData.timestamp,
-                            successfull: youtubeData.successfull,
-                            counter: youtubeData.seq,
-                            timestampDiff:
-                              (new Date().getTime() -
-                                new Date(youtubeData.timestamp).getTime()) /
-                              1000,
-                          }
-                        : p,
-                    ),
-                  )
+                if (youtubeData.errorMessage) {
+                  console.error(youtubeData.errorMessage)
+                  toast.error(youtubeData.errorMessage)
                 }
+
+                options.setTranslation(prev =>
+                  prev.map(p =>
+                    p.text === youtubeData.text
+                      ? {
+                          text: youtubeData.text,
+                          timestamp: youtubeData.timestamp,
+                          successfull: youtubeData.successfull,
+                          counter: youtubeData.seq,
+                          timestampDiff:
+                            (new Date().getTime() -
+                              new Date(youtubeData.timestamp).getTime()) /
+                            1000,
+                        }
+                      : p,
+                  ),
+                )
               }
-            },
-          )
+            }
+          })
         }
       }
     }

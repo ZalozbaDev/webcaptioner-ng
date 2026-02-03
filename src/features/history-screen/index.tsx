@@ -22,6 +22,7 @@ import {
 } from '@mui/material'
 import { ArrowForward, Delete, Download } from '@mui/icons-material'
 import { download } from '../../helper/download'
+import { getTranscriptLinePlain } from '../../types/transcript'
 
 type PaginatedResponse<T> = {
   items: T[]
@@ -137,10 +138,16 @@ const HistoryScreen = () => {
                         : '-'}
                     </TableCell>
                     <TableCell>
-                      {record.originalText.at(0) ?? '-'} ...
+                      {record.originalText.at(0)
+                        ? getTranscriptLinePlain(record.originalText.at(0)!)
+                        : '-'}{' '}
+                      ...
                     </TableCell>
                     <TableCell>
-                      {record.translatedText.at(0) ?? '-'} ...
+                      {record.translatedText.at(0)
+                        ? getTranscriptLinePlain(record.translatedText.at(0)!)
+                        : '-'}{' '}
+                      ...
                     </TableCell>
                     <TableCell
                       style={{
@@ -155,7 +162,7 @@ const HistoryScreen = () => {
                         endIcon={<Download />}
                         onClick={() => {
                           download(
-                            record.originalText,
+                            record.originalText.map(getTranscriptLinePlain),
                             `${record.title}-original.txt`,
                           )
                         }}
@@ -167,7 +174,7 @@ const HistoryScreen = () => {
                         endIcon={<Download />}
                         onClick={() => {
                           download(
-                            record.translatedText,
+                            record.translatedText.map(getTranscriptLinePlain),
                             `${record.title}-prelozk.txt`,
                           )
                         }}

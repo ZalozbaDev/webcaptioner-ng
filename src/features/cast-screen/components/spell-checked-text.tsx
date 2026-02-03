@@ -1,47 +1,25 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React from 'react'
 import { Typography, Box } from '@mui/material'
-import { SpellChecker, SpellCheckResult } from '../../../helper/spell-checker'
-import { getSpellCheckTokenStyle } from '../../../styles/token-highlighting'
+import { getConfidenceTokenStyle } from '../../../styles/token-highlighting'
+import type { TranscriptLine } from '../../../types/transcript'
+import {
+  getTranscriptLinePlain,
+  getTranscriptLineTokens,
+} from '../../../types/transcript'
 
 interface SpellCheckedTextProps {
-  text: string
+  line: TranscriptLine
   fontSize: number
 }
 
 export const SpellCheckedText: React.FC<SpellCheckedTextProps> = ({
-  text,
+  line,
   fontSize,
 }) => {
-  const [spellCheckResults, setSpellCheckResults] = useState<
-    SpellCheckResult[]
-  >([])
-
-  const [isLoading, setIsLoading] = useState(false)
-
-  const checkSpelling = useCallback(async (textToCheck: string) => {
-    if (!textToCheck.trim()) {
-      setSpellCheckResults([])
-      return
-    }
-
-    setIsLoading(true)
-    try {
-      const results = await SpellChecker.checkText(textToCheck)
-      setSpellCheckResults(results)
-    } catch (error) {
-      console.error('Spell checking failed:', error)
-      setSpellCheckResults([])
-    } finally {
-      setIsLoading(false)
-    }
-  }, [])
-
-  useEffect(() => {
-    checkSpelling(text)
-  }, [text, checkSpelling])
-
-  const renderTextWithSpellChecking = () => {
-    if (isLoading) {
+  const text = getTranscriptLinePlain(line)
+  const tokens = getTranscriptLineTokens(line)
+  const renderText = () => {
+    if (tokens?.length) {
       return (
         <Typography
           sx={{
@@ -53,12 +31,19 @@ export const SpellCheckedText: React.FC<SpellCheckedTextProps> = ({
             whiteSpace: 'pre-wrap',
           }}
         >
-          {text}
+          {tokens.map((w, i) => {
+            const isMisspelled = w.spell === false
+            const style = getConfidenceTokenStyle(w.conf, isMisspelled)
+            return (
+              <span key={`${w.word}-${i}`} style={style}>
+                {w.word}
+                {i < tokens.length - 1 ? ' ' : ''}
+              </span>
+            )
+          })}
         </Typography>
       )
     }
-
-    const words = text.split(/(\s+)/)
 
     return (
       <Typography
@@ -71,30 +56,10 @@ export const SpellCheckedText: React.FC<SpellCheckedTextProps> = ({
           whiteSpace: 'pre-wrap',
         }}
       >
-        {words.map((word, index) => {
-          if (/\s+/.test(word)) {
-            // This is whitespace, render as-is
-            return <span key={index}>{word}</span>
-          }
-
-          const spellResult = spellCheckResults.find(
-            result => result.word.toLowerCase() === word.toLowerCase(),
-          )
-
-          if (!spellResult) return <span key={index}>{word}</span>
-
-          const style = getSpellCheckTokenStyle(spellResult.isCorrect)
-          return (
-            <span key={index} style={style}>
-              {word}
-            </span>
-          )
-        })}
+        {text}
       </Typography>
     )
   }
 
-  return (
-    <Box sx={{ position: 'relative' }}>{renderTextWithSpellChecking()}</Box>
-  )
+  return <Box sx={{ position: 'relative' }}>{renderText()}</Box>
 }

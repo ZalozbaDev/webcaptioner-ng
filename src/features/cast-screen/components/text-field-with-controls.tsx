@@ -7,10 +7,11 @@ import {
 } from '@mui/icons-material'
 import { SpellCheckedText } from './spell-checked-text'
 import { useTheme } from '../../../contexts/theme-context'
+import type { TranscriptLine } from '../../../types/transcript'
 
 interface TextFieldWithControlsProps {
   title: string
-  texts: string[]
+  texts: TranscriptLine[]
   fontSize: number
   onIncreaseFontSize: () => void
   onDecreaseFontSize: () => void
@@ -18,7 +19,6 @@ interface TextFieldWithControlsProps {
   isFullscreen: boolean
   dataTextField: string
   height: number
-  enableSpellCheck?: boolean
 }
 
 export const TextFieldWithControls = ({
@@ -31,7 +31,6 @@ export const TextFieldWithControls = ({
   isFullscreen,
   dataTextField,
   height,
-  enableSpellCheck = false,
 }: TextFieldWithControlsProps) => {
   const { theme } = useTheme()
 
@@ -149,28 +148,9 @@ export const TextFieldWithControls = ({
           },
         }}
       >
-        {texts.map((text: string, index: number) => (
+        {texts.map((line, index) => (
           <Box key={index}>
-            {enableSpellCheck ? (
-              <SpellCheckedText
-                text={text}
-                fontSize={fontSize}
-                key={`${text}-${index}`} // Force re-render when text changes
-              />
-            ) : (
-              <Typography
-                sx={{
-                  color: 'var(--card-text-color)',
-                  fontSize: `${fontSize}px`,
-                  lineHeight: 1.6,
-                  wordBreak: 'break-word',
-                  overflowWrap: 'break-word',
-                  whiteSpace: 'pre-wrap',
-                }}
-              >
-                {text}
-              </Typography>
-            )}
+            <SpellCheckedText line={line} fontSize={fontSize} />
           </Box>
         ))}
       </Box>
