@@ -61,14 +61,14 @@ const CastScreen = () => {
   useEffect(() => {
     localStorage.setItem(
       'castScreenOriginalFontSize',
-      originalFontSize.toString()
+      originalFontSize.toString(),
     )
   }, [originalFontSize])
 
   useEffect(() => {
     localStorage.setItem(
       'castScreenTranslatedFontSize',
-      translatedFontSize.toString()
+      translatedFontSize.toString(),
     )
   }, [translatedFontSize])
 
@@ -154,7 +154,7 @@ const CastScreen = () => {
   useEffect(() => {
     localStorage.setItem(
       'castScreenSpellCheckerEnabled',
-      JSON.stringify(spellCheckerEnabled)
+      JSON.stringify(spellCheckerEnabled),
     )
   }, [spellCheckerEnabled])
 
@@ -165,8 +165,9 @@ const CastScreen = () => {
   // Initialize audio context and AudioQueueService
   useEffect(() => {
     if (!audioContextRef.current) {
-      const audioContext = new (window.AudioContext ||
-        (window as any).webkitAudioContext)()
+      const audioContext = new (
+        window.AudioContext || (window as any).webkitAudioContext
+      )()
       audioContextRef.current = audioContext
 
       // Create wrapper with playAudioData method
@@ -247,16 +248,16 @@ const CastScreen = () => {
     if (autoscroll) {
       // Scroll both text fields to bottom when new content arrives
       const originalTextContainer = document.querySelector(
-        '[data-text-field="original"]'
+        '[data-text-field="original"]',
       )
       const translatedTextContainer = document.querySelector(
-        '[data-text-field="translated"]'
+        '[data-text-field="translated"]',
       )
 
       // If in fullscreen mode, scroll the fullscreen container instead
       if (fullscreenField === 'original' || fullscreenField === 'translated') {
         const fullscreenContainer = document.querySelector(
-          '[data-fullscreen-content]'
+          '[data-fullscreen-content]',
         )
         if (fullscreenContainer) {
           fullscreenContainer.scrollTop = fullscreenContainer.scrollHeight
@@ -309,7 +310,7 @@ const CastScreen = () => {
       const deltaPercentage = (deltaY / containerHeight) * 100
       const newTextFieldSize = Math.max(
         10,
-        Math.min(90, startTextFieldSize + deltaPercentage)
+        Math.min(90, startTextFieldSize + deltaPercentage),
       )
       setTextFieldSize(newTextFieldSize)
     }
@@ -339,7 +340,7 @@ const CastScreen = () => {
       const windowHeight = window.innerHeight
       const newSize = Math.max(
         10,
-        Math.min(90, startSize + (deltaY / windowHeight) * 100)
+        Math.min(90, startSize + (deltaY / windowHeight) * 100),
       )
       setTextFieldSize(newSize)
     }
@@ -368,7 +369,7 @@ const CastScreen = () => {
       setError(null)
       try {
         const response = await axios.get<AudioRecord>(
-          `${process.env.REACT_APP_WEBCAPTIONER_SERVER}/casts/${tokenToValidate}`
+          `${process.env.REACT_APP_WEBCAPTIONER_SERVER}/casts/${tokenToValidate}`,
         )
         setCast(response.data)
 
@@ -389,7 +390,7 @@ const CastScreen = () => {
 
           const wsUrl = `${process.env.REACT_APP_WEBCAPTIONER_SERVER?.replace(
             'http',
-            'ws'
+            'ws',
           )}/translations?recordId=${response.data._id}`
 
           wsRef.current = initWebsocket(wsUrl, (event: MessageEvent) => {
@@ -407,7 +408,7 @@ const CastScreen = () => {
                           data.translation,
                         ],
                       }
-                    : prevCast
+                    : prevCast,
                 )
 
                 // Immediately refetch the audio record to get the latest settings
@@ -441,7 +442,7 @@ const CastScreen = () => {
                 ) {
                   getAudioFromText(
                     data.translation,
-                    castRef.current?.speakerId.toString()
+                    castRef.current?.speakerId.toString(),
                   )
                     .then(audioResponse => {
                       audioQueueService.addToQueue(audioResponse.data)
@@ -464,7 +465,7 @@ const CastScreen = () => {
             } catch (error) {
               console.error(
                 'Error fetching latest audio record after websocket connection:',
-                error
+                error,
               )
             }
           }
@@ -479,7 +480,7 @@ const CastScreen = () => {
         setIsLoading(false)
       }
     },
-    [navigate, urlToken]
+    [navigate, urlToken],
   )
 
   useEffect(() => {
@@ -664,6 +665,7 @@ const CastScreen = () => {
           isFullscreen={fullscreenField === 'translated'}
           dataTextField='translated'
           height={100 - textFieldSize}
+          enableSpellCheck={spellCheckerEnabled}
         />
       </Box>
     </Container>

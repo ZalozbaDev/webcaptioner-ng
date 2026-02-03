@@ -33,21 +33,7 @@ const MainScreen = () => {
     useState<Settings>(DEFAULT_SETTINGS)
   const [selectedMicrophone, setSelectedMicrophone] =
     useState<MediaDeviceInfo | null>(null)
-  const [inputText, setInputText] = useState<InputLine[]>([
-    {
-      plain: 'Test to je cyle cool, ale tez gut.',
-      tokens: [
-        { word: 'Test', conf: 0.98 },
-        { word: 'to', conf: 0.43 },
-        { word: 'je', conf: 0.5 },
-        { word: 'cyle', conf: 0.9, spell: false, start: 10, end: 20 },
-        { word: 'cool,', conf: 0.6 },
-        { word: 'ale', conf: 0.88 },
-        { word: 'tez', conf: 0.77 },
-        { word: 'gut.', conf: 0.41 },
-      ],
-    },
-  ])
+  const [inputText, setInputText] = useState<InputLine[]>([])
   const [translation, setTranslation] = useState<TranslationResponse[]>([])
   const [record, setRecord] = useState<{ id: string; token: string } | null>(
     null,
