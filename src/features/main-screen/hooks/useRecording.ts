@@ -56,6 +56,34 @@ export const useRecording = (
     recordId: string | undefined,
   ) => {
     if (event.data) {
+      const normalizePlainFromText = (text: unknown): string => {
+        if (typeof text !== 'string') return ''
+        const trimmed = text.trim()
+        const dequoted = trimmed
+          .replace(/^"+/, '')
+          .replace(/"+$/, '')
+          .replace(/^'+/, '')
+          .replace(/'+$/, '')
+          .trim()
+        return dequoted
+      }
+
+      const shouldIgnoreTranscriptionText = (plainText: string): boolean => {
+        const t = plainText.trim()
+        if (!t) return true
+        const lower = t.toLowerCase()
+
+        if (lower.includes('ggml-model')) return true
+        if (lower.includes('whisper.cpp')) return true
+        if (lower.includes('--whisper-')) return true
+
+        // Ignore lines that are only punctuation/whitespace
+        const hasAlphaNum = /[\p{L}\p{N}]/u.test(t)
+        if (!hasAlphaNum) return true
+
+        return false
+      }
+
       let parsed = typedVoskResponse(event.data)
       setVoskResponse(parsed.listen)
       if (
@@ -73,11 +101,12 @@ export const useRecording = (
         }
 
         const tokens = (parsed.result ?? []).filter(w => !!w?.word?.trim())
-        const trimmedText = parsed.text.slice(2, -2).trim()
+        const plainFromText = normalizePlainFromText(parsed.text)
         const plainText = tokens.length
           ? tokens.map(w => w.word).join(' ')
-          : trimmedText
+          : plainFromText
         if (plainText.length <= 0) return
+        if (shouldIgnoreTranscriptionText(plainText)) return
 
         options.setInputText(prev => [...prev, { plain: plainText, tokens }])
         if (settings.sotraModel === 'passthrough') {

@@ -387,7 +387,14 @@ const CastScreen = () => {
               const data = JSON.parse(event.data)
 
               if (data.original && data.translation) {
-                const originalLine = data.original as TranscriptLine
+                const originalLine = (
+                  data.originalTokens?.length
+                    ? {
+                        plain: data.original,
+                        tokens: data.originalTokens,
+                      }
+                    : data.original
+                ) as TranscriptLine
                 const translatedLine = data.translation as TranscriptLine
                 setCast(prevCast =>
                   prevCast
