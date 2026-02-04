@@ -164,7 +164,6 @@ export const useRecording = (
             settings.sotraModel,
             'hsb',
             'de',
-            tokens,
           ).then(async response => {
             // Only play audio if autoPlayAudio is enabled AND audioContext is provided
             if (settings.autoPlayAudio && options.audioContext) {

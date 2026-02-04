@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { axiosInstance } from './axios'
-import type { TranscriptLine, InputWord } from '../types/transcript'
+import type { TranscriptLine } from '../types/transcript'
 
 export const getTranslation = async (
   audioRecordId: string | undefined,
@@ -8,7 +8,6 @@ export const getTranslation = async (
   model: 'ctranslate' | 'fairseq',
   sourceLanguage: 'de' | 'hsb' = 'hsb',
   targetLanguage: 'de' | 'hsb' = 'de',
-  originalTokens?: InputWord[],
 ) => {
   const data = JSON.stringify({
     text,
@@ -16,8 +15,6 @@ export const getTranslation = async (
     sourceLanguage: sourceLanguage,
     targetLanguage: targetLanguage,
     audioRecordId: audioRecordId,
-    // Optional metadata for persistence; backend can ignore if unsupported.
-    originalTokens,
   })
   const url = `${process.env.REACT_APP_WEBCAPTIONER_SERVER}/sotra`
   const config = {
