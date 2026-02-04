@@ -395,7 +395,14 @@ const CastScreen = () => {
                       }
                     : data.original
                 ) as TranscriptLine
-                const translatedLine = data.translation as TranscriptLine
+                const translatedLine = (
+                  data.translationTokens?.length
+                    ? {
+                        plain: data.translation,
+                        tokens: data.translationTokens,
+                      }
+                    : data.translation
+                ) as TranscriptLine
                 setCast(prevCast =>
                   prevCast
                     ? {

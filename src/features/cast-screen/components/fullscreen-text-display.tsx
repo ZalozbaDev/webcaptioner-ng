@@ -28,6 +28,7 @@ export const FullscreenTextDisplay = ({
 
   const texts = fullscreenField === 'original' ? originalText : translatedText
   const title = fullscreenField === 'original' ? 'Originalny tekst' : 'Přełožk'
+  const isTranslation = fullscreenField === 'translated'
   const currentFontSize =
     fullscreenField === 'original' ? originalFontSize : translatedFontSize
 
@@ -156,6 +157,7 @@ export const FullscreenTextDisplay = ({
               key={index}
               line={line}
               fontSize={Math.floor(currentFontSize * 0.8)}
+              isTranslation={isTranslation}
             />
           ))}
         </Box>
@@ -194,7 +196,7 @@ export const FullscreenTextDisplay = ({
               key={index}
               line={line}
               fontSize={currentFontSize}
-              isTranslation
+              isTranslation={isTranslation}
             />
           ))}
         </Box>
