@@ -59,6 +59,7 @@ export const isInputLine = (value: unknown): value is InputLine => {
   const text = value.text
   return typeof plain === 'string' || typeof text === 'string'
 }
+//TODO: optimize
 
 export const getTranscriptLinePlain = (value: unknown): string => {
   if (typeof value === 'string') return value

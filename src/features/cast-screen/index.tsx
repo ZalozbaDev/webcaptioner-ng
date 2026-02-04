@@ -361,7 +361,7 @@ const CastScreen = () => {
           `${process.env.REACT_APP_WEBCAPTIONER_SERVER}/casts/${tokenToValidate}`,
         )
         setCast(response.data)
-
+        console.log(response.data)
         // Immediately refetch to ensure we have the latest audio settings
         if (response.data?._id) {
           try {
@@ -657,6 +657,7 @@ const CastScreen = () => {
           isFullscreen={fullscreenField === 'translated'}
           dataTextField='translated'
           height={100 - textFieldSize}
+          isTranslation
         />
       </Box>
     </Container>

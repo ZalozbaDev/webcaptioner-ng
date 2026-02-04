@@ -7,19 +7,26 @@ import {
   getTranscriptLineTokens,
 } from '../../../types/transcript'
 
+const CONFIDENCE_THRESHOLD = 0.8
 interface SpellCheckedTextProps {
   line: TranscriptLine
   fontSize: number
+  isTranslation?: boolean
 }
 
 export const SpellCheckedText: React.FC<SpellCheckedTextProps> = ({
   line,
   fontSize,
+  isTranslation = false,
 }) => {
   const text = getTranscriptLinePlain(line)
   const tokens = getTranscriptLineTokens(line)
+
+  const shouldShowText =
+    !isTranslation || (tokens?.at(0)?.conf ?? 0) > CONFIDENCE_THRESHOLD
+
   const renderText = () => {
-    if (tokens?.length) {
+    if (tokens?.length && isTranslation === false) {
       return (
         <Typography
           sx={{
@@ -56,7 +63,7 @@ export const SpellCheckedText: React.FC<SpellCheckedTextProps> = ({
           whiteSpace: 'pre-wrap',
         }}
       >
-        {text}
+        {shouldShowText ? text : '[unverständlich]'}
       </Typography>
     )
   }

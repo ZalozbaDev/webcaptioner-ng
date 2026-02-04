@@ -19,6 +19,7 @@ interface TextFieldWithControlsProps {
   isFullscreen: boolean
   dataTextField: string
   height: number
+  isTranslation?: boolean
 }
 
 export const TextFieldWithControls = ({
@@ -31,6 +32,7 @@ export const TextFieldWithControls = ({
   isFullscreen,
   dataTextField,
   height,
+  isTranslation = false,
 }: TextFieldWithControlsProps) => {
   const { theme } = useTheme()
 
@@ -150,7 +152,11 @@ export const TextFieldWithControls = ({
       >
         {texts.map((line, index) => (
           <Box key={index}>
-            <SpellCheckedText line={line} fontSize={fontSize} />
+            <SpellCheckedText
+              line={line}
+              fontSize={fontSize}
+              isTranslation={isTranslation}
+            />
           </Box>
         ))}
       </Box>

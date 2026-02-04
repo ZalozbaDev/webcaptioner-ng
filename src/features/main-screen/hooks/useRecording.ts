@@ -78,6 +78,7 @@ export const useRecording = (
         if (lower.includes('--whisper-')) return true
 
         // Ignore lines that are only punctuation/whitespace
+        // TODO: refine this to allow certain special characters if needed
         const hasAlphaNum = /[\p{L}\p{N}]/u.test(t)
         if (!hasAlphaNum) return true
 

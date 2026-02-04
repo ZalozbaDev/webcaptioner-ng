@@ -194,6 +194,7 @@ export const FullscreenTextDisplay = ({
               key={index}
               line={line}
               fontSize={currentFontSize}
+              isTranslation
             />
           ))}
         </Box>
