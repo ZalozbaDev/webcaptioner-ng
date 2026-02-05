@@ -12,20 +12,12 @@ import { useRecording } from './hooks/useRecording'
 import { Header } from './components/Header'
 import { MainContent } from './components/MainContent'
 import { useWakeLock } from '../../hooks/use-wakelock'
-import { InputLine } from './types'
+import { InputLine, TranslationResponse } from './types'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
 let settings = DEFAULT_SETTINGS
-
-type TranslationResponse = {
-  text: string
-  timestamp?: Date
-  successfull?: boolean
-  counter?: number
-  timestampDiff?: number
-}
 
 const MainScreen = () => {
   useWakeLock()

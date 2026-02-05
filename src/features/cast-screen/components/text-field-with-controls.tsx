@@ -156,6 +156,7 @@ export const TextFieldWithControls = ({
               line={line}
               fontSize={fontSize}
               isTranslation={isTranslation}
+              textColor='#000'
             />
           </Box>
         ))}

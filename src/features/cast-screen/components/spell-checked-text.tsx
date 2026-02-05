@@ -20,12 +20,14 @@ interface SpellCheckedTextProps {
   line: TranscriptLine
   fontSize: number
   isTranslation?: boolean
+  textColor?: string
 }
 
 export const SpellCheckedText: React.FC<SpellCheckedTextProps> = ({
   line,
   fontSize,
   isTranslation = false,
+  textColor = 'var(--text-primary)',
 }) => {
   const text = getTranscriptLinePlain(line)
   const tokens = getTranscriptLineTokens(line)
@@ -36,11 +38,11 @@ export const SpellCheckedText: React.FC<SpellCheckedTextProps> = ({
     confidence < CONFIDENCE_THRESHOLD
 
   const renderText = () => {
-    if (tokens?.length && isTranslation === false) {
+    if (tokens?.length && !shouldMask) {
       return (
         <Typography
           sx={{
-            color: 'var(--card-text-color)',
+            color: textColor,
             fontSize: `${fontSize}px`,
             lineHeight: 1.6,
             wordBreak: 'break-word',
@@ -65,7 +67,7 @@ export const SpellCheckedText: React.FC<SpellCheckedTextProps> = ({
     return (
       <Typography
         sx={{
-          color: 'var(--card-text-color)',
+          color: textColor,
           fontSize: `${fontSize}px`,
           lineHeight: 1.6,
           wordBreak: 'break-word',
