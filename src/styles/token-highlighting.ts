@@ -21,7 +21,11 @@ const withWavyUnderline = (style: CSSProperties): CSSProperties => ({
   textDecorationLine: 'underline',
   textDecorationStyle: 'wavy',
   textDecorationColor: TOKEN_ERROR_UNDERLINE,
-  textDecorationThickness: '3px',
+  // Firefox renders wavy underlines much thicker than Chrome when thickness is large.
+  // Keep it thin and offset slightly for a cleaner look.
+  textDecorationThickness: '1px',
+  textUnderlineOffset: '2px',
+  textDecorationSkipInk: 'none',
 })
 
 export const getSpellCheckTokenStyle = (isCorrect: boolean): CSSProperties => {
