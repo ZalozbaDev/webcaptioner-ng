@@ -1,5 +1,8 @@
+import type { InputWord } from '../../types/transcript'
+
 export type TranslationResponse = {
   text: string
+  translationTokens?: InputWord[]
   timestamp?: Date
   successfull?: boolean
   counter?: number

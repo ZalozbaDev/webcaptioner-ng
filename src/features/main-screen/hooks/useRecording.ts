@@ -15,6 +15,49 @@ import { localStorage } from '../../../lib/local-storage'
 import dayjs from 'dayjs'
 import { InputLine, TranslationResponse, YoutubeSettings } from '../types'
 import { audioQueueService } from '../../../services/AudioQueueService'
+import { InputWord } from '../../../types/transcript'
+
+const normalizePlainFromText = (text: unknown): string => {
+  if (typeof text !== 'string') return ''
+  const trimmed = text.trim()
+  const dequoted = trimmed
+    .replace(/^"+/, '')
+    .replace(/"+$/, '')
+    .replace(/^'+/, '')
+    .replace(/'+$/, '')
+    .trim()
+  return dequoted
+}
+
+const shouldIgnoreTranscriptionText = (plainText: string): boolean => {
+  const t = plainText.trim()
+  if (!t) return true
+  const lower = t.toLowerCase()
+
+  if (lower.includes('ggml-model')) return true
+  if (lower.includes('whisper.cpp')) return true
+  if (lower.includes('--whisper-')) return true
+
+  // Ignore lines that are only punctuation/whitespace
+  let hasAlphaNum = false
+  for (let i = 0; i < t.length; i += 1) {
+    const ch = t[i]
+    if (ch >= '0' && ch <= '9') {
+      hasAlphaNum = true
+      break
+    }
+
+    // Rough but robust "is letter" check that works for Latin-extended
+    // without requiring unicode property escapes.
+    if (ch.toLowerCase() !== ch.toUpperCase()) {
+      hasAlphaNum = true
+      break
+    }
+  }
+  if (!hasAlphaNum) return true
+
+  return false
+}
 
 export const useRecording = (
   settings: Settings,
@@ -39,10 +82,26 @@ export const useRecording = (
   let processor: AudioWorkletNode
   let source: MediaStreamAudioSourceNode
   let context: AudioContext
-  let seq = 0
+
+  const seqRef = useRef<number>(0)
 
   // Replace local variable with a ref to persist the websocket
   const webSocketRef = useRef<WebSocket | null>(null)
+
+  const translationsWsRef = useRef<WebSocket | null>(null)
+  const translationsWsRecordIdRef = useRef<string | null>(null)
+  const pendingTranslationTokensRef = useRef<Map<string, InputWord[][]>>(
+    new Map(),
+  )
+
+  useEffect(() => {
+    const key = options.youtubeSettings.streamingKey
+    if (key) {
+      seqRef.current = localStorage.getCounterForYoutubeStreaming(key)
+    } else {
+      seqRef.current = 0
+    }
+  }, [options.youtubeSettings.streamingKey])
 
   // Initialize the audio service when the hook mounts, only if audioContext is provided
   useEffect(() => {
@@ -51,41 +110,103 @@ export const useRecording = (
     }
   }, [options.audioContext])
 
+  const attachTranslationTokensToLatest = (
+    translation: string,
+    translationTokens: InputWord[],
+  ) => {
+    if (!translation || !translationTokens?.length) return
+
+    options.setTranslation(prev => {
+      const indexToUpdate = [...prev]
+        .map((_, i) => i)
+        .reverse()
+        .find(i => prev[i].text === translation && !prev[i].translationTokens)
+
+      if (indexToUpdate === undefined) {
+        const queue = pendingTranslationTokensRef.current.get(translation) ?? []
+        pendingTranslationTokensRef.current.set(translation, [
+          ...queue,
+          translationTokens,
+        ])
+        return prev
+      }
+
+      const next = [...prev]
+      next[indexToUpdate] = {
+        ...next[indexToUpdate],
+        translationTokens,
+      }
+      return next
+    })
+  }
+
+  const flushQueuedTokensForTranslation = (translation: string) => {
+    const pendingQueue = pendingTranslationTokensRef.current.get(translation)
+    if (!pendingQueue?.length) return
+
+    const queuedTokens = pendingQueue.shift()
+    if (pendingQueue.length) {
+      pendingTranslationTokensRef.current.set(translation, pendingQueue)
+    } else {
+      pendingTranslationTokensRef.current.delete(translation)
+    }
+
+    if (queuedTokens?.length) {
+      attachTranslationTokensToLatest(translation, queuedTokens)
+    }
+  }
+
+  const maybeSendYoutubePackages = async (
+    seq: number,
+    text: string,
+    timing: { start: Date; stop: Date },
+  ) => {
+    const streamingKey = options.youtubeSettings.streamingKey
+    if (!streamingKey) return
+
+    const youtubePackages = createYoutubePackages(text, timing)
+    for (const youtubePackage of youtubePackages) {
+      const youtubeData = await getParseDataForYoutube(
+        seq,
+        youtubePackage.text,
+        dayjs(youtubePackage.date)
+          .add(options.timeOffsetRef.current ?? 0, 'seconds')
+          .toDate(),
+        streamingKey,
+      )
+
+      if (youtubeData.errorMessage) {
+        console.error(youtubeData.errorMessage)
+        toast.error(youtubeData.errorMessage)
+      }
+
+      options.setTranslation(prev =>
+        prev.map(p =>
+          p.text === youtubeData.text
+            ? {
+                ...p,
+                text: youtubeData.text,
+                timestamp: youtubeData.timestamp,
+                successfull: youtubeData.successfull,
+                counter: youtubeData.seq,
+                timestampDiff:
+                  (new Date().getTime() -
+                    new Date(youtubeData.timestamp).getTime()) /
+                  1000,
+              }
+            : p,
+        ),
+      )
+    }
+  }
+
   const onReceiveMessage = async (
     event: MessageEvent,
     recordId: string | undefined,
   ) => {
     if (event.data) {
-      const normalizePlainFromText = (text: unknown): string => {
-        if (typeof text !== 'string') return ''
-        const trimmed = text.trim()
-        const dequoted = trimmed
-          .replace(/^"+/, '')
-          .replace(/"+$/, '')
-          .replace(/^'+/, '')
-          .replace(/'+$/, '')
-          .trim()
-        return dequoted
-      }
-
-      const shouldIgnoreTranscriptionText = (plainText: string): boolean => {
-        const t = plainText.trim()
-        if (!t) return true
-        const lower = t.toLowerCase()
-
-        if (lower.includes('ggml-model')) return true
-        if (lower.includes('whisper.cpp')) return true
-        if (lower.includes('--whisper-')) return true
-
-        // Ignore lines that are only punctuation/whitespace
-        // TODO: refine this to allow certain special characters if needed
-        const hasAlphaNum = /[\p{L}\p{N}]/u.test(t)
-        if (!hasAlphaNum) return true
-
-        return false
-      }
-
       let parsed = typedVoskResponse(event.data)
+
       setVoskResponse(parsed.listen)
       if (
         parsed.text &&
@@ -93,11 +214,12 @@ export const useRecording = (
         parsed.text !== '-- **/whisper/ggml-model.q8_0.bin --' &&
         parsed.text !== '-- */whisper/ggml-model.q8_0.bin --'
       ) {
-        if (options.youtubeSettings.streamingKey) {
-          seq += 1
+        const streamingKey = options.youtubeSettings.streamingKey
+        if (streamingKey) {
+          seqRef.current += 1
           localStorage.setCounterForYoutubeStreaming(
-            options.youtubeSettings.streamingKey,
-            seq,
+            streamingKey,
+            seqRef.current,
           )
         }
 
@@ -109,54 +231,22 @@ export const useRecording = (
         if (plainText.length <= 0) return
         if (shouldIgnoreTranscriptionText(plainText)) return
 
+        const timing = {
+          start: parsed.start ? new Date(parsed.start) : new Date(),
+          stop: parsed.stop ? new Date(parsed.stop) : new Date(),
+        }
+
         options.setInputText(prev => [...prev, { plain: plainText, tokens }])
         if (settings.sotraModel === 'passthrough') {
           options.setTranslation(prev => [
             ...prev,
             {
               text: plainText,
-              counter: seq,
+              counter: seqRef.current,
             },
           ])
-          if (options.youtubeSettings.streamingKey) {
-            const youtubePackages = createYoutubePackages(plainText, {
-              start: parsed.start ? new Date(parsed.start) : new Date(),
-              stop: parsed.stop ? new Date(parsed.stop) : new Date(),
-            })
 
-            for (const youtubePackage of youtubePackages) {
-              const youtubeData = await getParseDataForYoutube(
-                seq,
-                youtubePackage.text,
-                dayjs(youtubePackage.date)
-                  .add(options.timeOffsetRef.current ?? 0, 'seconds')
-                  .toDate(),
-                options.youtubeSettings.streamingKey,
-              )
-
-              if (youtubeData.errorMessage) {
-                console.error(youtubeData.errorMessage)
-                toast.error(youtubeData.errorMessage)
-              }
-
-              options.setTranslation(prev =>
-                prev.map(p =>
-                  p.text === youtubeData.text
-                    ? {
-                        text: youtubeData.text,
-                        timestamp: youtubeData.timestamp,
-                        successfull: youtubeData.successfull,
-                        counter: youtubeData.seq,
-                        timestampDiff:
-                          (new Date().getTime() -
-                            new Date(youtubeData.timestamp).getTime()) /
-                          1000,
-                      }
-                    : p,
-                ),
-              )
-            }
-          }
+          await maybeSendYoutubePackages(seqRef.current, plainText, timing)
         } else {
           // Get bamborak audio file
           getTranslation(
@@ -176,53 +266,15 @@ export const useRecording = (
               })
             }
 
+            const translation = response.data.translation
+
             // Save the translation
-            options.setTranslation(prev => [
-              ...prev,
-              { text: response.data.translation },
-            ])
-            if (options.youtubeSettings.streamingKey) {
-              const youtubePackages = createYoutubePackages(
-                response.data.translation,
-                {
-                  start: parsed.start ? new Date(parsed.start) : new Date(),
-                  stop: parsed.stop ? new Date(parsed.stop) : new Date(),
-                },
-              )
+            options.setTranslation(prev => [...prev, { text: translation }])
 
-              for (const youtubePackage of youtubePackages) {
-                const youtubeData = await getParseDataForYoutube(
-                  seq,
-                  youtubePackage.text,
-                  dayjs(youtubePackage.date)
-                    .add(options.timeOffsetRef.current ?? 0, 'seconds')
-                    .toDate(),
-                  options.youtubeSettings.streamingKey,
-                )
+            // If tokens arrived before the state update, attach them now.
+            flushQueuedTokensForTranslation(translation)
 
-                if (youtubeData.errorMessage) {
-                  console.error(youtubeData.errorMessage)
-                  toast.error(youtubeData.errorMessage)
-                }
-
-                options.setTranslation(prev =>
-                  prev.map(p =>
-                    p.text === youtubeData.text
-                      ? {
-                          text: youtubeData.text,
-                          timestamp: youtubeData.timestamp,
-                          successfull: youtubeData.successfull,
-                          counter: youtubeData.seq,
-                          timestampDiff:
-                            (new Date().getTime() -
-                              new Date(youtubeData.timestamp).getTime()) /
-                            1000,
-                        }
-                      : p,
-                  ),
-                )
-              }
-            }
+            await maybeSendYoutubePackages(seqRef.current, translation, timing)
           })
         }
       }
@@ -232,6 +284,11 @@ export const useRecording = (
   const onStopRecording = () => {
     webSocketRef.current?.send('{"eof" : 1}')
     webSocketRef.current?.close()
+
+    translationsWsRef.current?.close()
+    translationsWsRef.current = null
+    translationsWsRecordIdRef.current = null
+    pendingTranslationTokensRef.current.clear()
 
     processor?.port.close()
     source?.disconnect(processor)
@@ -308,6 +365,41 @@ export const useRecording = (
           .REACT_APP_WEBCAPTIONER_SERVER!}/vosk?recordId=${recordId}`,
         e => onReceiveMessage(e, recordId),
       )
+
+      // Subscribe to translations websocket too (provides translationTokens with conf)
+      // so main screen can render confidence coloring and [unverständlich] masking.
+      if (recordId && translationsWsRecordIdRef.current !== recordId) {
+        try {
+          translationsWsRef.current?.close()
+        } catch {
+          // ignore
+        }
+
+        translationsWsRecordIdRef.current = recordId
+        const wsUrl = `${process.env.REACT_APP_WEBCAPTIONER_SERVER?.replace(
+          'http',
+          'ws',
+        )}/translations?recordId=${recordId}`
+
+        translationsWsRef.current = initWebsocket(
+          wsUrl,
+          (event: MessageEvent) => {
+            try {
+              const data = JSON.parse(event.data as string)
+              const translation =
+                typeof data?.translation === 'string' ? data.translation : ''
+              const translationTokens = Array.isArray(data?.translationTokens)
+                ? (data.translationTokens as InputWord[])
+                : undefined
+
+              if (!translation || !translationTokens?.length) return
+              attachTranslationTokensToLatest(translation, translationTokens)
+            } catch (error) {
+              console.error('[translations/ws][main] parse error', error)
+            }
+          },
+        )
+      }
 
       webSocketRef.current.onopen = () => {
         try {

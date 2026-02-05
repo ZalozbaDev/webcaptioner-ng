@@ -11,7 +11,10 @@ import dayjs from 'dayjs'
 import { QRCode } from './qr-code'
 import { useState } from 'react'
 import { createAudioRecord } from '../../../lib/server-manager'
-import { getConfidenceTokenStyle } from '../../../styles/token-highlighting'
+import { SpellCheckedText } from '../../cast-screen/components/spell-checked-text'
+import type { TranscriptLine } from '../../../types/transcript'
+
+const MAIN_SCREEN_FONT_SIZE = 16
 
 type MainContentProps = {
   recording: {
@@ -36,20 +39,12 @@ type MainContentProps = {
   setRecord: (record: { id: string; token: string }) => void
 }
 
-const renderInputLine = (line: InputLine) => {
-  if (!line.tokens?.length) return line.plain
+const asTranscriptLine = (value: unknown): TranscriptLine => {
+  const record = value as any
+  const text = typeof record?.text === 'string' ? record.text : String(value)
+  const tokens = record?.translationTokens ?? record?.tokens
 
-  return line.tokens.map((w, i) => {
-    const isMisspelled = w.spell === false
-    const style = getConfidenceTokenStyle(w.conf, isMisspelled)
-
-    return (
-      <span key={`${w.word}-${i}`} style={style}>
-        {w.word}
-        {i < line.tokens!.length - 1 ? ' ' : ''}
-      </span>
-    )
-  })
+  return Array.isArray(tokens) && tokens.length ? { plain: text, tokens } : text
 }
 
 export const MainContent = ({
@@ -130,7 +125,12 @@ export const MainContent = ({
 
       <Box sx={{ padding: 2 }}>
         {inputText.slice(-MAX_TEXT_LINES).map((t, i) => (
-          <Typography key={i}>{renderInputLine(t)}</Typography>
+          <SpellCheckedText
+            key={i}
+            line={t}
+            fontSize={MAIN_SCREEN_FONT_SIZE}
+            textColor='var(--text-primary)'
+          />
         ))}
         {!recording.isRecording && inputText.length > 0 && (
           <Button
@@ -157,33 +157,35 @@ export const MainContent = ({
 
       <Box sx={{ padding: 2 }}>
         {translation.slice(-MAX_TEXT_LINES).map((t, i) => (
-          <Typography key={i}>
-            {t.counter
-              ? `[${t.counter}]: ${t.text} ${
-                  t.successfull ? '✅' : '❌'
-                } ${dayjs(t.timestamp)
-                  .tz(dayjs.tz.guess())
-                  .format('HH:mm:ss:SSS')} 
-                `
-              : t.text}
+          <Box key={i}>
             {t.counter && (
-              <Typography
-                display='inline'
-                sx={{
-                  color: !t.timestampDiff
-                    ? 'var(--text-primary)'
-                    : Math.abs(t.timestampDiff) < 20
-                      ? '#4caf50'
-                      : Math.abs(t.timestampDiff) < 40
-                        ? '#ff9800'
-                        : '#f44336',
-                }}
-              >
-                {t.timestampDiff && t.timestampDiff > 0 ? '+' : ''}
-                {t.timestampDiff ?? 0}s
+              <Typography>
+                [{t.counter}]: {t.successfull ? '✅' : '❌'}{' '}
+                {dayjs(t.timestamp).tz(dayjs.tz.guess()).format('HH:mm:ss:SSS')}{' '}
+                <Typography
+                  display='inline'
+                  sx={{
+                    color: !t.timestampDiff
+                      ? 'var(--text-primary)'
+                      : Math.abs(t.timestampDiff) < 20
+                        ? '#4caf50'
+                        : Math.abs(t.timestampDiff) < 40
+                          ? '#ff9800'
+                          : '#f44336',
+                  }}
+                >
+                  {t.timestampDiff && t.timestampDiff > 0 ? '+' : ''}
+                  {t.timestampDiff ?? 0}s
+                </Typography>
               </Typography>
             )}
-          </Typography>
+            <SpellCheckedText
+              line={asTranscriptLine(t)}
+              fontSize={MAIN_SCREEN_FONT_SIZE}
+              isTranslation
+              textColor='var(--text-primary)'
+            />
+          </Box>
         ))}
         {!recording.isRecording && translation.length > 0 && (
           <Button
