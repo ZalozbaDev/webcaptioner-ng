@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { axiosInstance } from './axios'
 import type { TranscriptLine } from '../types/transcript'
+import { DEFAULT_AUDIO_FORMAT, DEFAULT_SAMPLE_RATE } from '../constants/audio'
 
 export const getTranslation = async (
   audioRecordId: string | undefined,
@@ -30,8 +31,6 @@ export const getTranslation = async (
 }
 
 const region = process.env.REACT_APP_YOUTUBE_REGION
-const DEFAULT_SAMPLE_RATE = 48000
-const DEFAULT_FORMAT = 'mp3'
 
 export const getParseDataForYoutube = async (
   seq: number,
@@ -90,7 +89,7 @@ export const getAudioFromText = async (text: string, speakerId: string) => {
     text: text,
     speaker_id: speakerId,
     sampleRate: DEFAULT_SAMPLE_RATE,
-    format: DEFAULT_FORMAT,
+    format: DEFAULT_AUDIO_FORMAT,
   })
   const url = `${process.env.REACT_APP_WEBCAPTIONER_SERVER}/bamborak`
   const config = {

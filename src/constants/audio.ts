@@ -1,9 +1,12 @@
 import { Settings } from '../types/settings'
 
 export const DEFAULT_SPEAKER_ID = 'weronika'
-const DEFAULT_SAMPLE_RATE = process.env.REACT_APP_DEFAULT_VOSK_SAMPLE_RATE
+export const DEFAULT_SAMPLE_RATE = process.env
+  .REACT_APP_DEFAULT_VOSK_SAMPLE_RATE
   ? parseInt(process.env.REACT_APP_DEFAULT_VOSK_SAMPLE_RATE)
   : 48000
+export const DEFAULT_AUDIO_FORMAT =
+  process.env.REACT_APP_DEFAULT_AUDIO_FORMAT || 'mp3'
 
 export const DEFAULT_SETTINGS: Settings = {
   autoGainControl: false,
