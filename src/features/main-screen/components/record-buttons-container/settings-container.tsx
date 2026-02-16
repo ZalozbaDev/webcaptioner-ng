@@ -23,7 +23,7 @@ const menuItemWithCheckbox = (
   disabled: boolean,
   checked: boolean,
   title: string,
-  onSetChecked: (value: boolean) => void
+  onSetChecked: (value: boolean) => void,
 ) => (
   <MenuItem disabled={disabled} sx={{ marginLeft: -1, height: 30 }} key={key}>
     <Checkbox
@@ -40,7 +40,7 @@ const menuItemWithSelection = (
   value: string | number,
   disabled: boolean,
   options: { title: string; value: string | number }[],
-  onSetValue: (value: string | number) => void
+  onSetValue: (value: string | number) => void,
 ) => (
   <MenuItem
     disabled={disabled}
@@ -86,7 +86,7 @@ const menuitemWithText = (
   value: string | number,
   disabled: boolean,
   editable: boolean,
-  onSetValue: (value: number) => void
+  onSetValue: (value: number) => void,
 ) => (
   <MenuItem
     disabled={disabled}
@@ -143,6 +143,7 @@ const menuTextItems: {
     title: 'Sample Rate',
     editable: true,
     options: [
+      { title: '8000', value: 8000 },
       { title: '16000', value: 16000 },
       { title: '48000', value: 48000 },
     ],
@@ -211,7 +212,7 @@ export const SettingsContainer: FC<{
       'handleAutoPlayAudioChange',
       record,
       enabled,
-      settings.selectedSpeakerId
+      settings.selectedSpeakerId,
     )
 
     // Only try to update audio record in server if we have an active record
@@ -280,7 +281,7 @@ export const SettingsContainer: FC<{
             disabled,
             typeof setting !== 'boolean' ? false : setting,
             title,
-            value => onChangeSetting(key, value)
+            value => onChangeSetting(key, value),
           )
         })}
         {menuTextItems.map(({ key, title, editable, options }) => {
@@ -293,7 +294,7 @@ export const SettingsContainer: FC<{
                 setting,
                 disabled,
                 options,
-                value => onChangeSetting(key, value)
+                value => onChangeSetting(key, value),
               )
             } else {
               return menuitemWithText(
@@ -302,7 +303,7 @@ export const SettingsContainer: FC<{
                 setting,
                 disabled,
                 editable,
-                value => onChangeSetting(key, value)
+                value => onChangeSetting(key, value),
               )
             }
           }
@@ -317,7 +318,7 @@ export const SettingsContainer: FC<{
               setting,
               disabled,
               options,
-              value => onChangeSetting(key, value)
+              value => onChangeSetting(key, value),
             )
           return null
         })}
