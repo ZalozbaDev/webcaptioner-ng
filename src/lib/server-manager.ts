@@ -30,6 +30,8 @@ export const getTranslation = async (
 }
 
 const region = process.env.REACT_APP_YOUTUBE_REGION
+const DEFAULT_SAMPLE_RATE = 48000
+const DEFAULT_FORMAT = 'mp3'
 
 export const getParseDataForYoutube = async (
   seq: number,
@@ -87,6 +89,8 @@ export const getAudioFromText = async (text: string, speakerId: string) => {
   const data = JSON.stringify({
     text: text,
     speaker_id: speakerId,
+    sampleRate: DEFAULT_SAMPLE_RATE,
+    format: DEFAULT_FORMAT,
   })
   const url = `${process.env.REACT_APP_WEBCAPTIONER_SERVER}/bamborak`
   const config = {
