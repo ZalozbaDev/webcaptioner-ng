@@ -16,6 +16,7 @@ import dayjs from 'dayjs'
 import { InputLine, TranslationResponse, YoutubeSettings } from '../types'
 import { audioQueueService } from '../../../services/AudioQueueService'
 import { InputWord } from '../../../types/transcript'
+import { VoskSendConfigService } from '../../../lib/vosk-config-service'
 
 const normalizePlainFromText = (text: unknown): string => {
   if (typeof text !== 'string') return ''
@@ -282,7 +283,7 @@ export const useRecording = (
   }
 
   const onStopRecording = () => {
-    webSocketRef.current?.send('{"eof" : 1}')
+    VoskSendConfigService.sendEOF(webSocketRef.current)
     webSocketRef.current?.close()
 
     translationsWsRef.current?.close()
@@ -404,9 +405,12 @@ export const useRecording = (
       webSocketRef.current.onopen = () => {
         try {
           toast.success('Websocket connected')
-          webSocketRef.current?.send(
-            `sample_rate=${settings.sampleRate},buffer_size=${settings.bufferSize}`,
+          VoskSendConfigService.sendConfig(
+            webSocketRef.current,
+            settings.sampleRate,
+            settings.bufferSize,
           )
+
           startRecordingWithNewStream()
         } catch (error) {
           toast.error('Error accessing microphone')

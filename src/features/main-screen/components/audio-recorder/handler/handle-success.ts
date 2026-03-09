@@ -1,4 +1,5 @@
 import { toast } from 'sonner'
+import { VoskSendConfigService } from '../../../../../lib/vosk-config-service'
 
 export const handleSuccess = (
   stream: MediaStream,
@@ -8,7 +9,7 @@ export const handleSuccess = (
   onSetNewProcessor: (processor: AudioWorkletNode) => void,
   onSetNewSource: (source: MediaStreamAudioSourceNode) => void,
   onSetNewContext: (context: AudioContext) => void,
-  onStop: () => void
+  onStop: () => void,
 ) => {
   const context = new AudioContext({ sampleRate })
   let count = 0
@@ -25,7 +26,7 @@ export const handleSuccess = (
           processorOptions: {
             bufferSize,
           },
-        }
+        },
       )
       onSetNewProcessor(processor)
 
@@ -44,7 +45,10 @@ export const handleSuccess = (
             if (
               count > parseInt(process.env.REACT_APP_SEND_TIMESTAMP_COUNT!, 10)
             ) {
-              webSocket.send(`${new Date().getTime()}`)
+              VoskSendConfigService.sendClientTimestamp(
+                webSocket,
+                new Date().getTime(),
+              )
               count = 0
             }
           }
