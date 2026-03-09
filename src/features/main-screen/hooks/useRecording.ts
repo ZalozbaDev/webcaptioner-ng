@@ -33,11 +33,11 @@ const normalizePlainFromText = (text: unknown): string => {
 const shouldIgnoreTranscriptionText = (plainText: string): boolean => {
   const t = plainText.trim()
   if (!t) return true
-  const lower = t.toLowerCase()
+  // const lower = t.toLowerCase()
 
-  if (lower.includes('ggml-model')) return true
-  if (lower.includes('whisper.cpp')) return true
-  if (lower.includes('--whisper-')) return true
+  // if (lower.includes('ggml-model')) return true
+  // if (lower.includes('whisper.cpp')) return true
+  // if (lower.includes('--whisper-')) return true
 
   // Ignore lines that are only punctuation/whitespace
   let hasAlphaNum = false
@@ -210,10 +210,10 @@ export const useRecording = (
 
       setVoskResponse(parsed.listen)
       if (
-        parsed.text &&
-        parsed.text !== '-- ***/whisper/ggml-model.q8_0.bin --' &&
-        parsed.text !== '-- **/whisper/ggml-model.q8_0.bin --' &&
-        parsed.text !== '-- */whisper/ggml-model.q8_0.bin --'
+        parsed.text
+        // parsed.text !== '-- ***/whisper/ggml-model.q8_0.bin --' &&
+        // parsed.text !== '-- **/whisper/ggml-model.q8_0.bin --' &&
+        // parsed.text !== '-- */whisper/ggml-model.q8_0.bin --'
       ) {
         const streamingKey = options.youtubeSettings.streamingKey
         if (streamingKey) {
