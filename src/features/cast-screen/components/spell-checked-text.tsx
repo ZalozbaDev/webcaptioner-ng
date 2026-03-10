@@ -22,7 +22,7 @@ export const SpellCheckedText: React.FC<SpellCheckedTextProps> = ({
 }) => {
   const text = getTranscriptLinePlain(line)
   const tokens = getTranscriptLineTokens(line)
-  
+
   // Only mask if translation has no tokens at all (meaning translation failed/unavailable)
   const shouldMask = isTranslation && (!tokens || tokens.length === 0)
 
