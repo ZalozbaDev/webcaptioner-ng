@@ -53,7 +53,7 @@ export const RecordButtonsContainer: FC<{
 }) => {
   const [totalTime, setTotalTime] = useState<number>(0)
   const [settingsAnchorEl, setSettingsAnchorEl] = useState<null | HTMLElement>(
-    null
+    null,
   )
   const { theme } = useTheme()
 
@@ -66,7 +66,7 @@ export const RecordButtonsContainer: FC<{
   }
 
   const [youtubeAnchorEl, setYoutubeAnchorEl] = useState<null | HTMLElement>(
-    null
+    null,
   )
   const youtubeOpen = Boolean(youtubeAnchorEl)
   const handleYoutubeOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -87,7 +87,7 @@ export const RecordButtonsContainer: FC<{
         {({ canvasRef }) => <canvas ref={canvasRef} height={100} />}
       </Visualizer>
     ),
-    [stream, theme]
+    [stream, theme],
   )
 
   useEffect(() => {
@@ -124,7 +124,7 @@ export const RecordButtonsContainer: FC<{
       settingsOpen,
       speakers,
       record,
-    ]
+    ],
   )
 
   const youtubeContainer = useMemo(
@@ -147,7 +147,7 @@ export const RecordButtonsContainer: FC<{
       youtubeAnchorEl,
       youtubeOpen,
       youtubeSettings,
-    ]
+    ],
   )
 
   return (
@@ -166,9 +166,12 @@ export const RecordButtonsContainer: FC<{
           alignItems: 'center',
         }}
       >
-        <Typography variant='body1' paddingLeft={1}>
-          {voskResponse ? '🟢' : '🔴'} Čas: {getDurationFromSeconds(totalTime)}
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, pl: 1 }}>
+          <Typography variant='body1'>
+            {voskResponse ? '🟢' : '🔴'} Čas:{' '}
+            {getDurationFromSeconds(totalTime)}
+          </Typography>
+        </Box>
 
         <Box>
           <IconButton sx={{ color: 'var(--text-primary)' }} onClick={onShare}>

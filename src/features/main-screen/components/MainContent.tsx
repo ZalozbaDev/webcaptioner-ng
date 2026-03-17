@@ -19,6 +19,7 @@ const MAIN_SCREEN_FONT_SIZE = 16
 type MainContentProps = {
   recording: {
     isRecording: boolean
+    isVoskBuilding: boolean
     voskResponse: boolean
     stream: MediaStream | null
     startRecording: (
@@ -98,7 +99,10 @@ export const MainContent = ({
       <RecordButtonsContainer
         voskResponse={recording.voskResponse}
         isDisabled={{
-          record: recording.isRecording || !selectedMicrophone,
+          record:
+            recording.isRecording ||
+            recording.isVoskBuilding ||
+            !selectedMicrophone,
           pause: !recording.isRecording,
           stop: !recording.isRecording,
         }}

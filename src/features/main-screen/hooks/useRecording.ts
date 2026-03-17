@@ -79,12 +79,17 @@ export const useRecording = (
   const [isRecording, setIsRecording] = useState(false)
   const [voskResponse, setVoskResponse] = useState(false)
   const [stream, setStream] = useState<MediaStream | null>(null)
+  const [isVoskBuilding, setIsVoskBuilding] = useState(false)
 
   let processor: AudioWorkletNode
   let source: MediaStreamAudioSourceNode
   let context: AudioContext
 
   const seqRef = useRef<number>(0)
+
+  const voskReadyRef = useRef<boolean>(false)
+  const voskConfigSentRef = useRef<boolean>(false)
+  const voskStreamStartedRef = useRef<boolean>(false)
 
   // Replace local variable with a ref to persist the websocket
   const webSocketRef = useRef<WebSocket | null>(null)
@@ -206,7 +211,38 @@ export const useRecording = (
     recordId: string | undefined,
   ) => {
     if (event.data) {
+      if (typeof event.data === 'string') {
+        try {
+          const maybeReady = JSON.parse(event.data) as any
+          if (maybeReady?.type === 'vosk_ready') {
+            voskReadyRef.current = true
+            setIsVoskBuilding(false)
+
+            if (!voskConfigSentRef.current) {
+              voskConfigSentRef.current = true
+              VoskSendConfigService.sendConfig(
+                webSocketRef.current,
+                settings.sampleRate,
+                settings.bufferSize,
+              )
+            }
+
+            if (!voskStreamStartedRef.current) {
+              voskStreamStartedRef.current = true
+              startRecordingWithNewStream()
+            }
+
+            return
+          }
+        } catch {
+          // ignore non-JSON payloads
+        }
+      }
+
       let parsed = typedVoskResponse(event.data)
+
+      // Fallback: if we receive any normal Vosk payload, we are effectively "ready".
+      setIsVoskBuilding(false)
 
       setVoskResponse(parsed.listen)
       if (
@@ -283,6 +319,12 @@ export const useRecording = (
   }
 
   const onStopRecording = () => {
+    setIsVoskBuilding(false)
+
+    voskReadyRef.current = false
+    voskConfigSentRef.current = false
+    voskStreamStartedRef.current = false
+
     VoskSendConfigService.sendEOF(webSocketRef.current)
     webSocketRef.current?.close()
 
@@ -335,6 +377,8 @@ export const useRecording = (
         }
       })
       .catch(error => {
+        setIsVoskBuilding(false)
+        onStopRecording()
         toast.error(
           `Error accessing microphone ${selectedMicrophone?.label}`,
           error.message,
@@ -347,6 +391,12 @@ export const useRecording = (
     oldRecordId?: string,
   ) => {
     try {
+      setIsVoskBuilding(true)
+
+      voskReadyRef.current = false
+      voskConfigSentRef.current = false
+      voskStreamStartedRef.current = false
+
       let recordId = oldRecordId
       if (!recordId) {
         // Create audio record first with current autoPlayAudio settings
@@ -402,28 +452,14 @@ export const useRecording = (
         )
       }
 
-      webSocketRef.current.onopen = () => {
-        try {
-          toast.success('Websocket connected')
-          VoskSendConfigService.sendConfig(
-            webSocketRef.current,
-            settings.sampleRate,
-            settings.bufferSize,
-          )
-
-          startRecordingWithNewStream()
-        } catch (error) {
-          toast.error('Error accessing microphone')
-          console.error('Error accessing microphone:', error)
-        }
-      }
-
       webSocketRef.current.onerror = () => {
         toast('Connection error. Please try again.')
+        setIsVoskBuilding(false)
         breakRecording('stop')
       }
     } catch (error) {
       toast.error('Error creating audio record')
+      setIsVoskBuilding(false)
       console.error('Error creating audio record:', error)
     }
   }
@@ -437,6 +473,7 @@ export const useRecording = (
 
   return {
     isRecording,
+    isVoskBuilding,
     voskResponse,
     stream,
     setVoskResponse,
