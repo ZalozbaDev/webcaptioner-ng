@@ -9,7 +9,7 @@ import {
   Button,
   AppBarProps,
 } from '@mui/material'
-import { FC, useState } from 'react'
+import { FC } from 'react'
 import { NavigateFunction, Link as RouterLink } from 'react-router-dom'
 import MenuIcon from '@mui/icons-material/Menu'
 import { NAVBAR_HEIGHT } from '../constants'
@@ -39,16 +39,16 @@ const DashboardNavbarRoot = experimentalStyled(AppBar)(({ theme }) => ({
 const DashboardNavbar: FC<DashboardNavbarProps> = props => {
   const { onSidebarMobileOpen, navigate, ...other } = props
 
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const open = Boolean(anchorEl)
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget)
-  }
+  // const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  // const open = Boolean(anchorEl)
+  // const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+  //   setAnchorEl(event.currentTarget)
+  // }
   // const handleClose = () => {
   //   setAnchorEl(null)
   // }
 
-  const { logout } = useAuth()
+  // const { logout } = useAuth()
 
   // const onSignOut = () => {
   //   logout().catch(err => {
@@ -97,7 +97,7 @@ const DashboardNavbar: FC<DashboardNavbarProps> = props => {
           /> */}
         </RouterLink>
 
-        <Button onClick={handleClick}>
+        <Button>
           <Hidden lgDown>
             <Box sx={{ m: 0 }}>
               <Typography

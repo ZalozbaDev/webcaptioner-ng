@@ -1,4 +1,4 @@
-import { ListProps, List, ListSubheader } from '@mui/material'
+import { ListProps, List } from '@mui/material'
 import type { FC, ReactNode } from 'react'
 import { matchPath } from 'react-router-dom'
 import NavItem from './nav-item'
@@ -35,7 +35,7 @@ const renderNavItems = ({
           pathname,
           depth,
         }),
-      []
+      [],
     )}
   </List>
 )
@@ -58,7 +58,7 @@ const reduceChildRoutes = ({
           path: item.path,
           end: true,
         },
-        pathname
+        pathname,
       )
     : false
 
@@ -69,7 +69,7 @@ const reduceChildRoutes = ({
             path: item.path,
             end: false,
           },
-          pathname
+          pathname,
         )
       : false
 
@@ -89,7 +89,7 @@ const reduceChildRoutes = ({
           items: item.children,
           pathname,
         })}
-      </NavItem>
+      </NavItem>,
     )
   } else {
     acc.push(
@@ -101,7 +101,7 @@ const reduceChildRoutes = ({
         key={key}
         path={item.path}
         title={item.title}
-      />
+      />,
     )
   }
 

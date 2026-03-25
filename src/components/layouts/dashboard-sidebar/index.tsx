@@ -31,7 +31,7 @@ const DashboardSidebar: FC<{
     if (openMobile && onMobileClose) {
       onMobileClose()
     }
-  }, [location.pathname])
+  }, [location.pathname, onMobileClose, openMobile])
 
   const getUserSection = (activeUser: User | null) => {
     if (activeUser) {
