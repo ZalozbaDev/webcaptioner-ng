@@ -15,20 +15,13 @@ import { localStorage } from '../../../lib/local-storage'
 import dayjs from 'dayjs'
 import { InputLine, TranslationResponse, YoutubeSettings } from '../types'
 import { audioQueueService } from '../../../services/AudioQueueService'
-import { InputWord } from '../../../types/transcript'
+import { InputWord, normalizeTranscriptText } from '../../../types/transcript'
 import { VoskSendConfigService } from '../../../lib/vosk-config-service'
-
-const normalizePlainFromText = (text: unknown): string => {
-  if (typeof text !== 'string') return ''
-  const trimmed = text.trim()
-  const dequoted = trimmed
-    .replace(/^"+/, '')
-    .replace(/"+$/, '')
-    .replace(/^'+/, '')
-    .replace(/'+$/, '')
-    .trim()
-  return dequoted
-}
+import {
+  attachTokensToLatestTranslation,
+  dequeuePendingTranslationTokens,
+  enqueuePendingTranslationTokens,
+} from '../../../helper/translation-token-sync'
 
 const shouldIgnoreTranscriptionText = (plainText: string): boolean => {
   const t = plainText.trim()
@@ -123,39 +116,30 @@ export const useRecording = (
     if (!translation || !translationTokens?.length) return
 
     options.setTranslation(prev => {
-      const indexToUpdate = [...prev]
-        .map((_, i) => i)
-        .reverse()
-        .find(i => prev[i].text === translation && !prev[i].translationTokens)
+      const result = attachTokensToLatestTranslation(
+        prev,
+        translation,
+        translationTokens,
+      )
 
-      if (indexToUpdate === undefined) {
-        const queue = pendingTranslationTokensRef.current.get(translation) ?? []
-        pendingTranslationTokensRef.current.set(translation, [
-          ...queue,
+      if (!result.attached) {
+        enqueuePendingTranslationTokens(
+          pendingTranslationTokensRef.current,
+          translation,
           translationTokens,
-        ])
+        )
         return prev
       }
 
-      const next = [...prev]
-      next[indexToUpdate] = {
-        ...next[indexToUpdate],
-        translationTokens,
-      }
-      return next
+      return result.translations
     })
   }
 
   const flushQueuedTokensForTranslation = (translation: string) => {
-    const pendingQueue = pendingTranslationTokensRef.current.get(translation)
-    if (!pendingQueue?.length) return
-
-    const queuedTokens = pendingQueue.shift()
-    if (pendingQueue.length) {
-      pendingTranslationTokensRef.current.set(translation, pendingQueue)
-    } else {
-      pendingTranslationTokensRef.current.delete(translation)
-    }
+    const queuedTokens = dequeuePendingTranslationTokens(
+      pendingTranslationTokensRef.current,
+      translation,
+    )
 
     if (queuedTokens?.length) {
       attachTranslationTokensToLatest(translation, queuedTokens)
@@ -261,7 +245,7 @@ export const useRecording = (
         }
 
         const tokens = (parsed.result ?? []).filter(w => !!w?.word?.trim())
-        const plainFromText = normalizePlainFromText(parsed.text)
+        const plainFromText = normalizeTranscriptText(parsed.text)
         const plainText = tokens.length
           ? tokens.map(w => w.word).join(' ')
           : plainFromText

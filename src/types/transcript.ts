@@ -13,6 +13,39 @@ export type InputLine = {
 
 export type TranscriptLine = string | InputLine
 
+export const normalizeTranscriptText = (text: unknown): string => {
+  if (typeof text !== 'string') return ''
+  const trimmed = text.trim()
+  const dequoted = trimmed
+    .replace(/^"+/, '')
+    .replace(/"+$/, '')
+    .replace(/^'+/, '')
+    .replace(/'+$/, '')
+    .trim()
+  return dequoted
+}
+
+export const normalizeTranscriptKey = (text: unknown): string => {
+  const normalized = normalizeTranscriptText(text)
+  return normalized.replace(/\s+/g, ' ').toLowerCase()
+}
+
+export const createTranscriptLine = (
+  text: unknown,
+  ...tokenSources: unknown[]
+): TranscriptLine => {
+  const plain = typeof text === 'string' ? text : String(text ?? '')
+
+  for (const tokenSource of tokenSources) {
+    const tokens = normalizeInputWords(tokenSource)
+    if (tokens?.length) {
+      return { plain, tokens }
+    }
+  }
+
+  return plain
+}
+
 const isRecord = (value: unknown): value is Record<string, unknown> => {
   return typeof value === 'object' && value !== null
 }

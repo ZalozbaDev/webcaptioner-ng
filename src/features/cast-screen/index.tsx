@@ -15,7 +15,7 @@ import {
 } from './components'
 import ThemeToggle from '../../components/theme-toggle'
 import { useWakeLock } from '../../hooks/use-wakelock'
-import type { TranscriptLine } from '../../types/transcript'
+import { createTranscriptLine } from '../../types/transcript'
 
 const CastScreen = () => {
   const { token: urlToken } = useParams<{ token: string }>()
@@ -387,22 +387,14 @@ const CastScreen = () => {
               const data = JSON.parse(event.data)
 
               if (data.original && data.translation) {
-                const originalLine = (
-                  data.originalTokens?.length
-                    ? {
-                        plain: data.original,
-                        tokens: data.originalTokens,
-                      }
-                    : data.original
-                ) as TranscriptLine
-                const translatedLine = (
-                  data.translationTokens?.length
-                    ? {
-                        plain: data.translation,
-                        tokens: data.translationTokens,
-                      }
-                    : data.translation
-                ) as TranscriptLine
+                const originalLine = createTranscriptLine(
+                  data.original,
+                  data.originalTokens,
+                )
+                const translatedLine = createTranscriptLine(
+                  data.translation,
+                  data.translationTokens,
+                )
                 setCast(prevCast =>
                   prevCast
                     ? {

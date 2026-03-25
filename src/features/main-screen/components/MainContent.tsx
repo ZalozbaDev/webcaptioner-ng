@@ -12,7 +12,7 @@ import { QRCode } from './qr-code'
 import { useState } from 'react'
 import { createAudioRecord } from '../../../lib/server-manager'
 import { SpellCheckedText } from '../../cast-screen/components/spell-checked-text'
-import type { TranscriptLine } from '../../../types/transcript'
+import { createTranscriptLine } from '../../../types/transcript'
 
 const MAIN_SCREEN_FONT_SIZE = 16
 
@@ -40,12 +40,16 @@ type MainContentProps = {
   setRecord: (record: { id: string; token: string }) => void
 }
 
-const asTranscriptLine = (value: unknown): TranscriptLine => {
+const asTranscriptLine = (value: unknown) => {
   const record = value as any
   const text = typeof record?.text === 'string' ? record.text : String(value)
-  const tokens = record?.translationTokens ?? record?.tokens
-
-  return Array.isArray(tokens) && tokens.length ? { plain: text, tokens } : text
+  return createTranscriptLine(
+    text,
+    record?.translationTokens,
+    record?.tokens,
+    record?.result,
+    record?.words,
+  )
 }
 
 export const MainContent = ({
