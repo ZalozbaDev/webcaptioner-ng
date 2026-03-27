@@ -11,6 +11,8 @@ interface SpellCheckedTextProps {
   textColor?: string
 }
 
+// const CONFIDENCE_THRESHOLD = 0.8
+
 export const SpellCheckedText: React.FC<SpellCheckedTextProps> = ({
   line,
   fontSize,
