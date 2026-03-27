@@ -8,6 +8,7 @@ import {
 import { SpellCheckedText } from './spell-checked-text'
 import { useTheme } from '../../../contexts/theme-context'
 import type { TranscriptLine } from '../../../types/transcript'
+import { LoadingDotsLine } from './loading-dots-line'
 
 interface TextFieldWithControlsProps {
   title: string
@@ -20,6 +21,7 @@ interface TextFieldWithControlsProps {
   dataTextField: string
   height: number
   isTranslation?: boolean
+  loading?: boolean
 }
 
 export const TextFieldWithControls = ({
@@ -33,6 +35,7 @@ export const TextFieldWithControls = ({
   dataTextField,
   height,
   isTranslation = false,
+  loading = false,
 }: TextFieldWithControlsProps) => {
   const { theme } = useTheme()
 
@@ -160,6 +163,7 @@ export const TextFieldWithControls = ({
             />
           </Box>
         ))}
+        {loading && <LoadingDotsLine fontSize={fontSize} />}
       </Box>
     </Box>
   )

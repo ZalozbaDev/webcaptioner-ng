@@ -20,6 +20,8 @@ import ThemeToggle from '../../components/theme-toggle'
 import { useWakeLock } from '../../hooks/use-wakelock'
 import { createTranscriptLine } from '../../types/transcript'
 
+const isTalking = true // TODO: JUST FOR TESTING
+
 const CastScreen = () => {
   const { token: urlToken } = useParams<{ token: string }>()
   const navigate = useNavigate()
@@ -270,6 +272,7 @@ const CastScreen = () => {
   const increaseOriginalFontSize = () => {
     setOriginalFontSize(prev => Math.min(128, prev + 2))
   }
+
   const decreaseOriginalFontSize = () => {
     setOriginalFontSize(prev => Math.max(12, prev - 2))
   }
@@ -635,6 +638,7 @@ const CastScreen = () => {
           isFullscreen={fullscreenField === 'original'}
           dataTextField='original'
           height={textFieldSize}
+          loading={isTalking}
         />
 
         <DraggableDivider
@@ -657,6 +661,7 @@ const CastScreen = () => {
           dataTextField='translated'
           height={100 - textFieldSize}
           isTranslation
+          loading={isTalking}
         />
       </Box>
     </Container>
