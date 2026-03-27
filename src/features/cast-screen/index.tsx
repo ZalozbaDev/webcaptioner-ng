@@ -1,9 +1,12 @@
 import { useCallback, useEffect, useState, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Box, Typography, Container } from '@mui/material'
-import axios from 'axios'
 import { initWebsocket } from '../main-screen/components/audio-recorder/handler/init-websocket'
-import { getAudioFromText, getAudioRecord } from '../../lib/server-manager'
+import {
+  getAudioFromText,
+  getAudioRecord,
+  getCastRecord,
+} from '../../lib/server-manager'
 import { audioQueueService } from '../../services/AudioQueueService'
 import {
   AutoscrollToggle,
@@ -267,7 +270,6 @@ const CastScreen = () => {
   const increaseOriginalFontSize = () => {
     setOriginalFontSize(prev => Math.min(128, prev + 2))
   }
-
   const decreaseOriginalFontSize = () => {
     setOriginalFontSize(prev => Math.max(12, prev - 2))
   }
@@ -357,9 +359,7 @@ const CastScreen = () => {
       setIsLoading(true)
       setError(null)
       try {
-        const response = await axios.get<AudioRecord>(
-          `${process.env.REACT_APP_WEBCAPTIONER_SERVER}/casts/${tokenToValidate}`,
-        )
+        const response = await getCastRecord(tokenToValidate)
         setCast(response.data)
         console.log(response.data)
         // Immediately refetch to ensure we have the latest audio settings

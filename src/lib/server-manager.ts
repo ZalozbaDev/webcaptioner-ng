@@ -157,3 +157,12 @@ export const getAudioRecord = async (recordId: string) => {
     },
   })
 }
+
+export const getCastRecord = async (tokenToValidate: string) => {
+  return axiosInstance.get<AudioRecord>(`/casts/${tokenToValidate}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+    },
+  })
+}
