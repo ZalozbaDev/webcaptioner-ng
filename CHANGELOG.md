@@ -6,7 +6,7 @@
 - selector mikrofonow
 - knefl za "přestawku"
 - "total runtime" pokazać
-- pokaz zastajenja
+- pokaz nastajenja
 
 ## 1.0.0 (RELEASED)
 
