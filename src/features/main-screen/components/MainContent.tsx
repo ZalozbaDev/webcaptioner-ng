@@ -29,6 +29,7 @@ type MainContentProps = {
     breakRecording: (newState: 'stop' | 'pause') => void
   }
   selectedMicrophone: MediaDeviceInfo
+  onChangeMicrophone: (mic: MediaDeviceInfo) => void
   settings: Settings
   onChangeSetting: (key: keyof Settings, value: boolean | number) => void
   youtubeSettings: YoutubeSettings
@@ -55,6 +56,7 @@ const asTranscriptLine = (value: unknown) => {
 export const MainContent = ({
   recording,
   selectedMicrophone,
+  onChangeMicrophone,
   settings,
   onChangeSetting,
   youtubeSettings,
@@ -121,7 +123,7 @@ export const MainContent = ({
         }}
         onPressPause={() => recording.breakRecording('pause')}
         onPressStop={() => recording.breakRecording('stop')}
-        onChangeMicrophone={() => {}} // Add proper handler
+        onChangeMicrophone={onChangeMicrophone}
         activeMicrophone={selectedMicrophone}
         youtubeSettings={youtubeSettings}
         onSaveYoutubeSettings={onChangeYoutubeSettings}

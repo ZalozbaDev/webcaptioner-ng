@@ -78,6 +78,11 @@ const MainScreen = () => {
     settings = { ...settings, [key]: value }
   }
 
+  const handleMicrophoneChange = (mic: MediaDeviceInfo) => {
+    recording.breakRecording('pause')
+    setSelectedMicrophone(mic)
+  }
+
   return (
     <div className='main-screen'>
       <Header user={user} onLogout={logout} />
@@ -85,15 +90,13 @@ const MainScreen = () => {
       {!selectedMicrophone ? (
         <MicrophoneSelector
           activeMicrophone={selectedMicrophone}
-          onChange={mic => {
-            recording.breakRecording('pause')
-            setSelectedMicrophone(mic)
-          }}
+          onChange={handleMicrophoneChange}
         />
       ) : (
         <MainContent
           recording={recording}
           selectedMicrophone={selectedMicrophone}
+          onChangeMicrophone={handleMicrophoneChange}
           settings={mediaStreamSettings}
           onChangeSetting={updateMediaStreamSettings}
           youtubeSettings={youtubeSettings}
