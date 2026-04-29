@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import type { FC } from 'react'
 import { Link as RouterLink, useLocation } from 'react-router-dom'
 import {
@@ -27,9 +27,15 @@ const DashboardSidebar: FC<{
   const location = useLocation()
   const { user } = useAuth()
 
+  const previousPathnameRef = useRef(location.pathname)
+
   useEffect(() => {
-    if (openMobile && onMobileClose) {
-      onMobileClose()
+    if (previousPathnameRef.current !== location.pathname) {
+      previousPathnameRef.current = location.pathname
+
+      if (openMobile) {
+        onMobileClose()
+      }
     }
   }, [location.pathname, onMobileClose, openMobile])
 
@@ -50,7 +56,8 @@ const DashboardSidebar: FC<{
         display: 'flex',
         justifyContent: 'space-between',
         flexDirection: 'column',
-        height: 'calc(100% - 105px)',
+        height: 'calc(100% - 40px)',
+        pt: 4,
       }}
     >
       <Box
@@ -82,7 +89,7 @@ const DashboardSidebar: FC<{
           <Box
             sx={{
               alignItems: 'center',
-              backgroundColor: 'background.default',
+              backgroundColor: 'var(--bg-primary)',
               borderRadius: 1,
               display: 'flex',
               overflow: 'hidden',
@@ -100,16 +107,22 @@ const DashboardSidebar: FC<{
               />
             </RouterLink>
             <Box sx={{ ml: 2 }}>
-              <Typography color='textPrimary' variant='subtitle2'>
+              <Typography
+                sx={{ color: 'var(--text-primary)' }}
+                variant='subtitle2'
+              >
                 {user ? `${user.firstname} ${user.lastname}` : '-'}
               </Typography>
-              <Typography color='textSecondary' variant='body2'>
+              <Typography
+                sx={{ color: 'var(--text-secondary)' }}
+                variant='body2'
+              >
                 Your Role: {user ? user.role : '-'}
               </Typography>
             </Box>
           </Box>
         </Box>
-        <Divider />
+        <Divider sx={{ borderColor: 'var(--border-color)' }} />
         <Box sx={{ p: 2 }}>
           {getUserSection(user)?.map(section => (
             <NavSection
@@ -125,8 +138,8 @@ const DashboardSidebar: FC<{
           ))}
         </Box>
       </Box>
-      <MenuItem onClick={onSignOut}>
-        <ListItemIcon>
+      <MenuItem onClick={onSignOut} sx={{ color: 'var(--text-primary)' }}>
+        <ListItemIcon sx={{ color: 'inherit' }}>
           <Logout fontSize='small' />
         </ListItemIcon>
         <Typography>Logout</Typography>
@@ -143,7 +156,8 @@ const DashboardSidebar: FC<{
           open={openMobile}
           PaperProps={{
             sx: {
-              backgroundColor: 'background.paper',
+              backgroundColor: 'var(--bg-secondary)',
+              color: 'var(--text-primary)',
               width: 280,
             },
           }}
@@ -158,7 +172,8 @@ const DashboardSidebar: FC<{
           open
           PaperProps={{
             sx: {
-              backgroundColor: 'background.paper',
+              backgroundColor: 'var(--bg-secondary)',
+              color: 'var(--text-primary)',
               height: `calc(100% - ${NAVBAR_HEIGHT - 7}) !important`,
               top: NAVBAR_HEIGHT - 7,
               width: 280,

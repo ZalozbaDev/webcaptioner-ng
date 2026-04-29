@@ -6,18 +6,21 @@ import reportWebVitals from './reportWebVitals'
 import { AuthProvider } from './contexts/auth-context'
 import { ThemeProvider } from './contexts/theme-context'
 import { BrowserRouter } from 'react-router-dom'
+import { StyledEngineProvider } from '@mui/material/styles'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   <React.StrictMode>
-    <ThemeProvider>
-      <AuthProvider>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </AuthProvider>
-    </ThemeProvider>
-  </React.StrictMode>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider>
+        <AuthProvider>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </AuthProvider>
+      </ThemeProvider>
+    </StyledEngineProvider>
+  </React.StrictMode>,
 )
 
 // If you want to start measuring performance in your app, pass a function

@@ -62,7 +62,7 @@ const NavItem: FC<NavItemProps> = props => {
           onClick={handleToggle}
           startIcon={icon}
           sx={{
-            color: 'text.secondary',
+            color: 'var(--text-secondary)',
             fontWeight: 'fontWeightMedium',
             justifyContent: 'flex-start',
             pl: `${paddingLeft}px`,
@@ -71,6 +71,15 @@ const NavItem: FC<NavItemProps> = props => {
             textAlign: 'left',
             textTransform: 'none',
             width: '100%',
+            '&:hover': {
+              backgroundColor: 'var(--accent-hover)',
+            },
+            ...(active && {
+              color: 'var(--accent-color)',
+              '& svg': {
+                color: 'var(--accent-color)',
+              },
+            }),
           }}
           variant='text'
         >
@@ -96,7 +105,7 @@ const NavItem: FC<NavItemProps> = props => {
         to={path || '#'}
         startIcon={icon}
         sx={{
-          color: 'text.secondary',
+          color: 'var(--text-secondary)',
           fontWeight: 'fontWeightMedium',
           justifyContent: 'flex-start',
           textAlign: 'left',
@@ -105,11 +114,14 @@ const NavItem: FC<NavItemProps> = props => {
           py: '12px',
           textTransform: 'none',
           width: '100%',
+          '&:hover': {
+            backgroundColor: 'var(--accent-hover)',
+          },
           ...(active && {
-            color: 'primary.main',
+            color: 'var(--accent-color)',
             fontWeight: 'fontWeightBold',
             '& svg': {
-              color: 'primary.main',
+              color: 'var(--accent-color)',
             },
           }),
         }}

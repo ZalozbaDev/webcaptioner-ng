@@ -158,7 +158,6 @@ export const FullscreenTextDisplay = ({
               line={line}
               fontSize={Math.floor(currentFontSize * 0.8)}
               isTranslation={isTranslation}
-              textColor='#000'
             />
           ))}
         </Box>
@@ -198,7 +197,6 @@ export const FullscreenTextDisplay = ({
               line={line}
               fontSize={currentFontSize}
               isTranslation={isTranslation}
-              textColor='#000'
             />
           ))}
         </Box>
