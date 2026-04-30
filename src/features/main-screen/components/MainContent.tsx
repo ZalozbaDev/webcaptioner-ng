@@ -34,6 +34,8 @@ type MainContentProps = {
   onChangeSetting: (key: keyof Settings, value: boolean | number) => void
   youtubeSettings: YoutubeSettings
   onChangeYoutubeSettings: (settings: YoutubeSettings) => void
+  totalTime: number
+  setTotalTime: React.Dispatch<React.SetStateAction<number>>
   inputText: InputLine[]
   translation: TranslationResponse[]
   speakers: BamborakSpeaker[]
@@ -61,6 +63,8 @@ export const MainContent = ({
   onChangeSetting,
   youtubeSettings,
   onChangeYoutubeSettings,
+  totalTime,
+  setTotalTime,
   inputText,
   translation,
   speakers,
@@ -116,6 +120,8 @@ export const MainContent = ({
         isQrCodeVisible={showQrCode}
         settings={settings}
         onChangeSetting={onChangeSetting}
+        totalTime={totalTime}
+        setTotalTime={setTotalTime}
         onPressRecord={() => {
           recording.startRecording((recordId, token) => {
             setRecord({ id: recordId, token })

@@ -6,7 +6,7 @@ import {
   Share,
 } from '@mui/icons-material'
 import { Box, Button, IconButton, Typography } from '@mui/material'
-import { FC, useEffect, useMemo, useState } from 'react'
+import { FC, useMemo, useState } from 'react'
 import { Visualizer } from 'react-sound-visualizer'
 import { getDurationFromSeconds } from '../../../../helper/date-time-helper'
 import { SettingsContainer } from './settings-container'
@@ -22,6 +22,8 @@ export const RecordButtonsContainer: FC<{
   isQrCodeVisible: boolean
   settings: Settings
   onChangeSetting: (key: keyof Settings, value: any) => void
+  totalTime: number
+  setTotalTime: React.Dispatch<React.SetStateAction<number>>
   onPressRecord: () => void
   onPressPause: () => void
   onPressStop: () => void
@@ -40,6 +42,8 @@ export const RecordButtonsContainer: FC<{
   isQrCodeVisible,
   settings,
   onChangeSetting,
+  totalTime,
+  setTotalTime,
   onPressRecord,
   onPressPause,
   onPressStop,
@@ -51,7 +55,6 @@ export const RecordButtonsContainer: FC<{
   onShare,
   record,
 }) => {
-  const [totalTime, setTotalTime] = useState<number>(0)
   const [settingsAnchorEl, setSettingsAnchorEl] = useState<null | HTMLElement>(
     null,
   )
@@ -89,15 +92,6 @@ export const RecordButtonsContainer: FC<{
     ),
     [stream, theme],
   )
-
-  useEffect(() => {
-    if (isRecording) {
-      const interval = setTimeout(() => {
-        setTotalTime(prev => prev + 1)
-      }, 1000)
-      return () => clearInterval(interval)
-    }
-  }, [totalTime, isRecording])
 
   const settingsContainer = useMemo(
     () => (

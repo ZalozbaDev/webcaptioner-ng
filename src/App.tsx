@@ -8,6 +8,7 @@ import { userRoutes } from './routes/user-routes'
 import { defaultRoutes } from './routes/default-routes'
 import { adminRoutes } from './routes/admin-routes'
 import { registeredUserRoutes } from './routes/registered-user-routes'
+import { RecordingSessionProvider } from './contexts/recording-session-context'
 
 const getRoutesFor = (user: User | null, isAuthenticated: boolean) => {
   if (!user && !isAuthenticated) return defaultRoutes
@@ -30,7 +31,7 @@ function App() {
   return (
     <div className='App'>
       <Toaster />
-      {content}
+      <RecordingSessionProvider>{content}</RecordingSessionProvider>
     </div>
   )
 }
