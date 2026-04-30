@@ -150,7 +150,6 @@ export const FullscreenTextDisplay = ({
               },
             },
           }}
-          data-fullscreen-content
         >
           {texts.map((line, index) => (
             <SpellCheckedText
@@ -190,6 +189,7 @@ export const FullscreenTextDisplay = ({
               },
             },
           }}
+          data-fullscreen-content
         >
           {texts.map((line, index) => (
             <SpellCheckedText
