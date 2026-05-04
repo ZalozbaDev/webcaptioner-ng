@@ -150,7 +150,6 @@ export const FullscreenTextDisplay = ({
               },
             },
           }}
-          data-fullscreen-content
         >
           {texts.map((line, index) => (
             <SpellCheckedText
@@ -158,7 +157,6 @@ export const FullscreenTextDisplay = ({
               line={line}
               fontSize={Math.floor(currentFontSize * 0.8)}
               isTranslation={isTranslation}
-              textColor='#000'
             />
           ))}
         </Box>
@@ -191,6 +189,7 @@ export const FullscreenTextDisplay = ({
               },
             },
           }}
+          data-fullscreen-content
         >
           {texts.map((line, index) => (
             <SpellCheckedText
@@ -198,7 +197,6 @@ export const FullscreenTextDisplay = ({
               line={line}
               fontSize={currentFontSize}
               isTranslation={isTranslation}
-              textColor='#000'
             />
           ))}
         </Box>

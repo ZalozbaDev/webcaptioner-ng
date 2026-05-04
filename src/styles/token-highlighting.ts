@@ -1,14 +1,15 @@
 import type { CSSProperties } from 'react'
 
-const clamp01 = (value: number) => Math.max(0, Math.min(1, value))
+export const TOKEN_SUCCESS_TEXT = 'var(--success-color)'
+export const TOKEN_SUCCESS_BG = 'var(--token-success-bg)'
 
-export const TOKEN_SUCCESS_TEXT = '#15803d'
-export const TOKEN_SUCCESS_BG = 'rgba(21, 128, 61, 0.12)'
+export const TOKEN_WARNING_TEXT = 'var(--warning-color)'
+export const TOKEN_WARNING_BG = 'var(--token-warning-bg)'
 
-export const TOKEN_ERROR_TEXT = '#b91c1c'
-export const TOKEN_ERROR_BG = 'rgba(220, 38, 38, 0.10)'
+export const TOKEN_ERROR_TEXT = 'var(--error-color)'
+export const TOKEN_ERROR_BG = 'var(--token-error-bg)'
 
-export const TOKEN_ERROR_UNDERLINE = '#dc2626'
+export const TOKEN_ERROR_UNDERLINE = 'var(--token-error-underline)'
 
 const baseTokenStyle = {
   fontWeight: 600,
@@ -31,7 +32,7 @@ const withWavyUnderline = (style: CSSProperties): CSSProperties => ({
 export const getSpellCheckTokenStyle = (isCorrect: boolean): CSSProperties => {
   const style: CSSProperties = {
     ...baseTokenStyle,
-    color: isCorrect ? TOKEN_SUCCESS_TEXT : TOKEN_ERROR_TEXT,
+    color: isCorrect ? 'var(--success-color)' : TOKEN_ERROR_TEXT,
     backgroundColor: isCorrect ? TOKEN_SUCCESS_BG : TOKEN_ERROR_BG,
   }
 
@@ -39,13 +40,9 @@ export const getSpellCheckTokenStyle = (isCorrect: boolean): CSSProperties => {
 }
 
 export const getConfidenceTokenColor = (conf: number): string => {
-  // Use a dark, accessible green for high confidence.
   if (conf >= 0.9) return TOKEN_SUCCESS_TEXT
-
-  // Otherwise use a darker red scale (more readable than very light pinks).
-  const redness = clamp01((0.9 - conf) / 0.9)
-  const lightness = 55 - 25 * redness
-  return `hsl(0, 85%, ${lightness}%)`
+  if (conf >= 0.6) return TOKEN_WARNING_TEXT
+  return TOKEN_ERROR_TEXT
 }
 
 export const getConfidenceTokenStyle = (
@@ -53,10 +50,15 @@ export const getConfidenceTokenStyle = (
   isMisspelled: boolean,
 ): CSSProperties => {
   const isHighConfidence = conf >= 0.9
+  const isMediumConfidence = conf >= 0.6 && conf < 0.9
   const style: CSSProperties = {
     ...baseTokenStyle,
     color: getConfidenceTokenColor(conf),
-    backgroundColor: isHighConfidence ? TOKEN_SUCCESS_BG : TOKEN_ERROR_BG,
+    backgroundColor: isHighConfidence
+      ? TOKEN_SUCCESS_BG
+      : isMediumConfidence
+        ? TOKEN_WARNING_BG
+        : TOKEN_ERROR_BG,
   }
 
   return isMisspelled ? withWavyUnderline(style) : style

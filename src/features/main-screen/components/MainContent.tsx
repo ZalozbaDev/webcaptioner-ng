@@ -29,10 +29,13 @@ type MainContentProps = {
     breakRecording: (newState: 'stop' | 'pause') => void
   }
   selectedMicrophone: MediaDeviceInfo
+  onChangeMicrophone: (mic: MediaDeviceInfo) => void
   settings: Settings
   onChangeSetting: (key: keyof Settings, value: boolean | number) => void
   youtubeSettings: YoutubeSettings
   onChangeYoutubeSettings: (settings: YoutubeSettings) => void
+  totalTime: number
+  setTotalTime: React.Dispatch<React.SetStateAction<number>>
   inputText: InputLine[]
   translation: TranslationResponse[]
   speakers: BamborakSpeaker[]
@@ -55,10 +58,13 @@ const asTranscriptLine = (value: unknown) => {
 export const MainContent = ({
   recording,
   selectedMicrophone,
+  onChangeMicrophone,
   settings,
   onChangeSetting,
   youtubeSettings,
   onChangeYoutubeSettings,
+  totalTime,
+  setTotalTime,
   inputText,
   translation,
   speakers,
@@ -114,6 +120,8 @@ export const MainContent = ({
         isQrCodeVisible={showQrCode}
         settings={settings}
         onChangeSetting={onChangeSetting}
+        totalTime={totalTime}
+        setTotalTime={setTotalTime}
         onPressRecord={() => {
           recording.startRecording((recordId, token) => {
             setRecord({ id: recordId, token })
@@ -121,7 +129,7 @@ export const MainContent = ({
         }}
         onPressPause={() => recording.breakRecording('pause')}
         onPressStop={() => recording.breakRecording('stop')}
-        onChangeMicrophone={() => {}} // Add proper handler
+        onChangeMicrophone={onChangeMicrophone}
         activeMicrophone={selectedMicrophone}
         youtubeSettings={youtubeSettings}
         onSaveYoutubeSettings={onChangeYoutubeSettings}

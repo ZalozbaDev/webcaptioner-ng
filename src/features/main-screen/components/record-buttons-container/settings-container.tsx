@@ -272,7 +272,7 @@ export const SettingsContainer: FC<{
     >
       <MenuList dense sx={{ width: 300 }}>
         <Typography variant='body1' textAlign='right' paddingRight={1}>
-          Zastajenja
+          Nastajenja
         </Typography>
         {checkboxes.map(({ key, title }) => {
           const setting = settings[key]

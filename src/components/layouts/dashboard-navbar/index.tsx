@@ -14,7 +14,6 @@ import { NavigateFunction, Link as RouterLink } from 'react-router-dom'
 import MenuIcon from '@mui/icons-material/Menu'
 import { NAVBAR_HEIGHT } from '../constants'
 import useAuth from '../../../hooks/use-auth'
-import ThemeToggle from '../../theme-toggle'
 
 interface DashboardNavbarProps extends AppBarProps {
   onSidebarMobileOpen?: () => void
@@ -23,16 +22,10 @@ interface DashboardNavbarProps extends AppBarProps {
 }
 
 const DashboardNavbarRoot = experimentalStyled(AppBar)(({ theme }) => ({
-  ...(theme.palette.mode === 'light' && {
-    backgroundColor: theme.palette.background.paper,
-    boxShadow: 'none',
-    color: theme.palette.primary.contrastText,
-  }),
-  ...(theme.palette.mode === 'dark' && {
-    backgroundColor: theme.palette.background.paper,
-    borderBottom: `1px solid ${theme.palette.divider}`,
-    boxShadow: 'none',
-  }),
+  backgroundColor: 'var(--bg-primary)',
+  borderBottom: '1px solid var(--border-color)',
+  boxShadow: 'none',
+  color: 'var(--text-primary)',
   zIndex: theme.zIndex.drawer + 100,
 }))
 
@@ -79,15 +72,13 @@ const DashboardNavbar: FC<DashboardNavbarProps> = props => {
         }}
       >
         <Hidden lgUp>
-          <IconButton color='primary' onClick={onSidebarMobileOpen}>
+          <IconButton
+            onClick={onSidebarMobileOpen}
+            sx={{ color: 'var(--accent-color)' }}
+          >
             <MenuIcon />
           </IconButton>
         </Hidden>
-
-        {/* Theme Toggle - positioned in the center area */}
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <ThemeToggle />
-        </Box>
 
         <RouterLink to='/'>
           {/* <Logo
@@ -101,13 +92,16 @@ const DashboardNavbar: FC<DashboardNavbarProps> = props => {
           <Hidden lgDown>
             <Box sx={{ m: 0 }}>
               <Typography
-                color='primary'
+                sx={{ color: 'var(--accent-color)' }}
                 style={{ height: 20 }}
                 textAlign='right'
               >
                 {user?.firstname || ''} {user?.lastname || ''}
               </Typography>
-              <Typography color='gray' textAlign='right'>
+              <Typography
+                sx={{ color: 'var(--text-secondary)' }}
+                textAlign='right'
+              >
                 {user?.role || '-'}
               </Typography>
             </Box>

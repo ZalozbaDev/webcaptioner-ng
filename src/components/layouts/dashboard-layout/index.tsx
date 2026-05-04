@@ -7,8 +7,8 @@ import DashboardSidebar from '../dashboard-sidebar'
 import { NAVBAR_HEIGHT } from '../constants'
 import useAuth from '../../../hooks/use-auth'
 
-const DashboardLayoutRoot = experimentalStyled('div')(({ theme }) => ({
-  backgroundColor: theme.palette.background.default,
+const DashboardLayoutRoot = experimentalStyled('div')(() => ({
+  backgroundColor: 'var(--bg-primary)',
   display: 'flex',
   height: '100vh',
   overflow: 'hidden',
@@ -21,7 +21,7 @@ const DashboardLayoutWrapper = experimentalStyled('div', {
   display: 'flex',
   flex: '1 1 auto',
   overflow: 'hidden',
-  backgroundColor: '#282c34',
+  backgroundColor: 'var(--bg-primary)',
   paddingTop: NAVBAR_HEIGHT + 'px',
   [theme.breakpoints.up('lg')]: {
     paddingLeft: $ishidden ? '0px' : '280px',
