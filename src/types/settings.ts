@@ -1,3 +1,5 @@
+import { TranslationTargetLanguage } from '../constants/translation'
+
 export interface Settings {
   autoGainControl: boolean
   noiseSuppression: boolean
@@ -7,7 +9,8 @@ export interface Settings {
   sampleSize: number
   deviceId: string | undefined
   bufferSize: number
-  sotraModel: 'ctranslate' | 'fairseq'
+  sotraModel: SotraModel
+  translationTargetLanguage: TranslationTargetLanguage
   autoPlayAudio: boolean
   selectedSpeakerId: string
 }

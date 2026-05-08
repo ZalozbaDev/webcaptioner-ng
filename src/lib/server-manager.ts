@@ -2,13 +2,14 @@ import axios from 'axios'
 import { axiosInstance } from './axios'
 import type { TranscriptLine } from '../types/transcript'
 import { DEFAULT_AUDIO_FORMAT, DEFAULT_SAMPLE_RATE } from '../constants/audio'
+import { TranslationTargetLanguage } from '../constants/translation'
 
 export const getTranslation = async (
   audioRecordId: string | undefined,
   text: string,
   model: 'ctranslate' | 'fairseq',
   sourceLanguage: 'de' | 'hsb' = 'hsb',
-  targetLanguage: 'de' | 'hsb' = 'de',
+  targetLanguage: TranslationTargetLanguage = 'de',
 ) => {
   const data = JSON.stringify({
     text,

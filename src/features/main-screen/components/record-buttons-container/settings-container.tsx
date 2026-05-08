@@ -11,12 +11,17 @@ import {
   Switch,
   FormControl,
   InputLabel,
+  Box,
 } from '@mui/material'
 import { FC } from 'react'
 import { MicrophoneSelector } from '../microphone-selector.tsx'
-import { parseSotraModelToText } from '../../../../helper/text-parser'
+import {
+  getTranslationTargetLanguageLabel,
+  getSotraModelLabel,
+} from '../../../../helper/text-parser'
 import { Settings } from '../../../../types/settings'
 import { updateAudioRecord } from '../../../../lib/server-manager'
+import { TRANSLATION_TARGET_LANGUAGES } from '../../../../constants/translation'
 
 const menuItemWithCheckbox = (
   key: string,
@@ -161,9 +166,17 @@ const menuSelectionItems: {
     key: 'sotraModel',
     title: 'Sotra Model',
     options: [
-      { title: parseSotraModelToText('ctranslate'), value: 'ctranslate' },
-      { title: parseSotraModelToText('fairseq'), value: 'fairseq' },
+      { title: getSotraModelLabel('ctranslate'), value: 'ctranslate' },
+      { title: getSotraModelLabel('fairseq'), value: 'fairseq' },
     ],
+  },
+  {
+    key: 'translationTargetLanguage',
+    title: 'Přełožowanska rěč',
+    options: TRANSLATION_TARGET_LANGUAGES.map(lang => ({
+      title: getTranslationTargetLanguageLabel(lang),
+      value: lang,
+    })),
   },
 ]
 
@@ -269,7 +282,7 @@ export const SettingsContainer: FC<{
       transformOrigin={{ horizontal: 'right', vertical: 'top' }}
       anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
     >
-      <MenuList dense sx={{ width: 300 }}>
+      <MenuList dense sx={{ width: 320 }}>
         <Typography variant='body1' textAlign='right' paddingRight={1}>
           Nastajenja
         </Typography>
@@ -308,19 +321,21 @@ export const SettingsContainer: FC<{
           }
           return null
         })}
-        {menuSelectionItems.map(({ key, title, options }) => {
-          const setting = settings[key]
-          if (setting !== undefined && typeof setting !== 'boolean')
-            return menuItemWithSelection(
-              key,
-              title,
-              setting,
-              disabled,
-              options,
-              value => onChangeSetting(key, value),
-            )
-          return null
-        })}
+        <Box sx={{ gap: 2, display: 'flex', flexDirection: 'column' }}>
+          {menuSelectionItems.map(({ key, title, options }) => {
+            const setting = settings[key]
+            if (setting !== undefined && typeof setting !== 'boolean')
+              return menuItemWithSelection(
+                key,
+                title,
+                setting,
+                disabled,
+                options,
+                value => onChangeSetting(key, value),
+              )
+            return null
+          })}
+        </Box>
         <FormControlLabel
           control={
             <Switch
