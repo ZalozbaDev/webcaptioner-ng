@@ -258,46 +258,34 @@ export const useRecording = (
         }
 
         options.setInputText(prev => [...prev, { plain: plainText, tokens }])
-        if (settings.sotraModel === 'passthrough') {
-          options.setTranslation(prev => [
-            ...prev,
-            {
-              text: plainText,
-              counter: seqRef.current,
-            },
-          ])
+        // Get bamborak audio file
+        getTranslation(
+          recordId,
+          plainText,
+          settings.sotraModel,
+          'hsb',
+          'de',
+        ).then(async response => {
+          // Only play audio if autoPlayAudio is enabled AND audioContext is provided
+          if (settings.autoPlayAudio && options.audioContext) {
+            getAudioFromText(
+              response.data.translation,
+              settings.selectedSpeakerId,
+            ).then(audioResponse => {
+              audioQueueService.addToQueue(audioResponse.data)
+            })
+          }
 
-          await maybeSendYoutubePackages(seqRef.current, plainText, timing)
-        } else {
-          // Get bamborak audio file
-          getTranslation(
-            recordId,
-            plainText,
-            settings.sotraModel,
-            'hsb',
-            'de',
-          ).then(async response => {
-            // Only play audio if autoPlayAudio is enabled AND audioContext is provided
-            if (settings.autoPlayAudio && options.audioContext) {
-              getAudioFromText(
-                response.data.translation,
-                settings.selectedSpeakerId,
-              ).then(audioResponse => {
-                audioQueueService.addToQueue(audioResponse.data)
-              })
-            }
+          const translation = response.data.translation
 
-            const translation = response.data.translation
+          // Save the translation
+          options.setTranslation(prev => [...prev, { text: translation }])
 
-            // Save the translation
-            options.setTranslation(prev => [...prev, { text: translation }])
+          // If tokens arrived before the state update, attach them now.
+          flushQueuedTokensForTranslation(translation)
 
-            // If tokens arrived before the state update, attach them now.
-            flushQueuedTokensForTranslation(translation)
-
-            await maybeSendYoutubePackages(seqRef.current, translation, timing)
-          })
-        }
+          await maybeSendYoutubePackages(seqRef.current, translation, timing)
+        })
       }
     }
   }

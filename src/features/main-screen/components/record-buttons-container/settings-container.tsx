@@ -163,7 +163,6 @@ const menuSelectionItems: {
     options: [
       { title: parseSotraModelToText('ctranslate'), value: 'ctranslate' },
       { title: parseSotraModelToText('fairseq'), value: 'fairseq' },
-      { title: parseSotraModelToText('passthrough'), value: 'passthrough' },
     ],
   },
 ]

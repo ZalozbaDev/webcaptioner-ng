@@ -7,7 +7,7 @@ export interface Settings {
   sampleSize: number
   deviceId: string | undefined
   bufferSize: number
-  sotraModel: 'ctranslate' | 'fairseq' | 'passthrough'
+  sotraModel: 'ctranslate' | 'fairseq'
   autoPlayAudio: boolean
   selectedSpeakerId: string
 }

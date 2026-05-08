@@ -1,7 +1,7 @@
 import type { TranscriptLine } from './transcript'
 
 declare global {
-  type SotraModel = 'ctranslate' | 'fairseq' | 'passthrough'
+  type SotraModel = 'ctranslate' | 'fairseq'
   type UserRole = 'ADMIN' | 'USER'
 
   type User = {
