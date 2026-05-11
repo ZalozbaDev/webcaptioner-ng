@@ -99,7 +99,7 @@ export const QRCode: FC<QRCodeProps> = ({ token, show }) => {
         backgroundColor: 'var(--card-bg)',
         padding: 1,
         borderRadius: 1,
-        zIndex: 1000,
+        zIndex: 9999,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
