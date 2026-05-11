@@ -595,7 +595,7 @@ const CastScreen = () => {
             color: '#666',
           }}
         >
-          Audio disabled by main screen
+          Awdijo přez hłownu wobrazowku deaktiwěrowane
         </Box>
       )}
 

@@ -14,6 +14,8 @@ interface FullscreenTextDisplayProps {
   onDecreaseFontSize: () => void
 }
 
+const FONT_COLOR = 'white'
+
 export const FullscreenTextDisplay = ({
   fullscreenField,
   setFullscreenField,
@@ -57,17 +59,14 @@ export const FullscreenTextDisplay = ({
           color: 'var(--text-primary)',
         }}
       >
-        <Typography
-          variant='h5'
-          sx={{ color: 'var(--text-primary)', fontWeight: 600 }}
-        >
+        <Typography variant='h5' sx={{ color: FONT_COLOR, fontWeight: 600 }}>
           {title}
         </Typography>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
           <Typography
             variant='caption'
             sx={{
-              color: 'var(--text-secondary)',
+              color: FONT_COLOR,
               fontSize: '0.8rem',
               fontWeight: 500,
               minWidth: '35px',
@@ -80,7 +79,7 @@ export const FullscreenTextDisplay = ({
             onClick={onDecreaseFontSize}
             size='small'
             sx={{
-              color: 'var(--text-secondary)',
+              color: FONT_COLOR,
               padding: '4px',
               '&:hover': { backgroundColor: 'var(--button-hover)' },
             }}
@@ -92,7 +91,7 @@ export const FullscreenTextDisplay = ({
             onClick={onIncreaseFontSize}
             size='small'
             sx={{
-              color: 'var(--text-secondary)',
+              color: FONT_COLOR,
               padding: '4px',
               '&:hover': { backgroundColor: 'var(--button-hover)' },
             }}
@@ -104,7 +103,7 @@ export const FullscreenTextDisplay = ({
             onClick={() => setFullscreenField('none')}
             size='large'
             sx={{
-              color: 'var(--text-primary)',
+              color: FONT_COLOR,
               '&:hover': {
                 backgroundColor: 'var(--button-hover)',
               },

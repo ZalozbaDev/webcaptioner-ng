@@ -43,7 +43,7 @@ export const AudioToggle: FC<{
               : audioEnabled
                 ? '#1976d2'
                 : '#666',
-          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          // backgroundColor: 'rgba(255, 255, 255, 0.9)',
           borderRadius: '4px',
           padding: '6px',
           '&:hover': {
