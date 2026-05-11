@@ -33,7 +33,7 @@ const DashboardNavbar: FC<DashboardNavbarProps> = props => {
     <DashboardNavbarRoot {...other}>
       <Toolbar
         sx={{
-          minHeight: NAVBAR_HEIGHT,
+          height: NAVBAR_HEIGHT,
           display: 'flex',
           justifyContent: { xs: 'space-between', lg: 'flex-end' },
           flexDirection: 'row',

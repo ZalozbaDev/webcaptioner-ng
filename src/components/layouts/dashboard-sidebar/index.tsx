@@ -7,7 +7,6 @@ import {
   Hidden,
   Avatar,
   Typography,
-  Divider,
   Drawer,
   ListItemIcon,
   MenuItem,
@@ -57,7 +56,6 @@ const DashboardSidebar: FC<{
         justifyContent: 'space-between',
         flexDirection: 'column',
         height: 'calc(100% - 40px)',
-        pt: 4,
       }}
     >
       <Box
@@ -67,25 +65,7 @@ const DashboardSidebar: FC<{
           height: '90%',
         }}
       >
-        <Hidden lgUp>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              p: 2,
-            }}
-          >
-            <RouterLink to='/'>
-              {/* <Logo
-                style={{
-                  height: '10px',
-                  backgroundColor: 'red',
-                }}
-              /> */}
-            </RouterLink>
-          </Box>
-        </Hidden>
-        <Box sx={{ p: 2 }}>
+        <Box sx={{ p: 2, pt: { xs: 10, lg: 6 } }}>
           <Box
             sx={{
               alignItems: 'center',
@@ -106,7 +86,14 @@ const DashboardSidebar: FC<{
                 }}
               />
             </RouterLink>
-            <Box sx={{ ml: 2 }}>
+            <Box
+              sx={{
+                ml: 2,
+                alignItems: 'flex-start',
+                display: 'flex',
+                flexDirection: 'column',
+              }}
+            >
               <Typography
                 sx={{ color: 'var(--text-primary)' }}
                 variant='subtitle2'
@@ -117,13 +104,13 @@ const DashboardSidebar: FC<{
                 sx={{ color: 'var(--text-secondary)' }}
                 variant='body2'
               >
-                Your Role: {user ? user.role : '-'}
+                Twoja posicija: {user ? user.role : '-'}
               </Typography>
             </Box>
           </Box>
         </Box>
-        <Divider sx={{ borderColor: 'var(--border-color)' }} />
-        <Box sx={{ p: 2 }}>
+
+        <Box sx={{ px: 2 }}>
           {getUserSection(user)?.map(section => (
             <NavSection
               key={section.title}
