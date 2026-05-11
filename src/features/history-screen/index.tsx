@@ -23,9 +23,10 @@ import {
   Stack,
   Tooltip,
 } from '@mui/material'
-import { ArrowForward, Delete, Download } from '@mui/icons-material'
+import { Delete, Download } from '@mui/icons-material'
 import { download } from '../../helper/download'
 import { getTranscriptLinePlain } from '../../types/transcript'
+import dayjs from 'dayjs'
 
 type PaginatedResponse<T> = {
   items: T[]
@@ -177,29 +178,40 @@ const HistoryScreen = () => {
         }}
       >
         <Table
+          size='small'
           sx={{
             minWidth: 900,
+
+            '& th, & td': {
+              px: 1,
+              py: 1,
+            },
+
             '& th': {
               color: 'text.primary',
               fontWeight: 600,
               bgcolor: 'background.default',
               borderColor: 'divider',
             },
+
             '& td': {
               color: 'text.primary',
               borderColor: 'divider',
             },
           }}
         >
+          <colgroup>
+            <col style={{ width: 170 }} /> {/* Datum */}
+            <col style={{ width: 220 }} /> {/* Original */}
+            <col style={{ width: 220 }} /> {/* Přełožk */}
+            <col style={{ width: 180 }} /> {/* Aktionen */}
+          </colgroup>
           <TableHead>
             <TableRow>
-              <TableCell>Titul</TableCell>
               <TableCell>Datum</TableCell>
               <TableCell>Original</TableCell>
               <TableCell>Přełožk</TableCell>
-              <TableCell width={230} align='center'>
-                Aktione
-              </TableCell>
+              <TableCell align='center'>Aktione</TableCell>
             </TableRow>
           </TableHead>
 
@@ -229,24 +241,9 @@ const HistoryScreen = () => {
                     },
                   }}
                 >
-                  <TableCell component='th' scope='row'>
-                    <Typography
-                      variant='body2'
-                      sx={{
-                        maxWidth: 180,
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                      }}
-                      title={record.title}
-                    >
-                      {record.title}
-                    </Typography>
-                  </TableCell>
-
                   <TableCell>
                     {record.createdAt
-                      ? new Date(record.createdAt).toLocaleString()
+                      ? dayjs(record.createdAt).format('DD.MM.YY HH:mm')
                       : '-'}
                   </TableCell>
 
@@ -369,9 +366,15 @@ const HistoryScreen = () => {
           }}
           rowsPerPageOptions={[5, 10, 25, 50]}
           sx={{
-            color: 'text.primary',
             borderTop: '1px solid',
             borderColor: 'divider',
+            '& .MuiSvgIcon-root': {
+              fill: 'black',
+            },
+            '& .MuiSelect-select': {
+              color: 'black',
+              WebkitTextFillColor: 'black',
+            },
           }}
         />
       </TableContainer>
