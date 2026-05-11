@@ -23,6 +23,7 @@ import {
   Stack,
   Tooltip,
 } from '@mui/material'
+import type { SxProps, Theme } from '@mui/material'
 import { Delete, Download } from '@mui/icons-material'
 import { download } from '../../helper/download'
 import { getTranscriptLinePlain } from '../../types/transcript'
@@ -35,12 +36,59 @@ type PaginatedResponse<T> = {
   limit: number
 }
 
-const getPreviewText = (lines: AudioRecord['originalText']) => {
-  const firstLine = lines.at(0)
+const TABLE_COL_SPAN = 3
 
-  if (!firstLine) return '-'
+const getPreviewLines = (lines: AudioRecord['originalText']) => {
+  if (!lines.length) return '-'
 
-  return `${getTranscriptLinePlain(firstLine)} ...`
+  return lines.slice(0, 3).map(getTranscriptLinePlain).join('\n')
+}
+
+const downloadButtonSx: SxProps<Theme> = {
+  minWidth: 'auto',
+  px: 1,
+  py: 0.4,
+  color: 'text.primary',
+  borderColor: 'divider',
+  textTransform: 'none',
+  fontWeight: 400,
+  fontSize: '0.8rem',
+  lineHeight: 1.4,
+
+  '& .MuiButton-endIcon': {
+    ml: 0.5,
+    mr: 0,
+    color: 'inherit',
+  },
+
+  '& .MuiButton-endIcon svg': {
+    color: 'inherit',
+    fill: 'currentColor',
+    fontSize: 18,
+  },
+
+  '&:hover': {
+    borderColor: 'text.primary',
+    bgcolor: 'action.hover',
+  },
+}
+
+const deleteButtonSx: SxProps<Theme> = {
+  p: 0.5,
+  color: 'error.main',
+
+  '& > .MuiSvgIcon-root': {
+    color: 'inherit !important',
+    fill: 'currentColor',
+  },
+
+  '&.Mui-disabled': {
+    color: 'action.disabled',
+  },
+
+  '&:hover': {
+    bgcolor: 'action.hover',
+  },
 }
 
 const HistoryScreen = () => {
@@ -115,35 +163,6 @@ const HistoryScreen = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, rowsPerPage])
 
-  const downloadButtonSx = {
-    minWidth: 'auto',
-    px: 1,
-    py: 0.4,
-    color: 'text.primary',
-    borderColor: 'divider',
-    textTransform: 'none',
-    fontWeight: 400,
-    fontSize: '0.8rem',
-    lineHeight: 1.4,
-
-    '& .MuiButton-endIcon': {
-      ml: 0.5,
-      mr: 0,
-      color: 'inherit',
-    },
-
-    '& .MuiButton-endIcon svg': {
-      color: 'inherit',
-      fill: 'currentColor',
-      fontSize: 18,
-    },
-
-    '&:hover': {
-      borderColor: 'text.primary',
-      bgcolor: 'action.hover',
-    },
-  }
-
   return (
     <Box
       sx={{
@@ -161,7 +180,9 @@ const HistoryScreen = () => {
         },
       }}
     >
-      <h2>Historia</h2>
+      <Typography variant='h5' component='h2' sx={{ mb: 2 }}>
+        Historia
+      </Typography>
 
       <TableContainer
         component={Paper}
@@ -180,10 +201,25 @@ const HistoryScreen = () => {
         <Table
           size='small'
           sx={{
-            minWidth: 900,
+            width: '100%',
+            minWidth: {
+              xs: 620,
+              sm: 760,
+              md: 900,
+            },
+            tableLayout: 'fixed',
+
+            '--history-date-col-width': '65px',
+            '--history-actions-col-width': {
+              xs: '260px',
+              sm: '290px',
+            },
 
             '& th, & td': {
-              px: 1,
+              px: {
+                xs: 0.75,
+                sm: 1,
+              },
               py: 1,
             },
 
@@ -197,158 +233,187 @@ const HistoryScreen = () => {
             '& td': {
               color: 'text.primary',
               borderColor: 'divider',
+              verticalAlign: 'top',
             },
           }}
         >
           <colgroup>
-            <col style={{ width: 170 }} /> {/* Datum */}
-            <col style={{ width: 220 }} /> {/* Original */}
-            <col style={{ width: 220 }} /> {/* Přełožk */}
-            <col style={{ width: 180 }} /> {/* Aktionen */}
+            <col style={{ width: 'var(--history-date-col-width)' }} />
+            <col />
+            <col style={{ width: 'var(--history-actions-col-width)' }} />
           </colgroup>
+
           <TableHead>
             <TableRow>
               <TableCell>Datum</TableCell>
               <TableCell>Original</TableCell>
-              <TableCell>Přełožk</TableCell>
-              <TableCell align='center'>Aktione</TableCell>
+              <TableCell
+                align='center'
+                sx={{
+                  overflow: 'visible',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                Aktione
+              </TableCell>
             </TableRow>
           </TableHead>
 
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={5} align='center'>
+                <TableCell colSpan={TABLE_COL_SPAN} align='center'>
                   <CircularProgress size={20} />
                 </TableCell>
               </TableRow>
             ) : data.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} align='center'>
+                <TableCell colSpan={TABLE_COL_SPAN} align='center'>
                   <Typography variant='body2' color='text.secondary'>
                     Žane zapiski namakane
                   </Typography>
                 </TableCell>
               </TableRow>
             ) : (
-              data.map(record => (
-                <TableRow
-                  key={record._id}
-                  hover
-                  sx={{
-                    '&:last-child td, &:last-child th': {
-                      border: 0,
-                    },
-                  }}
-                >
-                  <TableCell>
-                    {record.createdAt
-                      ? dayjs(record.createdAt).format('DD.MM.YY HH:mm')
-                      : '-'}
-                  </TableCell>
+              data.map(record => {
+                const createdAt = record.createdAt
+                  ? dayjs(record.createdAt)
+                  : null
 
-                  <TableCell>
-                    <Typography
-                      variant='body2'
-                      sx={{
-                        maxWidth: 220,
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                      }}
-                      title={getPreviewText(record.originalText)}
-                    >
-                      {getPreviewText(record.originalText)}
-                    </Typography>
-                  </TableCell>
+                const originalPreview = getPreviewLines(record.originalText)
 
-                  <TableCell>
-                    <Typography
-                      variant='body2'
-                      sx={{
-                        maxWidth: 220,
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                      }}
-                      title={getPreviewText(record.translatedText)}
-                    >
-                      {getPreviewText(record.translatedText)}
-                    </Typography>
-                  </TableCell>
-
-                  <TableCell align='center'>
-                    <Stack
-                      direction='row'
-                      spacing={0.35}
-                      alignItems='center'
-                      justifyContent='center'
-                      sx={{
-                        flexWrap: 'nowrap',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      <Button
-                        variant='outlined'
-                        size='small'
-                        endIcon={<Download />}
-                        onClick={() => {
-                          download(
-                            record.originalText.map(getTranscriptLinePlain),
-                            `${record.title}-original.txt`,
-                          )
-                        }}
-                        sx={downloadButtonSx}
-                      >
-                        original
-                      </Button>
-
-                      <Button
-                        variant='outlined'
-                        size='small'
-                        endIcon={<Download />}
-                        onClick={() => {
-                          download(
-                            record.translatedText.map(getTranscriptLinePlain),
-                            `${record.title}-prelozk.txt`,
-                          )
-                        }}
-                        sx={downloadButtonSx}
-                      >
-                        Přełožk
-                      </Button>
-
-                      <Tooltip title='Zhašeć'>
-                        <IconButton
-                          size='small'
-                          aria-label='delete record'
-                          disabled={isDeleting}
-                          onClick={() => setRecordToDelete(record)}
+                return (
+                  <TableRow
+                    key={record._id}
+                    hover
+                    sx={{
+                      '&:last-child td, &:last-child th': {
+                        border: 0,
+                      },
+                    }}
+                  >
+                    <TableCell>
+                      {createdAt ? (
+                        <Box
                           sx={{
-                            p: 0.5,
-                            color: 'error.main',
-
-                            '& > .MuiSvgIcon-root': {
-                              color: 'inherit !important',
-                              fill: 'currentColor',
-                            },
-
-                            '&.Mui-disabled': {
-                              color: 'action.disabled',
-                            },
-
-                            '&:hover': {
-                              bgcolor: 'action.hover',
-                            },
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
                           }}
                         >
-                          <Delete />
-                        </IconButton>
-                      </Tooltip>
-                    </Stack>
-                  </TableCell>
-                </TableRow>
-              ))
+                          <Typography
+                            variant='body2'
+                            sx={{
+                              fontWeight: 500,
+                              lineHeight: 1.3,
+                              whiteSpace: 'nowrap',
+                            }}
+                          >
+                            {createdAt.format('HH:mm')}
+                          </Typography>
+
+                          <Typography
+                            variant='caption'
+                            color='text.secondary'
+                            sx={{
+                              display: 'block',
+                              lineHeight: 1.3,
+                              whiteSpace: 'nowrap',
+                            }}
+                          >
+                            {createdAt.format('DD.MM.YY')}
+                          </Typography>
+                        </Box>
+                      ) : (
+                        '-'
+                      )}
+                    </TableCell>
+
+                    <TableCell>
+                      <Typography
+                        variant='body2'
+                        title={originalPreview}
+                        sx={{
+                          overflow: 'hidden',
+                          display: '-webkit-box',
+                          WebkitBoxOrient: 'vertical',
+                          WebkitLineClamp: 3,
+                          lineHeight: 1.4,
+                          whiteSpace: 'pre-line',
+                          wordBreak: 'break-word',
+                        }}
+                      >
+                        {originalPreview}
+                      </Typography>
+                    </TableCell>
+
+                    <TableCell align='center'>
+                      <Stack
+                        direction='row'
+                        spacing={0.35}
+                        alignItems='center'
+                        justifyContent='center'
+                        sx={{
+                          flexWrap: 'nowrap',
+                          whiteSpace: 'nowrap',
+                          minWidth: 'max-content',
+                          pt: 0.1,
+                        }}
+                      >
+                        <Button
+                          variant='outlined'
+                          size='small'
+                          endIcon={<Download />}
+                          onClick={() => {
+                            download(
+                              record.originalText.map(getTranscriptLinePlain),
+                              `${record.title}-original.txt`,
+                            )
+                          }}
+                          sx={downloadButtonSx}
+                        >
+                          original
+                        </Button>
+
+                        <Button
+                          variant='outlined'
+                          size='small'
+                          endIcon={<Download />}
+                          onClick={() => {
+                            download(
+                              record.translatedText.map(getTranscriptLinePlain),
+                              `${record.title}-prelozk.txt`,
+                            )
+                          }}
+                          sx={downloadButtonSx}
+                        >
+                          Přełožk
+                        </Button>
+
+                        <Tooltip title='Zhašeć'>
+                          <Box
+                            component='span'
+                            sx={{
+                              display: 'inline-flex',
+                              flexShrink: 0,
+                            }}
+                          >
+                            <IconButton
+                              size='small'
+                              aria-label='delete record'
+                              disabled={isDeleting}
+                              onClick={() => setRecordToDelete(record)}
+                              sx={deleteButtonSx}
+                            >
+                              <Delete />
+                            </IconButton>
+                          </Box>
+                        </Tooltip>
+                      </Stack>
+                    </TableCell>
+                  </TableRow>
+                )
+              })
             )}
           </TableBody>
         </Table>
@@ -368,9 +433,11 @@ const HistoryScreen = () => {
           sx={{
             borderTop: '1px solid',
             borderColor: 'divider',
+
             '& .MuiSvgIcon-root': {
               fill: 'black',
             },
+
             '& .MuiSelect-select': {
               color: 'black',
               WebkitTextFillColor: 'black',
