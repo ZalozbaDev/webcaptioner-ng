@@ -2,9 +2,7 @@ import {
   Checkbox,
   Divider,
   Input,
-  Menu,
   MenuItem,
-  MenuList,
   Select,
   Typography,
   FormControlLabel,
@@ -22,112 +20,8 @@ import {
 import { Settings } from '../../../../types/settings'
 import { updateAudioRecord } from '../../../../lib/server-manager'
 import { TRANSLATION_TARGET_LANGUAGES } from '../../../../constants/translation'
-
-const menuItemWithCheckbox = (
-  key: string,
-  disabled: boolean,
-  checked: boolean,
-  title: string,
-  onSetChecked: (value: boolean) => void,
-) => (
-  <MenuItem disabled={disabled} sx={{ marginLeft: -1, height: 30 }} key={key}>
-    <Checkbox
-      checked={checked}
-      onChange={event => onSetChecked(event.target.checked)}
-    />
-    <Typography variant='body2'>{title}</Typography>
-  </MenuItem>
-)
-
-const menuItemWithSelection = (
-  key: string,
-  title: string,
-  value: string | number,
-  disabled: boolean,
-  options: { title: string; value: string | number }[],
-  onSetValue: (value: string | number) => void,
-) => (
-  <MenuItem
-    disabled={disabled}
-    sx={{
-      marginLeft: 1,
-      paddingRight: 4,
-      height: 30,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      width: '100%',
-    }}
-    key={key}
-  >
-    {disabled ? (
-      <>
-        <Typography variant='body2'>{title}:</Typography>
-        <Typography variant='body2'>{value}</Typography>
-      </>
-    ) : (
-      <>
-        <Typography variant='body2'>{title}:</Typography>
-        <Select
-          size='small'
-          sx={{ marginLeft: 1, textAlign: 'right' }}
-          type='number'
-          defaultValue={value}
-          title={title}
-          onChange={newValue => onSetValue(newValue.target.value)}
-        >
-          {options.map(option => (
-            <MenuItem value={option.value}>{option.title}</MenuItem>
-          ))}
-        </Select>
-      </>
-    )}
-  </MenuItem>
-)
-
-const menuitemWithText = (
-  key: string,
-  title: string,
-  value: string | number,
-  disabled: boolean,
-  editable: boolean,
-  onSetValue: (value: number) => void,
-) => (
-  <MenuItem
-    disabled={disabled}
-    sx={{
-      marginLeft: 1,
-      paddingRight: 4,
-      height: 30,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      width: '100%',
-    }}
-    key={key}
-  >
-    {disabled || !editable ? (
-      <>
-        <Typography variant='body2'>{title}:</Typography>
-        <Typography variant='body2'>{value}</Typography>
-      </>
-    ) : (
-      <>
-        <Typography variant='body2'>{title}:</Typography>
-        <Input
-          size='small'
-          sx={{ width: 70, marginLeft: 1, textAlign: 'right' }}
-          type='number'
-          defaultValue={value}
-          title={title}
-          onChange={newValue =>
-            onSetValue(newValue.target.value as unknown as number)
-          }
-        />
-      </>
-    )}
-  </MenuItem>
-)
+import { SettingsPopupContainer } from './settings-popup-container'
+import { SettingsRow, SettingsFullWidthRow } from './settings-row'
 
 const checkboxes: { key: keyof Settings; title: string }[] = [
   { key: 'autoGainControl', title: 'Auto Gain Control' },
@@ -204,11 +98,9 @@ export const SettingsContainer: FC<{
   record,
 }) => {
   const handleSpeakerChange = async (speakerId: string) => {
-    // Update local settings
     onChangeSetting('selectedSpeakerId', speakerId)
 
-    // Update audio record in server if we have an active record
-    if (record && record.id) {
+    if (record?.id) {
       try {
         await updateAudioRecord(record.id, speakerId)
       } catch (error) {
@@ -218,23 +110,13 @@ export const SettingsContainer: FC<{
   }
 
   const handleAutoPlayAudioChange = async (enabled: boolean) => {
-    // Update local settings
     onChangeSetting('autoPlayAudio', enabled)
-    console.log(
-      'handleAutoPlayAudioChange',
-      record,
-      enabled,
-      settings.selectedSpeakerId,
-    )
 
-    // Only try to update audio record in server if we have an active record
-    // If no record exists yet, the settings will be applied when recording starts
-    if (record && record.id) {
+    if (record?.id) {
       try {
         if (enabled && settings.selectedSpeakerId) {
           await updateAudioRecord(record.id, settings.selectedSpeakerId)
         } else {
-          // When autoPlayAudio is disabled, set speakerId to null
           await updateAudioRecord(record.id, null)
         }
       } catch (error) {
@@ -243,126 +125,218 @@ export const SettingsContainer: FC<{
     }
   }
 
+  const handleNumberChange = (key: keyof Settings, value: string) => {
+    onChangeSetting(key, value === '' ? 0 : Number(value))
+  }
+
   return (
-    <Menu
-      onClose={onClose}
+    <SettingsPopupContainer
       anchorEl={anchorEl}
-      disableScrollLock
       open={open}
-      slotProps={{
-        paper: {
-          elevation: 0,
-          sx: {
-            border: '1px solid black',
-            maxHeight: '90%',
-            // overflow: 'visible',
-            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-            mt: 0.5,
-            '& .MuiAvatar-root': {
-              width: 32,
-              height: 32,
-              ml: -0.5,
-              mr: 1,
-            },
-            // '&::before': {
-            //   content: '""',
-            //   display: 'block',
-            //   position: 'absolute',
-            //   top: 0,
-            //   right: 14,
-            //   width: 10,
-            //   height: 10,
-            //   bgcolor: 'background.paper',
-            //   transform: 'translateY(-50%) rotate(45deg)',
-            //   zIndex: 0,
-            // },
-          },
-        },
-      }}
-      transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-      anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+      onClose={onClose}
+      disableScrollLock
+      width={420}
     >
-      <MenuList dense sx={{ width: 320 }}>
-        <Typography variant='body1' textAlign='right' paddingRight={1}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 1.5,
+          width: '100%',
+          minWidth: 0,
+        }}
+      >
+        <Typography variant='body1' textAlign='right'>
           Nastajenja
         </Typography>
-        {checkboxes.map(({ key, title }) => {
-          const setting = settings[key]
-          return menuItemWithCheckbox(
-            key,
-            disabled,
-            typeof setting !== 'boolean' ? false : setting,
-            title,
-            value => onChangeSetting(key, value),
-          )
-        })}
-        {menuTextItems.map(({ key, title, editable, options }) => {
-          const setting = settings[key]
-          if (setting !== undefined && typeof setting !== 'boolean') {
-            if (options) {
-              return menuItemWithSelection(
-                key,
-                title,
-                setting,
-                disabled,
-                options,
-                value => onChangeSetting(key, value),
-              )
-            } else {
-              return menuitemWithText(
-                key,
-                title,
-                setting,
-                disabled,
-                editable,
-                value => onChangeSetting(key, value),
-              )
-            }
-          }
-          return null
-        })}
-        <Box sx={{ gap: 2, display: 'flex', flexDirection: 'column' }}>
-          {menuSelectionItems.map(({ key, title, options }) => {
+
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 0.5,
+            width: '100%',
+            minWidth: 0,
+          }}
+        >
+          {checkboxes.map(({ key, title }) => {
             const setting = settings[key]
-            if (setting !== undefined && typeof setting !== 'boolean')
-              return menuItemWithSelection(
-                key,
-                title,
-                setting,
-                disabled,
-                options,
-                value => onChangeSetting(key, value),
-              )
-            return null
+            const checked = typeof setting === 'boolean' ? setting : false
+
+            return (
+              <FormControlLabel
+                key={key}
+                disabled={disabled}
+                control={
+                  <Checkbox
+                    checked={checked}
+                    onChange={event =>
+                      onChangeSetting(key, event.target.checked)
+                    }
+                  />
+                }
+                label={<Typography variant='body2'>{title}</Typography>}
+                sx={{
+                  m: 0,
+                  minWidth: 0,
+                }}
+              />
+            )
           })}
         </Box>
+
+        {menuTextItems.map(({ key, title, editable, options }) => {
+          const setting = settings[key]
+
+          if (setting === undefined || typeof setting === 'boolean') {
+            return null
+          }
+
+          if (options) {
+            return (
+              <SettingsRow key={key} label={`${title}:`}>
+                {disabled ? (
+                  <Typography variant='body2'>{String(setting)}</Typography>
+                ) : (
+                  <Select
+                    size='small'
+                    value={setting}
+                    title={title}
+                    onChange={event => onChangeSetting(key, event.target.value)}
+                    sx={{
+                      width: {
+                        xs: 110,
+                        sm: 140,
+                      },
+                      maxWidth: '100%',
+                      textAlign: 'right',
+                    }}
+                  >
+                    {options.map(option => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.title}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
+              </SettingsRow>
+            )
+          }
+
+          return (
+            <SettingsRow key={key} label={`${title}:`}>
+              {disabled || !editable ? (
+                <Typography
+                  variant='body2'
+                  sx={{
+                    maxWidth: 160,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                    textAlign: 'right',
+                  }}
+                  title={String(setting)}
+                >
+                  {String(setting)}
+                </Typography>
+              ) : (
+                <Input
+                  size='small'
+                  type='number'
+                  value={setting}
+                  title={title}
+                  onChange={event =>
+                    handleNumberChange(key, event.target.value)
+                  }
+                  sx={{
+                    width: {
+                      xs: 80,
+                      sm: 100,
+                    },
+                    maxWidth: '100%',
+                    '& input': {
+                      textAlign: 'right',
+                    },
+                  }}
+                />
+              )}
+            </SettingsRow>
+          )
+        })}
+
+        {menuSelectionItems.map(({ key, title, options }) => {
+          const setting = settings[key]
+
+          if (setting === undefined || typeof setting === 'boolean') {
+            return null
+          }
+
+          return (
+            <SettingsRow key={key} label={`${title}:`}>
+              <Select
+                size='small'
+                disabled={disabled}
+                value={setting}
+                title={title}
+                onChange={event => onChangeSetting(key, event.target.value)}
+                sx={{
+                  width: {
+                    xs: 150,
+                    sm: 190,
+                  },
+                  maxWidth: '100%',
+                  textAlign: 'right',
+                }}
+              >
+                {options.map(option => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.title}
+                  </MenuItem>
+                ))}
+              </Select>
+            </SettingsRow>
+          )
+        })}
+
         <FormControlLabel
           control={
             <Switch
               checked={settings.autoPlayAudio}
-              onChange={e => handleAutoPlayAudioChange(e.target.checked)}
+              onChange={event =>
+                handleAutoPlayAudioChange(event.target.checked)
+              }
             />
           }
           disabled={disabled}
-          sx={{ paddingInline: 3 }}
           label='Audio přełožk'
+          sx={{
+            m: 0,
+            minWidth: 0,
+          }}
         />
+
         {settings.autoPlayAudio && (
-          <MenuItem disabled={disabled}>
+          <SettingsFullWidthRow>
             <FormControl
               margin='normal'
               sx={{
                 backgroundColor: 'var(--input-bg)',
                 borderRadius: 1,
                 width: '100%',
+                minWidth: 0,
               }}
               disabled={disabled}
             >
               <InputLabel>Rěčnik</InputLabel>
+
               <Select
-                value={settings.selectedSpeakerId}
-                onChange={e => handleSpeakerChange(e.target.value)}
+                value={settings.selectedSpeakerId ?? ''}
+                onChange={event => handleSpeakerChange(event.target.value)}
                 label='Rěčnik'
+                sx={{
+                  width: '100%',
+                  minWidth: 0,
+                }}
               >
                 {speakers.map(speaker => (
                   <MenuItem key={speaker.id} value={speaker.id}>
@@ -371,17 +345,19 @@ export const SettingsContainer: FC<{
                 ))}
               </Select>
             </FormControl>
-          </MenuItem>
+          </SettingsFullWidthRow>
         )}
+
         <Divider />
-        <MenuItem disabled={disabled}>
+
+        <SettingsFullWidthRow>
           <MicrophoneSelector
             activeMicrophone={activeMicrophone}
             onChange={onChangeMicrophone}
             fullWidth
           />
-        </MenuItem>
-      </MenuList>
-    </Menu>
+        </SettingsFullWidthRow>
+      </Box>
+    </SettingsPopupContainer>
   )
 }

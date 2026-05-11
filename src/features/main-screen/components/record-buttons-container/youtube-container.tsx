@@ -5,18 +5,25 @@ import {
   CircularProgress,
   IconButton,
   Input,
-  Menu,
-  MenuList,
+  InputAdornment,
   TextField,
   Typography,
 } from '@mui/material'
 import { FC, useEffect, useState } from 'react'
 import { localStorage } from '../../../../lib/local-storage'
+import { SettingsPopupContainer } from './settings-popup-container'
+import { SettingsRow } from './settings-row'
 
 export type YoutubeSettings = {
-  streamingKey?: string | undefined
+  streamingKey?: string
   timeOffset: number
   counter: number
+}
+
+type TempYoutubeSettings = {
+  streamingKey: string
+  timeOffset: number | ''
+  counter: number | ''
 }
 
 export const YoutubeContainer: FC<{
@@ -29,140 +36,187 @@ export const YoutubeContainer: FC<{
 }> = ({ anchorEl, open, disabled, onClose, settings, onSave }) => {
   const [fetchingCounterIsLoading, setFetchingCounterIsLoading] =
     useState(false)
-  const [tempSettings, setTempSettings] = useState<YoutubeSettings>({
+
+  const [tempSettings, setTempSettings] = useState<TempYoutubeSettings>({
     streamingKey: settings.streamingKey ?? '',
     timeOffset: settings.timeOffset,
     counter: settings.counter,
   })
 
   useEffect(() => {
+    if (!open) return
+
     setTempSettings({
       streamingKey: settings.streamingKey ?? '',
       timeOffset: settings.timeOffset,
       counter: settings.counter,
     })
-  }, [settings, open, anchorEl])
-
-  const getYoutubeCounter = (streamingKey: string | undefined) => {
-    setFetchingCounterIsLoading(true)
-    const counter = streamingKey
-      ? localStorage.getCounterForYoutubeStreaming(streamingKey)
-      : 0
-    setTimeout(() => {
-      setTempSettings(prev => ({ ...prev, counter }))
-      setFetchingCounterIsLoading(false)
-    }, 500)
-  }
+  }, [settings, open])
 
   useEffect(() => {
-    getYoutubeCounter(tempSettings.streamingKey)
-  }, [tempSettings.streamingKey])
+    if (!open) return
+
+    setFetchingCounterIsLoading(true)
+
+    const timeoutId = window.setTimeout(() => {
+      const counter = tempSettings.streamingKey
+        ? localStorage.getCounterForYoutubeStreaming(tempSettings.streamingKey)
+        : 0
+
+      setTempSettings(prev => ({
+        ...prev,
+        counter,
+      }))
+
+      setFetchingCounterIsLoading(false)
+    }, 300)
+
+    return () => {
+      window.clearTimeout(timeoutId)
+      setFetchingCounterIsLoading(false)
+    }
+  }, [tempSettings.streamingKey, open])
+
+  const handleNumberChange =
+    (field: 'counter' | 'timeOffset') =>
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const value = event.target.value
+
+      setTempSettings(prev => ({
+        ...prev,
+        [field]: value === '' ? '' : Number(value),
+      }))
+    }
+
+  const handleSave = () => {
+    onSave({
+      streamingKey: tempSettings.streamingKey || undefined,
+      counter: tempSettings.counter === '' ? 0 : tempSettings.counter,
+      timeOffset: tempSettings.timeOffset === '' ? 0 : tempSettings.timeOffset,
+    })
+  }
 
   return (
-    <Menu
-      onClose={onClose}
+    <SettingsPopupContainer
       anchorEl={anchorEl}
       open={open}
-      PaperProps={{
-        elevation: 0,
-        sx: {
-          border: '1px solid black',
-          overflow: 'visible',
-          filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-          mt: 0.5,
-          '& .MuiAvatar-root': {
-            width: 32,
-            height: 32,
-            ml: -0.5,
-            mr: 1,
-          },
-          '&::before': {
-            content: '""',
-            display: 'block',
-            position: 'absolute',
-            top: 0,
-            right: 14,
-            width: 10,
-            height: 10,
-            bgcolor: 'background.paper',
-            transform: 'translateY(-50%) rotate(45deg)',
-            zIndex: 0,
-          },
-        },
-      }}
-      transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-      anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+      onClose={onClose}
+      width={600}
     >
-      <MenuList dense sx={{ width: 600, padding: 1 }}>
-        <Typography variant='body1' gutterBottom>
-          Youtube Streamkluč:
-        </Typography>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2,
+          width: '100%',
+          minWidth: 0,
+        }}
+      >
+        <Box sx={{ width: '100%', minWidth: 0 }}>
+          <Typography variant='body1' gutterBottom>
+            Youtube Streamschlüssel:
+          </Typography>
 
-        <TextField
-          placeholder='1234-5678-9012-3456'
-          value={tempSettings.streamingKey}
-          fullWidth
-          disabled={disabled}
-          onChange={e =>
-            setTempSettings(prev => ({
-              ...prev,
-              streamingKey: e.target.value,
-            }))
-          }
-          InputProps={{
-            endAdornment: tempSettings.streamingKey!.length > 0 && (
-              <IconButton
-                disabled={disabled}
-                onClick={() =>
-                  setTempSettings(prev => ({ ...prev, streamingKey: '' }))
-                }
-              >
-                <Clear />
-              </IconButton>
-            ),
-          }}
-        />
+          <TextField
+            placeholder='1234-5678-9012-3456'
+            value={tempSettings.streamingKey}
+            fullWidth
+            disabled={disabled}
+            onChange={event =>
+              setTempSettings(prev => ({
+                ...prev,
+                streamingKey: event.target.value,
+              }))
+            }
+            InputProps={{
+              endAdornment: Boolean(tempSettings.streamingKey) && (
+                <InputAdornment position='end'>
+                  <IconButton
+                    edge='end'
+                    disabled={disabled}
+                    aria-label='Streamschlüssel löschen'
+                    onClick={() =>
+                      setTempSettings(prev => ({
+                        ...prev,
+                        streamingKey: '',
+                      }))
+                    }
+                  >
+                    <Clear />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Box>
 
-        <Box>
-          <Typography variant='body2'>Counter:</Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <SettingsRow label='Counter:'>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+              minWidth: 0,
+            }}
+          >
             <Input
               size='small'
-              sx={{ width: 70, marginLeft: 1, textAlign: 'right' }}
               type='number'
               disabled={disabled || fetchingCounterIsLoading}
               value={tempSettings.counter}
               title='Counter'
-              onChange={newValue =>
-                setTempSettings(prev => ({
-                  ...prev,
-                  counter: newValue.target.value as unknown as number,
-                }))
-              }
+              onChange={handleNumberChange('counter')}
+              sx={{
+                width: {
+                  xs: 72,
+                  sm: 90,
+                },
+                maxWidth: '100%',
+                '& input': {
+                  textAlign: 'right',
+                },
+              }}
             />
+
             {fetchingCounterIsLoading && <CircularProgress size={15} />}
           </Box>
-        </Box>
+        </SettingsRow>
 
-        <Box>
-          <Typography variant='body2'>Časowy offset (s):</Typography>
+        <SettingsRow label='Časowy offset (s):'>
           <Input
             size='small'
-            sx={{ width: 70, marginLeft: 1, textAlign: 'right' }}
             type='number'
+            disabled={disabled}
             value={tempSettings.timeOffset}
             title='Časowy offset (s)'
-            onChange={newValue =>
-              setTempSettings(prev => ({
-                ...prev,
-                timeOffset: newValue.target.value as unknown as number,
-              }))
-            }
+            onChange={handleNumberChange('timeOffset')}
+            sx={{
+              width: {
+                xs: 72,
+                sm: 90,
+              },
+              maxWidth: '100%',
+              '& input': {
+                textAlign: 'right',
+              },
+            }}
           />
+        </SettingsRow>
+
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            gap: 1,
+            flexWrap: 'wrap',
+          }}
+        >
+          <Button disabled={disabled} onClick={handleSave}>
+            Save
+          </Button>
+          <Button onClick={onClose}>Cancel</Button>
         </Box>
-        <Button onClick={() => onSave(tempSettings)}>Save</Button>
-        <Button onClick={onClose}>Cancel</Button>
-      </MenuList>
-    </Menu>
+      </Box>
+    </SettingsPopupContainer>
   )
 }
