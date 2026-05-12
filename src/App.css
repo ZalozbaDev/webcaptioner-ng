@@ -10,6 +10,16 @@
   --accent-hover: rgba(25, 118, 210, 0.2);
   --border-color: #d0d0d0;
   --shadow-color: rgba(0, 0, 0, 0.15);
+
+  /* Disabled MUI colors - light mode */
+  --disabled-input-text: rgba(0, 0, 0, 0.55);
+  --disabled-input-border: rgba(0, 0, 0, 0.23);
+  --disabled-input-icon: rgba(0, 0, 0, 0.45);
+
+  /* Disabled MUI button colors - light mode */
+  --disabled-button-bg: rgba(0, 0, 0, 0.08);
+  --disabled-button-text: rgba(0, 0, 0, 0.45);
+  --disabled-button-border: rgba(0, 0, 0, 0.18);
 }
 
 [data-theme='dark'] {
@@ -23,6 +33,16 @@
   --accent-hover: rgba(97, 218, 251, 0.2);
   --border-color: #ffffff;
   --shadow-color: rgba(0, 0, 0, 0.3);
+
+  /* Disabled MUI colors - dark mode */
+  --disabled-input-text: rgba(255, 255, 255, 0.78);
+  --disabled-input-border: rgba(255, 255, 255, 0.28);
+  --disabled-input-icon: rgba(255, 255, 255, 0.55);
+
+  /* Disabled MUI button colors - dark mode */
+  --disabled-button-bg: rgba(255, 255, 255, 0.12);
+  --disabled-button-text: rgba(255, 255, 255, 0.65);
+  --disabled-button-border: rgba(255, 255, 255, 0.25);
 }
 
 /* Global styles to handle iOS safe areas */
@@ -32,7 +52,99 @@ body {
   margin: 0;
   padding: 0;
   color: var(--text-primary);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+/* MUI disabled TextField - outlined variant */
+.MuiOutlinedInput-root.Mui-disabled {
+  background-color: var(--disabled-input-bg);
+}
+
+.MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline {
+  border-color: var(--disabled-input-border);
+}
+
+.MuiOutlinedInput-input.Mui-disabled {
+  color: var(--disabled-input-text);
+  -webkit-text-fill-color: var(--disabled-input-text);
+  opacity: 1;
+}
+
+/* MUI disabled Input - standard variant */
+.MuiInput-root.Mui-disabled {
+  background-color: var(--disabled-input-bg);
+  border-radius: 4px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.MuiInput-root.Mui-disabled::before,
+.MuiInput-root.Mui-disabled:hover:not(.Mui-error)::before {
+  border-bottom-color: var(--disabled-input-border);
+}
+
+.MuiInputBase-input.Mui-disabled {
+  color: var(--disabled-input-text);
+  -webkit-text-fill-color: var(--disabled-input-text);
+  opacity: 1;
+}
+
+/* MUI disabled FormControlLabel */
+.MuiFormControlLabel-root.Mui-disabled {
+  color: var(--disabled-input-text);
+}
+
+.MuiFormControlLabel-root.Mui-disabled .MuiFormControlLabel-label {
+  color: var(--disabled-input-text);
+  opacity: 1;
+}
+
+/* Disabled checkbox, switch, radio icons */
+.MuiFormControlLabel-root.Mui-disabled .MuiSvgIcon-root,
+.MuiCheckbox-root.Mui-disabled,
+.MuiRadio-root.Mui-disabled,
+.MuiSwitch-root.Mui-disabled {
+  color: var(--disabled-input-icon);
+}
+
+/* Disabled icons inside MUI inputs */
+.MuiIconButton-root.Mui-disabled {
+  color: var(--disabled-input-icon);
+}
+
+/* MUI disabled Buttons */
+.MuiButton-root.Mui-disabled {
+  color: var(--disabled-button-text);
+  background-color: var(--disabled-button-bg);
+  border-color: var(--disabled-button-border);
+  opacity: 1;
+}
+
+/* Disabled text buttons should not get a filled background */
+.MuiButton-text.Mui-disabled {
+  background-color: transparent;
+  color: var(--disabled-button-text);
+}
+
+/* Disabled outlined buttons */
+.MuiButton-outlined.Mui-disabled {
+  border-color: var(--disabled-button-border);
+  color: var(--disabled-button-text);
+}
+
+/* Disabled contained buttons */
+.MuiButton-contained.Mui-disabled {
+  background-color: var(--disabled-button-bg);
+  color: var(--disabled-button-text);
+}
+
+/* Disabled button icons */
+.MuiButton-root.Mui-disabled .MuiSvgIcon-root,
+.MuiButton-root.Mui-disabled .MuiButton-startIcon,
+.MuiButton-root.Mui-disabled .MuiButton-endIcon {
+  color: var(--disabled-button-text);
 }
 
 /* iOS safe area handling */
@@ -59,7 +171,9 @@ body {
   /* Ensure the app covers the full viewport including safe areas */
   position: relative;
   width: 100%;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 .App-logo {

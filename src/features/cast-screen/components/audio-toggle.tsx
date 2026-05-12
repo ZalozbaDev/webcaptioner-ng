@@ -17,12 +17,12 @@ export const AudioToggle: FC<{
 }) => {
   const getTooltipTitle = () => {
     if (disabledByMainScreen) {
-      return 'Audio disabled by main screen settings'
+      return 'Awdijo přez nastajenja hłowneje wobrazowki deaktiwěrowane'
     }
     if (disabled) {
-      return 'Audio playback not available'
+      return 'Awdijowe wudawanje k dispoziciji njeje'
     }
-    return 'Toggle audio playback'
+    return 'Awdijowe wothrawanje přešaltować'
   }
 
   return (
@@ -41,9 +41,9 @@ export const AudioToggle: FC<{
             disabled || disabledByMainScreen
               ? '#999'
               : audioEnabled
-              ? '#1976d2'
-              : '#666',
-          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                ? '#1976d2'
+                : '#666',
+          // backgroundColor: 'rgba(255, 255, 255, 0.9)',
           borderRadius: '4px',
           padding: '6px',
           '&:hover': {

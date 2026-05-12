@@ -1,17 +1,22 @@
-import { Box, Typography, IconButton } from '@mui/material'
-import { FullscreenExit, ZoomIn, ZoomOut } from '@mui/icons-material'
+import { Dispatch, SetStateAction } from 'react'
+import { Box, IconButton, Typography } from '@mui/material'
+import { Close, ZoomIn, ZoomOut } from '@mui/icons-material'
 import { SpellCheckedText } from './spell-checked-text'
+import { LoadingDotsLine } from './loading-dots-line'
 import type { TranscriptLine } from '../../../types/transcript'
 
 interface FullscreenTextDisplayProps {
   fullscreenField: 'none' | 'original' | 'translated'
-  setFullscreenField: (field: 'none' | 'original' | 'translated') => void
+  setFullscreenField: Dispatch<
+    SetStateAction<'none' | 'original' | 'translated'>
+  >
   originalText: TranscriptLine[]
   translatedText: TranscriptLine[]
   originalFontSize: number
   translatedFontSize: number
   onIncreaseFontSize: () => void
   onDecreaseFontSize: () => void
+  loading?: boolean
 }
 
 export const FullscreenTextDisplay = ({
@@ -23,182 +28,159 @@ export const FullscreenTextDisplay = ({
   translatedFontSize,
   onIncreaseFontSize,
   onDecreaseFontSize,
+  loading = false,
 }: FullscreenTextDisplayProps) => {
-  if (fullscreenField === 'none') return null
+  if (fullscreenField === 'none') {
+    return null
+  }
 
-  const texts = fullscreenField === 'original' ? originalText : translatedText
-  const title = fullscreenField === 'original' ? 'Originalny tekst' : 'Přełožk'
-  const isTranslation = fullscreenField === 'translated'
-  const currentFontSize =
-    fullscreenField === 'original' ? originalFontSize : translatedFontSize
+  const isOriginal = fullscreenField === 'original'
+  const texts = isOriginal ? originalText : translatedText
+  const fontSize = isOriginal ? originalFontSize : translatedFontSize
+  const title = isOriginal ? 'Originalny tekst' : 'Přełožk'
+
+  const handleClose = () => {
+    setFullscreenField('none')
+  }
 
   return (
     <Box
       sx={{
         position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.95)',
+        inset: 0,
+        width: '100vw',
+        height: '100dvh',
         zIndex: 9999,
+        backgroundColor: 'var(--card-bg)',
+        overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
-        p: 2,
       }}
     >
-      {/* Fullscreen Header */}
       <Box
         sx={{
+          flexShrink: 0,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          mb: 1,
-          color: 'var(--text-primary)',
+          gap: 2,
+          px: 3,
+          py: 2,
+          backgroundColor: 'var(--card-bg)',
+          borderBottom: '1px solid var(--border-color)',
         }}
       >
         <Typography
-          variant='h5'
-          sx={{ color: 'var(--text-primary)', fontWeight: 600 }}
+          variant='h6'
+          sx={{
+            color: 'var(--card-text-color)',
+            fontWeight: 600,
+          }}
         >
           {title}
         </Typography>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 0.5,
+          }}
+        >
           <Typography
             variant='caption'
             sx={{
-              color: 'var(--text-secondary)',
-              fontSize: '0.8rem',
+              color: 'var(--card-text-color)',
+              fontSize: '0.75rem',
               fontWeight: 500,
-              minWidth: '35px',
+              minWidth: '40px',
               textAlign: 'center',
             }}
           >
-            {currentFontSize}px
+            {fontSize}px
           </Typography>
+
           <IconButton
             onClick={onDecreaseFontSize}
             size='small'
+            disabled={fontSize <= 12}
             sx={{
-              color: 'var(--text-secondary)',
-              padding: '4px',
-              '&:hover': { backgroundColor: 'var(--button-hover)' },
-            }}
-            disabled={currentFontSize <= 12}
-          >
-            <ZoomOut sx={{ fontSize: '1.2rem' }} />
-          </IconButton>
-          <IconButton
-            onClick={onIncreaseFontSize}
-            size='small'
-            sx={{
-              color: 'var(--text-secondary)',
-              padding: '4px',
-              '&:hover': { backgroundColor: 'var(--button-hover)' },
-            }}
-            disabled={currentFontSize >= 128}
-          >
-            <ZoomIn sx={{ fontSize: '1.2rem' }} />
-          </IconButton>
-          <IconButton
-            onClick={() => setFullscreenField('none')}
-            size='large'
-            sx={{
-              color: 'var(--text-primary)',
+              color: 'var(--card-text-color)',
               '&:hover': {
                 backgroundColor: 'var(--button-hover)',
               },
             }}
           >
-            <FullscreenExit />
+            <ZoomOut sx={{ fontSize: '1.25rem' }} />
+          </IconButton>
+
+          <IconButton
+            onClick={onIncreaseFontSize}
+            size='small'
+            disabled={fontSize >= 128}
+            sx={{
+              color: 'var(--card-text-color)',
+              '&:hover': {
+                backgroundColor: 'var(--button-hover)',
+              },
+            }}
+          >
+            <ZoomIn sx={{ fontSize: '1.25rem' }} />
+          </IconButton>
+
+          <IconButton
+            onClick={handleClose}
+            size='small'
+            sx={{
+              color: 'var(--card-text-color)',
+              '&:hover': {
+                backgroundColor: 'var(--button-hover)',
+              },
+            }}
+          >
+            <Close sx={{ fontSize: '1.25rem' }} />
           </IconButton>
         </Box>
       </Box>
 
-      {/* Fullscreen Content - Text fields positioned over the background */}
       <Box
+        data-fullscreen-content
         sx={{
           flex: 1,
-          position: 'relative',
-          overflow: 'hidden',
+          minHeight: 0,
+          overflowY: 'auto',
+          overflowX: 'hidden',
+          px: 3,
+          py: 3,
+
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+
+          '&::-webkit-scrollbar': {
+            display: 'none',
+            width: 0,
+            height: 0,
+          },
         }}
       >
-        {/* Background text display */}
         <Box
           sx={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(255, 255, 255, 0.1)',
-            borderRadius: 2,
-            p: 4,
-            overflowY: 'auto',
-            '&::-webkit-scrollbar': {
-              width: '8px',
-            },
-            '&::-webkit-scrollbar-track': {
-              backgroundColor: 'rgba(0, 0, 0, 0.1)',
-              borderRadius: '4px',
-            },
-            '&::-webkit-scrollbar-thumb': {
-              backgroundColor: 'rgba(255, 255, 255, 0.3)',
-              borderRadius: '4px',
-              '&:hover': {
-                backgroundColor: 'rgba(255, 255, 255, 0.5)',
-              },
-            },
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 1,
           }}
         >
           {texts.map((line, index) => (
-            <SpellCheckedText
-              key={index}
-              line={line}
-              fontSize={Math.floor(currentFontSize * 0.8)}
-              isTranslation={isTranslation}
-            />
+            <Box key={index}>
+              <SpellCheckedText
+                line={line}
+                fontSize={fontSize}
+                isTranslation={!isOriginal}
+              />
+            </Box>
           ))}
-        </Box>
 
-        {/* Foreground text fields with minimal padding */}
-        <Box
-          sx={{
-            position: 'absolute',
-            top: '8px',
-            left: '8px',
-            right: '8px',
-            bottom: '8px',
-            backgroundColor: 'var(--card-bg)',
-            borderRadius: 2,
-            p: 2,
-            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
-            overflowY: 'auto',
-            '&::-webkit-scrollbar': {
-              width: '8px',
-            },
-            '&::-webkit-scrollbar-track': {
-              backgroundColor: 'rgba(0, 0, 0, 0.1)',
-              borderRadius: '4px',
-            },
-            '&::-webkit-scrollbar-thumb': {
-              backgroundColor: 'rgba(0, 0, 0, 0.3)',
-              borderRadius: '4px',
-              '&:hover': {
-                backgroundColor: 'rgba(0, 0, 0, 0.5)',
-              },
-            },
-          }}
-          data-fullscreen-content
-        >
-          {texts.map((line, index) => (
-            <SpellCheckedText
-              key={index}
-              line={line}
-              fontSize={currentFontSize}
-              isTranslation={isTranslation}
-            />
-          ))}
+          {loading && <LoadingDotsLine fontSize={fontSize} />}
         </Box>
       </Box>
     </Box>

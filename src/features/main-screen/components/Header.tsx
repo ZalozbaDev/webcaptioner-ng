@@ -22,9 +22,11 @@ export const Header = ({ user, onLogout }: HeaderProps) => {
       )}
 
       {/* Theme Toggle - positioned in top-right */}
-      <div style={{ position: 'absolute', top: 5, right: 5 }}>
-        <ThemeToggle />
-      </div>
+      {!user && (
+        <div style={{ position: 'absolute', top: 5, right: 5 }}>
+          <ThemeToggle />
+        </div>
+      )}
 
       <Typography
         variant='caption'

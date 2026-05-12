@@ -4,16 +4,13 @@ import {
   Toolbar,
   Hidden,
   IconButton,
-  Typography,
-  Box,
-  Button,
   AppBarProps,
 } from '@mui/material'
 import { FC } from 'react'
-import { NavigateFunction, Link as RouterLink } from 'react-router-dom'
+import { NavigateFunction } from 'react-router-dom'
 import MenuIcon from '@mui/icons-material/Menu'
 import { NAVBAR_HEIGHT } from '../constants'
-import useAuth from '../../../hooks/use-auth'
+import ThemeToggle from '../../theme-toggle'
 
 interface DashboardNavbarProps extends AppBarProps {
   onSidebarMobileOpen?: () => void
@@ -32,42 +29,13 @@ const DashboardNavbarRoot = experimentalStyled(AppBar)(({ theme }) => ({
 const DashboardNavbar: FC<DashboardNavbarProps> = props => {
   const { onSidebarMobileOpen, navigate, ...other } = props
 
-  // const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  // const open = Boolean(anchorEl)
-  // const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-  //   setAnchorEl(event.currentTarget)
-  // }
-  // const handleClose = () => {
-  //   setAnchorEl(null)
-  // }
-
-  // const { logout } = useAuth()
-
-  // const onSignOut = () => {
-  //   logout().catch(err => {
-  //     toast.error(err.message)
-  //   })
-  // }
-
-  // const handleProfile = () => {
-  //   handleClose()
-  //   navigate('profile')
-  // }
-
-  // const handleSettings = () => {
-  //   handleClose()
-  //   navigate('settings')
-  // }
-
-  const { user } = useAuth()
-
   return (
     <DashboardNavbarRoot {...other}>
       <Toolbar
         sx={{
-          minHeight: NAVBAR_HEIGHT,
+          height: NAVBAR_HEIGHT,
           display: 'flex',
-          justifyContent: 'space-between',
+          justifyContent: { xs: 'space-between', lg: 'flex-end' },
           flexDirection: 'row',
         }}
       >
@@ -80,33 +48,7 @@ const DashboardNavbar: FC<DashboardNavbarProps> = props => {
           </IconButton>
         </Hidden>
 
-        <RouterLink to='/'>
-          {/* <Logo
-            style={{
-              height: 40,
-            }}
-          /> */}
-        </RouterLink>
-
-        <Button>
-          <Hidden lgDown>
-            <Box sx={{ m: 0 }}>
-              <Typography
-                sx={{ color: 'var(--accent-color)' }}
-                style={{ height: 20 }}
-                textAlign='right'
-              >
-                {user?.firstname || ''} {user?.lastname || ''}
-              </Typography>
-              <Typography
-                sx={{ color: 'var(--text-secondary)' }}
-                textAlign='right'
-              >
-                {user?.role || '-'}
-              </Typography>
-            </Box>
-          </Hidden>
-        </Button>
+        <ThemeToggle />
       </Toolbar>
     </DashboardNavbarRoot>
   )

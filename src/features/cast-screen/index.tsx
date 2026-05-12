@@ -32,28 +32,38 @@ const CastScreen = () => {
   const [error, setError] = useState<string | null>(null)
   const [inputToken, setInputToken] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+
   const [originalFontSize, setOriginalFontSize] = useState(() => {
     const saved = localStorage.getItem('castScreenOriginalFontSize')
-    return saved ? parseInt(saved) : 16
+    return saved ? parseInt(saved, 10) : 16
   })
+
   const [translatedFontSize, setTranslatedFontSize] = useState(() => {
     const saved = localStorage.getItem('castScreenTranslatedFontSize')
-    return saved ? parseInt(saved) : 16
+    return saved ? parseInt(saved, 10) : 16
   })
+
   const [autoscroll, setAutoscroll] = useState(() => {
     const saved = localStorage.getItem('castScreenAutoscroll')
     return saved ? JSON.parse(saved) : true
   })
-  const [audioEnabled, setAudioEnabled] = useState(false)
+
+  const [audioEnabled, setAudioEnabled] = useState(() => {
+    const saved = localStorage.getItem('castScreenAudioEnabled')
+    return saved ? JSON.parse(saved) : false
+  })
+
   const [textFieldSize, setTextFieldSize] = useState(() => {
     const saved = localStorage.getItem('castScreenTextFieldSize')
-    return saved ? parseInt(saved) : 50
+    return saved ? parseInt(saved, 10) : 50
   })
+
   const [isDragging, setIsDragging] = useState(false)
 
   const [fullscreenField, setFullscreenField] = useState<
     'none' | 'original' | 'translated'
   >('none')
+
   const wsRef = useRef<WebSocket | null>(null)
   const audioContextRef = useRef<AudioContext | null>(null)
   const castRef = useRef<AudioRecord | null>(null)
@@ -80,6 +90,23 @@ const CastScreen = () => {
   useEffect(() => {
     localStorage.setItem('castScreenAudioEnabled', JSON.stringify(audioEnabled))
   }, [audioEnabled])
+
+  useEffect(() => {
+    localStorage.setItem('castScreenTextFieldSize', textFieldSize.toString())
+  }, [textFieldSize])
+
+  // Disable background scrollbar while fullscreen is active
+  useEffect(() => {
+    const isFullscreen = fullscreenField !== 'none'
+
+    document.body.style.overflow = isFullscreen ? 'hidden' : 'auto'
+    document.documentElement.style.overflow = isFullscreen ? 'hidden' : 'auto'
+
+    return () => {
+      document.body.style.overflow = 'auto'
+      document.documentElement.style.overflow = 'auto'
+    }
+  }, [fullscreenField])
 
   // Refetch audio record when audio state changes to ensure synchronization
   useEffect(() => {
@@ -125,36 +152,6 @@ const CastScreen = () => {
 
     return () => clearTimeout(timeoutId)
   }, [cast?._id, cast?.speakerId, audioEnabled])
-
-  // Debounced refetch to avoid too many API calls
-  useEffect(() => {
-    if (!cast?._id) return
-
-    const timeoutId = setTimeout(async () => {
-      try {
-        const response = await getAudioRecord(cast._id)
-        const updatedCast = response.data
-
-        // Only update if there are actual changes
-        if (updatedCast.speakerId !== cast.speakerId) {
-          setCast(updatedCast)
-
-          // If audio is disabled on the main screen (speakerId is null), disable it on cast screen
-          if (updatedCast.speakerId === null && audioEnabled) {
-            setAudioEnabled(false)
-          }
-        }
-      } catch (error) {
-        console.error('Error in debounced audio record refetch:', error)
-      }
-    }, 1000) // 1 second delay
-
-    return () => clearTimeout(timeoutId)
-  }, [cast?._id, cast?.speakerId, audioEnabled])
-
-  useEffect(() => {
-    localStorage.setItem('castScreenTextFieldSize', textFieldSize.toString())
-  }, [textFieldSize])
 
   // Initialize audio context and AudioQueueService
   useEffect(() => {
@@ -365,6 +362,7 @@ const CastScreen = () => {
         const response = await getCastRecord(tokenToValidate)
         setCast(response.data)
         console.log(response.data)
+
         // Immediately refetch to ensure we have the latest audio settings
         if (response.data?._id) {
           try {
@@ -470,6 +468,7 @@ const CastScreen = () => {
             }
           }
         }
+
         if (!urlToken) {
           navigate(`/cast/${tokenToValidate}`)
         }
@@ -595,7 +594,7 @@ const CastScreen = () => {
             color: '#666',
           }}
         >
-          Audio disabled by main screen
+          Awdijo přez hłownu wobrazowku deaktiwěrowane
         </Box>
       )}
 
@@ -627,7 +626,6 @@ const CastScreen = () => {
         }}
       >
         {/* Original Text Field */}
-
         <TextFieldWithControls
           title='Originalny tekst'
           texts={cast.originalText}
@@ -649,7 +647,6 @@ const CastScreen = () => {
         />
 
         {/* Translated Text Field */}
-
         <TextFieldWithControls
           title='Přełožk'
           texts={cast.translatedText}

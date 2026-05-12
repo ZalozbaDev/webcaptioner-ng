@@ -128,14 +128,19 @@ export const TextFieldWithControls = ({
         data-text-field={dataTextField}
         sx={{
           flex: 1,
-          overflowY: 'auto',
+          overflowY: isFullscreen ? 'hidden' : 'auto',
           display: 'flex',
           flexDirection: 'column',
           gap: 1,
           borderRadius: 1,
           p: 1,
+
+          scrollbarWidth: isFullscreen ? 'none' : 'thin',
+          msOverflowStyle: isFullscreen ? 'none' : 'auto',
+
           '&::-webkit-scrollbar': {
-            width: '6px',
+            width: isFullscreen ? '0px' : '6px',
+            display: isFullscreen ? 'none' : 'block',
           },
           '&::-webkit-scrollbar-track': {
             backgroundColor:
