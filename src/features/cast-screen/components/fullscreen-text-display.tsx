@@ -4,6 +4,11 @@ import { Close, ZoomIn, ZoomOut } from '@mui/icons-material'
 import { SpellCheckedText } from './spell-checked-text'
 import { LoadingDotsLine } from './loading-dots-line'
 import type { TranscriptLine } from '../../../types/transcript'
+import {
+  isRedundantPlainTranscriptLine,
+  shouldShowPartialForDisplay,
+} from '../../../helper/partial-transcript'
+import { getTranscriptLinePlain } from '../../../types/transcript'
 
 interface FullscreenTextDisplayProps {
   fullscreenField: 'none' | 'original' | 'translated'
@@ -12,6 +17,7 @@ interface FullscreenTextDisplayProps {
   >
   originalText: TranscriptLine[]
   translatedText: TranscriptLine[]
+  originalPartialText?: string
   originalFontSize: number
   translatedFontSize: number
   onIncreaseFontSize: () => void
@@ -24,6 +30,7 @@ export const FullscreenTextDisplay = ({
   setFullscreenField,
   originalText,
   translatedText,
+  originalPartialText,
   originalFontSize,
   translatedFontSize,
   onIncreaseFontSize,
@@ -36,7 +43,26 @@ export const FullscreenTextDisplay = ({
 
   const isOriginal = fullscreenField === 'original'
   const texts = isOriginal ? originalText : translatedText
+  const partialText = isOriginal ? originalPartialText : undefined
   const fontSize = isOriginal ? originalFontSize : translatedFontSize
+  const lastCommittedPlain = isOriginal
+    ? getTranscriptLinePlain(originalText[originalText.length - 1])
+    : undefined
+  const lastTranslationPlain = isOriginal
+    ? getTranscriptLinePlain(translatedText[translatedText.length - 1])
+    : undefined
+  const hasTranslationForLastOriginal =
+    isOriginal &&
+    originalText.length > 0 &&
+    translatedText.length >= originalText.length
+  const showPartial =
+    !!partialText &&
+    shouldShowPartialForDisplay(
+      partialText,
+      lastCommittedPlain,
+      lastTranslationPlain,
+      hasTranslationForLastOriginal,
+    )
   const title = isOriginal ? 'Originalny tekst' : 'Přełožk'
 
   const handleClose = () => {
@@ -170,7 +196,15 @@ export const FullscreenTextDisplay = ({
             gap: 1,
           }}
         >
-          {texts.map((line, index) => (
+          {texts.map((line, index) => {
+            if (
+              !isOriginal &&
+              isRedundantPlainTranscriptLine(texts, index)
+            ) {
+              return null
+            }
+
+            return (
             <Box key={index}>
               <SpellCheckedText
                 line={line}
@@ -178,7 +212,17 @@ export const FullscreenTextDisplay = ({
                 isTranslation={!isOriginal}
               />
             </Box>
-          ))}
+            )
+          })}
+
+          {showPartial && (
+            <SpellCheckedText
+              line={partialText}
+              fontSize={fontSize}
+              isTranslation={!isOriginal}
+              textColor='var(--text-secondary)'
+            />
+          )}
 
           {loading && <LoadingDotsLine fontSize={fontSize} />}
         </Box>

@@ -15,7 +15,7 @@ import { localStorage } from '../../../lib/local-storage'
 import dayjs from 'dayjs'
 import { InputLine, TranslationResponse, YoutubeSettings } from '../types'
 import { audioQueueService } from '../../../services/AudioQueueService'
-import { InputWord, normalizeTranscriptText } from '../../../types/transcript'
+import { InputWord, normalizeTranscriptText, normalizeTranscriptKey } from '../../../types/transcript'
 import { VoskSendConfigService } from '../../../lib/vosk-config-service'
 import {
   useAdaptiveTtsSpeed,
@@ -26,6 +26,7 @@ import {
   dequeuePendingTranslationTokens,
   enqueuePendingTranslationTokens,
 } from '../../../helper/translation-token-sync'
+import { reducePartialText } from '../../../helper/partial-transcript'
 
 const shouldIgnoreTranscriptionText = (plainText: string): boolean => {
   const t = plainText.trim()
@@ -76,6 +77,7 @@ export const useRecording = (
 ) => {
   const [isRecording, setIsRecording] = useState(false)
   const [voskResponse, setVoskResponse] = useState(false)
+  const [partialText, setPartialText] = useState('')
   const [stream, setStream] = useState<MediaStream | null>(null)
   const [isVoskBuilding, setIsVoskBuilding] = useState(false)
 
@@ -97,6 +99,35 @@ export const useRecording = (
 
   const translationsWsRef = useRef<WebSocket | null>(null)
   const translationsWsRecordIdRef = useRef<string | null>(null)
+  const partialTextRef = useRef('')
+  const acceptPartialsRef = useRef(true)
+
+  const broadcastPartialToCast = (partial: string) => {
+    const ws = translationsWsRef.current
+    if (ws?.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({ partial }))
+    }
+  }
+
+  const clearPartialText = (options?: { lockPartials?: boolean }) => {
+    if (options?.lockPartials) {
+      acceptPartialsRef.current = false
+    }
+
+    if (partialTextRef.current === '') return
+    partialTextRef.current = ''
+    setPartialText('')
+    broadcastPartialToCast('')
+  }
+
+  const applyPartialUpdate = (incoming: string | undefined) => {
+    if (!acceptPartialsRef.current) return
+    const next = reducePartialText(partialTextRef.current, incoming)
+    if (next === partialTextRef.current) return
+    partialTextRef.current = next
+    setPartialText(next)
+    broadcastPartialToCast(next)
+  }
 
   const pendingTranslationTokensRef = useRef<Map<string, InputWord[][]>>(
     new Map(),
@@ -281,7 +312,13 @@ export const useRecording = (
 
       setVoskResponse(parsed.listen)
 
+      if (parsed.listen) {
+        acceptPartialsRef.current = true
+      }
+
       if (parsed.text) {
+        clearPartialText({ lockPartials: true })
+
         const streamingKey = options.youtubeSettings.streamingKey
 
         if (streamingKey) {
@@ -317,7 +354,11 @@ export const useRecording = (
           'hsb',
           settings.translationTargetLanguage,
         ).then(async response => {
-          const translation = response.data.translation
+          const payload = response.data
+          const translation = payload.translation
+          const translationTokens = Array.isArray(payload.translationTokens)
+            ? payload.translationTokens
+            : undefined
 
           // Only play audio if autoPlayAudio is enabled AND audioContext is provided
           if (settings.autoPlayAudio && options.audioContext) {
@@ -325,18 +366,41 @@ export const useRecording = (
           }
 
           // Save the translation
-          options.setTranslation(prev => [...prev, { text: translation }])
+          options.setTranslation(prev => {
+            const normalized = normalizeTranscriptKey(translation)
+            const last = prev[prev.length - 1]
+
+            if (
+              last &&
+              normalizeTranscriptKey(last.text) === normalized
+            ) {
+              return prev
+            }
+
+            return [
+              ...prev,
+              {
+                text: translation,
+                ...(translationTokens?.length ? { translationTokens } : {}),
+              },
+            ]
+          })
+
+          clearPartialText()
 
           // If tokens arrived before the state update, attach them now.
           flushQueuedTokensForTranslation(translation)
 
           await maybeSendYoutubePackages(seqRef.current, translation, timing)
         })
+      } else if (parsed.partial !== undefined) {
+        applyPartialUpdate(parsed.partial)
       }
     }
   }
 
   const onStopRecording = () => {
+    clearPartialText({ lockPartials: true })
     setIsVoskBuilding(false)
     resetAdaptiveSpeed()
     pendingAudioSecondsRef.current = 0
@@ -464,6 +528,10 @@ export const useRecording = (
             try {
               const data = JSON.parse(event.data as string)
 
+              if (typeof data?.partial === 'string') {
+                return
+              }
+
               const translation =
                 typeof data?.translation === 'string' ? data.translation : ''
 
@@ -479,6 +547,12 @@ export const useRecording = (
             }
           },
         )
+
+        translationsWsRef.current.addEventListener('open', () => {
+          if (partialTextRef.current) {
+            broadcastPartialToCast(partialTextRef.current)
+          }
+        })
       }
 
       webSocketRef.current.onerror = () => {
@@ -505,6 +579,7 @@ export const useRecording = (
     isRecording,
     isVoskBuilding,
     voskResponse,
+    partialText,
     stream,
     setVoskResponse,
     startRecording,

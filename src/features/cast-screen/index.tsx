@@ -24,8 +24,7 @@ import {
   estimateSpeechDurationSeconds,
 } from '../../hooks/useAdaptiveTtsSpeed'
 import { isTranslationTooWrong } from '../../helper/translation-quality'
-
-const isTalking = true // TODO: JUST FOR TESTING
+import { reducePartialText } from '../../helper/partial-transcript'
 
 const CastScreen = () => {
   const { token: urlToken } = useParams<{ token: string }>()
@@ -65,6 +64,7 @@ const CastScreen = () => {
   })
 
   const [isDragging, setIsDragging] = useState(false)
+  const [partialText, setPartialText] = useState('')
 
   const [fullscreenField, setFullscreenField] = useState<
     'none' | 'original' | 'translated'
@@ -316,7 +316,7 @@ const CastScreen = () => {
     if (translatedTextContainer) {
       translatedTextContainer.scrollTop = translatedTextContainer.scrollHeight
     }
-  }, [cast?.originalText, cast?.translatedText, autoscroll, fullscreenField])
+  }, [cast?.originalText, cast?.translatedText, autoscroll, fullscreenField, partialText])
 
   const increaseOriginalFontSize = () => {
     setOriginalFontSize(prev => Math.min(128, prev + 2))
@@ -446,6 +446,8 @@ const CastScreen = () => {
               const data = JSON.parse(event.data)
 
               if (data.original && data.translation) {
+                setPartialText('')
+
                 const originalLine = createTranscriptLine(
                   data.original,
                   data.originalTokens,
@@ -540,6 +542,17 @@ const CastScreen = () => {
                       )
                     })
                 }
+
+                return
+              }
+
+              if (typeof data.partial === 'string') {
+                if (data.partial === '') {
+                  setPartialText('')
+                  return
+                }
+
+                setPartialText(prev => reducePartialText(prev, data.partial))
               }
             } catch (e) {
               console.error('Invalid WS message', e)
@@ -695,6 +708,7 @@ const CastScreen = () => {
         setFullscreenField={setFullscreenField}
         originalText={cast.originalText}
         translatedText={cast.translatedText}
+        originalPartialText={partialText}
         originalFontSize={originalFontSize}
         translatedFontSize={translatedFontSize}
         onIncreaseFontSize={
@@ -721,6 +735,8 @@ const CastScreen = () => {
         <TextFieldWithControls
           title='Originalny tekst'
           texts={cast.originalText}
+          translatedTexts={cast.translatedText}
+          partialText={partialText}
           fontSize={originalFontSize}
           onIncreaseFontSize={increaseOriginalFontSize}
           onDecreaseFontSize={decreaseOriginalFontSize}
@@ -728,7 +744,6 @@ const CastScreen = () => {
           isFullscreen={fullscreenField === 'original'}
           dataTextField='original'
           height={textFieldSize}
-          loading={isTalking}
         />
 
         <DraggableDivider
@@ -750,7 +765,6 @@ const CastScreen = () => {
           dataTextField='translated'
           height={100 - textFieldSize}
           isTranslation
-          loading={isTalking}
         />
       </Box>
     </Container>
