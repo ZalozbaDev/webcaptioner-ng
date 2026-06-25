@@ -18,11 +18,12 @@ import {
 } from './components'
 import ThemeToggle from '../../components/theme-toggle'
 import { useWakeLock } from '../../hooks/use-wakelock'
-import { createTranscriptLine } from '../../types/transcript'
+import { createTranscriptLine, getTranscriptLineTokens } from '../../types/transcript'
 import {
   useAdaptiveTtsSpeed,
   estimateSpeechDurationSeconds,
 } from '../../hooks/useAdaptiveTtsSpeed'
+import { isTranslationTooWrong } from '../../helper/translation-quality'
 
 const isTalking = true // TODO: JUST FOR TESTING
 
@@ -193,6 +194,46 @@ const CastScreen = () => {
           } catch (error) {
             console.error('Error playing audio:', error)
             throw error
+          }
+        },
+
+        playBeep: async (options?: {
+          frequencyHz?: number
+          durationMs?: number
+          volume?: number
+        }) => {
+          try {
+            if (audioContext.state === 'suspended') {
+              await audioContext.resume()
+            }
+
+            const frequencyHz = options?.frequencyHz ?? 660
+            const durationMs = options?.durationMs ?? 180
+            const volume = options?.volume ?? 0.14
+
+            const now = audioContext.currentTime
+            const durationSeconds = Math.max(0.02, durationMs / 1000)
+
+            const oscillator = audioContext.createOscillator()
+            const gain = audioContext.createGain()
+
+            oscillator.type = 'sine'
+            oscillator.frequency.setValueAtTime(frequencyHz, now)
+
+            gain.gain.setValueAtTime(0, now)
+            gain.gain.linearRampToValueAtTime(volume, now + 0.01)
+            gain.gain.linearRampToValueAtTime(0, now + durationSeconds)
+
+            oscillator.connect(gain)
+            gain.connect(audioContext.destination)
+
+            return new Promise<void>(resolve => {
+              oscillator.onended = () => resolve()
+              oscillator.start(now)
+              oscillator.stop(now + durationSeconds)
+            })
+          } catch (error) {
+            console.error('Error playing beep:', error)
           }
         },
       }
@@ -459,6 +500,12 @@ const CastScreen = () => {
                   castRef.current?.speakerId !== undefined
                 ) {
                   const speakerId = castRef.current.speakerId.toString()
+
+                  const translationTokens = getTranscriptLineTokens(translatedLine)
+                  if (isTranslationTooWrong(translationTokens)) {
+                    audioQueueService.addBeepToQueue(0.2)
+                    return
+                  }
 
                   const currentTextEstimatedSeconds =
                     estimateSpeechDurationSeconds(data.translation)
