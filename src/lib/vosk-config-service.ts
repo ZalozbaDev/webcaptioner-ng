@@ -51,7 +51,7 @@ export const VoskSendConfigService = {
   sendClientTimestamp: (webSocket: WebSocket | null, milliseconds: number) => {
     webSocket?.send(
       JSON.stringify({
-        ts: { s: Math.trunc(milliseconds / 1000), ms: milliseconds },
+        ts: { s: Math.trunc(milliseconds / 1000), ms: milliseconds % 1000 },
       }),
     )
   },
