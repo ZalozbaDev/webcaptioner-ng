@@ -13,6 +13,7 @@ import { useState } from 'react'
 import { createAudioRecord } from '../../../lib/server-manager'
 import { SpellCheckedText } from '../../cast-screen/components/spell-checked-text'
 import { createTranscriptLine } from '../../../types/transcript'
+import { shouldShowPartialForDisplay, isRedundantPlainTranslationLine } from '../../../helper/partial-transcript'
 
 const MAIN_SCREEN_FONT_SIZE = 16
 
@@ -21,6 +22,7 @@ type MainContentProps = {
     isRecording: boolean
     isVoskBuilding: boolean
     voskResponse: boolean
+    partialText: string
     stream: MediaStream | null
     startRecording: (
       handleRecordCreated: (id: string, token: string) => void,
@@ -101,6 +103,20 @@ export const MainContent = ({
     }
   }
 
+  const visibleInputText = inputText.slice(-MAX_TEXT_LINES)
+  const visibleTranslations = translation.slice(-MAX_TEXT_LINES)
+  const lastOriginalPlain = visibleInputText[visibleInputText.length - 1]?.plain
+  const lastTranslationText =
+    visibleTranslations[visibleTranslations.length - 1]?.text
+  const hasTranslationForLastOriginal =
+    inputText.length > 0 && translation.length >= inputText.length
+  const showOriginalPartial = shouldShowPartialForDisplay(
+    recording.partialText,
+    lastOriginalPlain,
+    lastTranslationText,
+    hasTranslationForLastOriginal,
+  )
+
   return (
     <Box
       sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
@@ -140,7 +156,7 @@ export const MainContent = ({
       />
 
       <Box sx={{ padding: 2 }}>
-        {inputText.slice(-MAX_TEXT_LINES).map((t, i) => (
+        {visibleInputText.map((t, i) => (
           <SpellCheckedText
             key={i}
             line={t}
@@ -148,6 +164,13 @@ export const MainContent = ({
             textColor='var(--text-primary)'
           />
         ))}
+        {showOriginalPartial && (
+          <SpellCheckedText
+            line={recording.partialText}
+            fontSize={MAIN_SCREEN_FONT_SIZE}
+            textColor='var(--text-secondary)'
+          />
+        )}
         {!recording.isRecording && inputText.length > 0 && (
           <Button
             onClick={() =>
@@ -172,7 +195,12 @@ export const MainContent = ({
       />
 
       <Box sx={{ padding: 2 }}>
-        {translation.slice(-MAX_TEXT_LINES).map((t, i) => (
+        {visibleTranslations.map((t, i, arr) => {
+          if (isRedundantPlainTranslationLine(arr, i)) {
+            return null
+          }
+
+          return (
           <Box key={i}>
             {t.counter && (
               <Typography>
@@ -202,7 +230,8 @@ export const MainContent = ({
               textColor='var(--text-primary)'
             />
           </Box>
-        ))}
+          )
+        })}
         {!recording.isRecording && translation.length > 0 && (
           <Button
             onClick={() =>

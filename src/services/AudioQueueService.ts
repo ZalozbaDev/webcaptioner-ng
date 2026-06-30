@@ -1,65 +1,99 @@
-type AudioQueueListener = () => void
+export type BeepOptions = {
+  frequencyHz?: number
+  durationMs?: number
+  volume?: number
+}
+
+type AudioQueueItem =
+  | {
+      kind: 'audio'
+      data: ArrayBuffer
+      estimatedSeconds: number
+    }
+  | {
+      kind: 'beep'
+      estimatedSeconds: number
+      beepOptions?: BeepOptions
+    }
+
+type AudioContextWrapper = {
+  playAudioData: (data: ArrayBuffer) => Promise<void>
+  playBeep?: (options?: BeepOptions) => Promise<void>
+}
 
 class AudioQueueService {
-  private queue: ArrayBuffer[] = []
-  private isPlaying: boolean = false
-  private audioContext: {
-    playAudioData: (data: ArrayBuffer) => Promise<void>
-  } | null = null
-  private listeners: Set<AudioQueueListener> = new Set()
+  private queue: AudioQueueItem[] = []
+  private isPlaying = false
+  private currentItemSeconds = 0
+  private audioContextWrapper: AudioContextWrapper | null = null
 
-  initialize(audioContext: {
-    playAudioData: (data: ArrayBuffer) => Promise<void>
-  }) {
-    this.audioContext = audioContext
+  initialize(audioContextWrapper: AudioContextWrapper) {
+    this.audioContextWrapper = audioContextWrapper
   }
 
-  addToQueue(audio: ArrayBuffer) {
-    this.queue.push(audio)
-    this.notifyListeners()
-    this.playNextIfIdle()
+  addToQueue(data: ArrayBuffer, estimatedSeconds = 1) {
+    this.queue.push({
+      kind: 'audio',
+      data,
+      estimatedSeconds,
+    })
+
+    this.processQueue()
   }
 
-  private async playNextIfIdle() {
-    if (this.isPlaying || this.queue.length === 0 || !this.audioContext) {
-      return
-    }
+  addBeepToQueue(estimatedSeconds = 0.25, beepOptions?: BeepOptions) {
+    this.queue.push({
+      kind: 'beep',
+      estimatedSeconds,
+      beepOptions,
+    })
+
+    this.processQueue()
+  }
+
+  getBufferedSeconds() {
+    const queuedSeconds = this.queue.reduce(
+      (total, item) => total + item.estimatedSeconds,
+      0,
+    )
+
+    return queuedSeconds + this.currentItemSeconds
+  }
+
+  private async processQueue() {
+    if (this.isPlaying) return
+    if (!this.audioContextWrapper) return
+
+    const item = this.queue.shift()
+
+    if (!item) return
 
     this.isPlaying = true
-    const nextAudio = this.queue.shift()
-    this.notifyListeners()
+    this.currentItemSeconds = item.estimatedSeconds
 
     try {
-      await this.audioContext.playAudioData(nextAudio!)
-      this.isPlaying = false
-      this.playNextIfIdle()
+      if (item.kind === 'audio') {
+        await this.audioContextWrapper.playAudioData(item.data)
+      } else {
+        if (this.audioContextWrapper.playBeep) {
+          await this.audioContextWrapper.playBeep(item.beepOptions)
+        } else {
+          await new Promise<void>(resolve => {
+            window.setTimeout(
+              resolve,
+              Math.max(0, item.estimatedSeconds) * 1000,
+            )
+          })
+        }
+      }
     } catch (error) {
-      console.error('Error playing audio:', error)
+      console.error('Error playing queued audio:', error)
+    } finally {
+      this.currentItemSeconds = 0
       this.isPlaying = false
+      this.processQueue()
     }
-  }
-
-  getQueueLength(): number {
-    return this.queue.length
-  }
-
-  addListener(listener: AudioQueueListener) {
-    this.listeners.add(listener)
-  }
-
-  removeListener(listener: AudioQueueListener) {
-    this.listeners.delete(listener)
-  }
-
-  private notifyListeners() {
-    this.listeners.forEach(listener => listener())
-  }
-
-  clearQueue() {
-    this.queue = []
-    this.notifyListeners()
   }
 }
 
-// Create a singleton instance
 export const audioQueueService = new AudioQueueService()

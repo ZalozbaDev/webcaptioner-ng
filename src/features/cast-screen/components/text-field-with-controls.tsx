@@ -8,11 +8,18 @@ import {
 import { SpellCheckedText } from './spell-checked-text'
 import { useTheme } from '../../../contexts/theme-context'
 import type { TranscriptLine } from '../../../types/transcript'
+import {
+  isRedundantPlainTranscriptLine,
+  shouldShowPartialForDisplay,
+} from '../../../helper/partial-transcript'
+import { getTranscriptLinePlain } from '../../../types/transcript'
 import { LoadingDotsLine } from './loading-dots-line'
 
 interface TextFieldWithControlsProps {
   title: string
   texts: TranscriptLine[]
+  partialText?: string
+  translatedTexts?: TranscriptLine[]
   fontSize: number
   onIncreaseFontSize: () => void
   onDecreaseFontSize: () => void
@@ -27,6 +34,8 @@ interface TextFieldWithControlsProps {
 export const TextFieldWithControls = ({
   title,
   texts,
+  partialText,
+  translatedTexts = [],
   fontSize,
   onIncreaseFontSize,
   onDecreaseFontSize,
@@ -38,6 +47,20 @@ export const TextFieldWithControls = ({
   loading = false,
 }: TextFieldWithControlsProps) => {
   const { theme } = useTheme()
+  const lastCommittedPlain = getTranscriptLinePlain(texts[texts.length - 1])
+  const lastTranslationPlain = getTranscriptLinePlain(
+    translatedTexts[translatedTexts.length - 1],
+  )
+  const hasTranslationForLastOriginal =
+    texts.length > 0 && translatedTexts.length >= texts.length
+  const showPartial =
+    !!partialText &&
+    shouldShowPartialForDisplay(
+      partialText,
+      lastCommittedPlain,
+      lastTranslationPlain,
+      hasTranslationForLastOriginal,
+    )
 
   return (
     <Box
@@ -158,7 +181,12 @@ export const TextFieldWithControls = ({
           },
         }}
       >
-        {texts.map((line, index) => (
+        {texts.map((line, index) => {
+          if (isTranslation && isRedundantPlainTranscriptLine(texts, index)) {
+            return null
+          }
+
+          return (
           <Box key={index}>
             <SpellCheckedText
               line={line}
@@ -166,7 +194,16 @@ export const TextFieldWithControls = ({
               isTranslation={isTranslation}
             />
           </Box>
-        ))}
+          )
+        })}
+        {showPartial && (
+          <SpellCheckedText
+            line={partialText}
+            fontSize={fontSize}
+            isTranslation={isTranslation}
+            textColor='var(--text-secondary)'
+          />
+        )}
         {loading && <LoadingDotsLine fontSize={fontSize} />}
       </Box>
     </Box>

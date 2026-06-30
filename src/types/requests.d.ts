@@ -2,6 +2,16 @@ type SotraResponse = {
   translation: string
   model: string
   audio: string | undefined | any
+  translationTokens?: Array<{
+    word: string
+    conf: number
+    spell?: boolean
+  }>
+  originalTokens?: Array<{
+    word: string
+    conf: number
+    spell?: boolean
+  }>
 }
 
 type VOSKResponse = {

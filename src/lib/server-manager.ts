@@ -85,12 +85,17 @@ export const getParseDataForYoutube = async (
     })
 }
 
-export const getAudioFromText = async (text: string, speakerId: string) => {
+export const getAudioFromText = async (
+  text: string,
+  speakerId: string,
+  speed: number,
+) => {
   const data = JSON.stringify({
     text: text,
     speaker_id: speakerId,
     sampleRate: DEFAULT_SAMPLE_RATE,
     format: DEFAULT_AUDIO_FORMAT,
+    speed: speed,
   })
   const url = `${process.env.REACT_APP_WEBCAPTIONER_SERVER}/bamborak`
   const config = {
