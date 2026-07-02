@@ -2,7 +2,10 @@ import React from 'react'
 import { Typography, Box } from '@mui/material'
 import { getConfidenceTokenStyle } from '../../../styles/token-highlighting'
 import type { TranscriptLine } from '../../../types/transcript'
-import { getTranscriptLineTokens } from '../../../types/transcript'
+import {
+  getTranscriptLinePlain,
+  getTranscriptLineTokens,
+} from '../../../types/transcript'
 
 interface SpellCheckedTextProps {
   line: TranscriptLine
@@ -47,6 +50,24 @@ export const SpellCheckedText: React.FC<SpellCheckedTextProps> = ({
         </Typography>
       )
     }
+
+    const plain = getTranscriptLinePlain(line)
+    if (!plain) return null
+
+    return (
+      <Typography
+        sx={{
+          color: textColor,
+          fontSize: `${fontSize}px`,
+          lineHeight: 1.6,
+          wordBreak: 'break-word',
+          overflowWrap: 'break-word',
+          whiteSpace: 'pre-wrap',
+        }}
+      >
+        {plain}
+      </Typography>
+    )
   }
 
   return <Box sx={{ position: 'relative' }}>{renderText()}</Box>

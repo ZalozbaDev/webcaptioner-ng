@@ -18,9 +18,13 @@ import {
 } from './components'
 import ThemeToggle from '../../components/theme-toggle'
 import { useWakeLock } from '../../hooks/use-wakelock'
-import { createTranscriptLine } from '../../types/transcript'
-
-const isTalking = true // TODO: JUST FOR TESTING
+import { createTranscriptLine, getTranscriptLineTokens } from '../../types/transcript'
+import {
+  useAdaptiveTtsSpeed,
+  estimateSpeechDurationSeconds,
+} from '../../hooks/useAdaptiveTtsSpeed'
+import { isTranslationTooWrong } from '../../helper/translation-quality'
+import { reducePartialText } from '../../helper/partial-transcript'
 
 const CastScreen = () => {
   const { token: urlToken } = useParams<{ token: string }>()
@@ -28,6 +32,7 @@ const CastScreen = () => {
 
   useWakeLock()
 
+  const pendingAudioSecondsRef = useRef(0)
   const [cast, setCast] = useState<AudioRecord | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [inputToken, setInputToken] = useState('')
@@ -59,6 +64,7 @@ const CastScreen = () => {
   })
 
   const [isDragging, setIsDragging] = useState(false)
+  const [partialText, setPartialText] = useState('')
 
   const [fullscreenField, setFullscreenField] = useState<
     'none' | 'original' | 'translated'
@@ -68,6 +74,8 @@ const CastScreen = () => {
   const audioContextRef = useRef<AudioContext | null>(null)
   const castRef = useRef<AudioRecord | null>(null)
   const audioEnabledRef = useRef<boolean>(false)
+
+  const { calculateAdaptiveSpeed, resetAdaptiveSpeed } = useAdaptiveTtsSpeed()
 
   useEffect(() => {
     localStorage.setItem(
@@ -172,6 +180,7 @@ const CastScreen = () => {
 
             const audioBuffer = await audioContext.decodeAudioData(data)
             const source = audioContext.createBufferSource()
+
             source.buffer = audioBuffer
             source.connect(audioContext.destination)
 
@@ -185,6 +194,46 @@ const CastScreen = () => {
           } catch (error) {
             console.error('Error playing audio:', error)
             throw error
+          }
+        },
+
+        playBeep: async (options?: {
+          frequencyHz?: number
+          durationMs?: number
+          volume?: number
+        }) => {
+          try {
+            if (audioContext.state === 'suspended') {
+              await audioContext.resume()
+            }
+
+            const frequencyHz = options?.frequencyHz ?? 660
+            const durationMs = options?.durationMs ?? 180
+            const volume = options?.volume ?? 0.14
+
+            const now = audioContext.currentTime
+            const durationSeconds = Math.max(0.02, durationMs / 1000)
+
+            const oscillator = audioContext.createOscillator()
+            const gain = audioContext.createGain()
+
+            oscillator.type = 'sine'
+            oscillator.frequency.setValueAtTime(frequencyHz, now)
+
+            gain.gain.setValueAtTime(0, now)
+            gain.gain.linearRampToValueAtTime(volume, now + 0.01)
+            gain.gain.linearRampToValueAtTime(0, now + durationSeconds)
+
+            oscillator.connect(gain)
+            gain.connect(audioContext.destination)
+
+            return new Promise<void>(resolve => {
+              oscillator.onended = () => resolve()
+              oscillator.start(now)
+              oscillator.stop(now + durationSeconds)
+            })
+          } catch (error) {
+            console.error('Error playing beep:', error)
           }
         },
       }
@@ -236,35 +285,38 @@ const CastScreen = () => {
   }, [cast?._id, cast?.speakerId, audioEnabled])
 
   useEffect(() => {
-    if (autoscroll) {
-      // Scroll both text fields to bottom when new content arrives
-      const originalTextContainer = document.querySelector(
-        '[data-text-field="original"]',
-      )
-      const translatedTextContainer = document.querySelector(
-        '[data-text-field="translated"]',
+    if (!autoscroll) return
+
+    // Scroll both text fields to bottom when new content arrives
+    const originalTextContainer = document.querySelector(
+      '[data-text-field="original"]',
+    )
+
+    const translatedTextContainer = document.querySelector(
+      '[data-text-field="translated"]',
+    )
+
+    // If in fullscreen mode, scroll the fullscreen container instead
+    if (fullscreenField === 'original' || fullscreenField === 'translated') {
+      const fullscreenContainer = document.querySelector(
+        '[data-fullscreen-content]',
       )
 
-      // If in fullscreen mode, scroll the fullscreen container instead
-      if (fullscreenField === 'original' || fullscreenField === 'translated') {
-        const fullscreenContainer = document.querySelector(
-          '[data-fullscreen-content]',
-        )
-        if (fullscreenContainer) {
-          fullscreenContainer.scrollTop = fullscreenContainer.scrollHeight
-          return
-        }
-      }
-
-      // Normal mode - scroll both containers
-      if (originalTextContainer) {
-        originalTextContainer.scrollTop = originalTextContainer.scrollHeight
-      }
-      if (translatedTextContainer) {
-        translatedTextContainer.scrollTop = translatedTextContainer.scrollHeight
+      if (fullscreenContainer) {
+        fullscreenContainer.scrollTop = fullscreenContainer.scrollHeight
+        return
       }
     }
-  }, [cast?.originalText, cast?.translatedText, autoscroll, fullscreenField])
+
+    // Normal mode - scroll both containers
+    if (originalTextContainer) {
+      originalTextContainer.scrollTop = originalTextContainer.scrollHeight
+    }
+
+    if (translatedTextContainer) {
+      translatedTextContainer.scrollTop = translatedTextContainer.scrollHeight
+    }
+  }, [cast?.originalText, cast?.translatedText, autoscroll, fullscreenField, partialText])
 
   const increaseOriginalFontSize = () => {
     setOriginalFontSize(prev => Math.min(128, prev + 2))
@@ -287,7 +339,7 @@ const CastScreen = () => {
 
     const startY = e.clientY
     const startTextFieldSize = textFieldSize
-    const containerHeight = (70 * window.innerHeight) / 100 // 70vh in pixels
+    const containerHeight = (70 * window.innerHeight) / 100
 
     setIsDragging(true)
 
@@ -299,19 +351,23 @@ const CastScreen = () => {
     const handleMouseMove = (moveEvent: MouseEvent) => {
       const deltaY = moveEvent.clientY - startY
       const deltaPercentage = (deltaY / containerHeight) * 100
+
       const newTextFieldSize = Math.max(
         10,
         Math.min(90, startTextFieldSize + deltaPercentage),
       )
+
       setTextFieldSize(newTextFieldSize)
     }
 
     const handleMouseUp = () => {
       document.removeEventListener('mousemove', handleMouseMove)
       document.removeEventListener('mouseup', handleMouseUp)
+
       document.body.style.cursor = ''
       document.body.style.userSelect = ''
       document.body.classList.remove('dragging')
+
       setIsDragging(false)
     }
 
@@ -321,6 +377,7 @@ const CastScreen = () => {
 
   const handleDividerTouchStart = (event: React.TouchEvent) => {
     setIsDragging(true)
+
     const touch = event.touches[0]
     const startY = touch.clientY
     const startSize = textFieldSize
@@ -329,15 +386,18 @@ const CastScreen = () => {
       const currentY = moveEvent.touches[0].clientY
       const deltaY = currentY - startY
       const windowHeight = window.innerHeight
+
       const newSize = Math.max(
         10,
         Math.min(90, startSize + (deltaY / windowHeight) * 100),
       )
+
       setTextFieldSize(newSize)
     }
 
     const handleTouchEnd = () => {
       setIsDragging(false)
+
       document.removeEventListener('touchmove', handleTouchMove)
       document.removeEventListener('touchend', handleTouchEnd)
     }
@@ -347,21 +407,19 @@ const CastScreen = () => {
   }
 
   const toggleFullscreen = (field: 'original' | 'translated') => {
-    if (fullscreenField === field) {
-      setFullscreenField('none')
-    } else {
-      setFullscreenField(field)
-    }
+    setFullscreenField(prev => (prev === field ? 'none' : field))
   }
 
   const validateToken = useCallback(
     async (tokenToValidate: string) => {
       setIsLoading(true)
       setError(null)
+
       try {
         const response = await getCastRecord(tokenToValidate)
+
         setCast(response.data)
-        console.log(response.data)
+        resetAdaptiveSpeed()
 
         // Immediately refetch to ensure we have the latest audio settings
         if (response.data?._id) {
@@ -388,14 +446,18 @@ const CastScreen = () => {
               const data = JSON.parse(event.data)
 
               if (data.original && data.translation) {
+                setPartialText('')
+
                 const originalLine = createTranscriptLine(
                   data.original,
                   data.originalTokens,
                 )
+
                 const translatedLine = createTranscriptLine(
                   data.translation,
                   data.translationTokens,
                 )
+
                 setCast(prevCast =>
                   prevCast
                     ? {
@@ -414,6 +476,7 @@ const CastScreen = () => {
                   getAudioRecord(castRef.current._id)
                     .then(response => {
                       const updatedCast = response.data
+
                       if (
                         updatedCast.speakerId !== castRef.current?.speakerId
                       ) {
@@ -438,17 +501,58 @@ const CastScreen = () => {
                   castRef.current?.speakerId !== null &&
                   castRef.current?.speakerId !== undefined
                 ) {
-                  getAudioFromText(
-                    data.translation,
-                    castRef.current?.speakerId.toString(),
-                  )
+                  const speakerId = castRef.current.speakerId.toString()
+
+                  const translationTokens = getTranscriptLineTokens(translatedLine)
+                  if (isTranslationTooWrong(translationTokens)) {
+                    audioQueueService.addBeepToQueue(0.2)
+                    return
+                  }
+
+                  const currentTextEstimatedSeconds =
+                    estimateSpeechDurationSeconds(data.translation)
+
+                  const bufferedSeconds =
+                    typeof audioQueueService.getBufferedSeconds === 'function'
+                      ? audioQueueService.getBufferedSeconds()
+                      : 0
+
+                  const speed = calculateAdaptiveSpeed({
+                    bufferedSeconds:
+                      bufferedSeconds + pendingAudioSecondsRef.current,
+                  })
+
+                  pendingAudioSecondsRef.current += currentTextEstimatedSeconds
+
+                  getAudioFromText(data.translation, speakerId, speed)
                     .then(audioResponse => {
-                      audioQueueService.addToQueue(audioResponse.data)
+                      audioQueueService.addToQueue(
+                        audioResponse.data,
+                        currentTextEstimatedSeconds,
+                      )
                     })
                     .catch(error => {
                       console.error('Error playing audio:', error)
                     })
+                    .finally(() => {
+                      pendingAudioSecondsRef.current = Math.max(
+                        0,
+                        pendingAudioSecondsRef.current -
+                          currentTextEstimatedSeconds,
+                      )
+                    })
                 }
+
+                return
+              }
+
+              if (typeof data.partial === 'string') {
+                if (data.partial === '') {
+                  setPartialText('')
+                  return
+                }
+
+                setPartialText(prev => reducePartialText(prev, data.partial))
               }
             } catch (e) {
               console.error('Invalid WS message', e)
@@ -456,16 +560,14 @@ const CastScreen = () => {
           })
 
           // Immediately refetch audio record after websocket connection to get latest settings
-          if (response.data?._id) {
-            try {
-              const latestResponse = await getAudioRecord(response.data._id)
-              setCast(latestResponse.data)
-            } catch (error) {
-              console.error(
-                'Error fetching latest audio record after websocket connection:',
-                error,
-              )
-            }
+          try {
+            const latestResponse = await getAudioRecord(response.data._id)
+            setCast(latestResponse.data)
+          } catch (error) {
+            console.error(
+              'Error fetching latest audio record after websocket connection:',
+              error,
+            )
           }
         }
 
@@ -479,7 +581,7 @@ const CastScreen = () => {
         setIsLoading(false)
       }
     },
-    [navigate, urlToken],
+    [navigate, urlToken, calculateAdaptiveSpeed, resetAdaptiveSpeed],
   )
 
   useEffect(() => {
@@ -498,6 +600,7 @@ const CastScreen = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+
     if (inputToken.trim()) {
       validateToken(inputToken.trim())
     }
@@ -566,6 +669,7 @@ const CastScreen = () => {
         }}
       >
         <ThemeToggle />
+
         <AudioToggle
           audioEnabled={audioEnabled}
           setAudioEnabled={setAudioEnabled}
@@ -573,6 +677,7 @@ const CastScreen = () => {
           disabledByMainScreen={cast.speakerId === null}
           onToggle={handleUserInteraction}
         />
+
         <AutoscrollToggle
           autoscroll={autoscroll}
           setAutoscroll={setAutoscroll}
@@ -603,6 +708,7 @@ const CastScreen = () => {
         setFullscreenField={setFullscreenField}
         originalText={cast.originalText}
         translatedText={cast.translatedText}
+        originalPartialText={partialText}
         originalFontSize={originalFontSize}
         translatedFontSize={translatedFontSize}
         onIncreaseFontSize={
@@ -629,6 +735,8 @@ const CastScreen = () => {
         <TextFieldWithControls
           title='Originalny tekst'
           texts={cast.originalText}
+          translatedTexts={cast.translatedText}
+          partialText={partialText}
           fontSize={originalFontSize}
           onIncreaseFontSize={increaseOriginalFontSize}
           onDecreaseFontSize={decreaseOriginalFontSize}
@@ -636,7 +744,6 @@ const CastScreen = () => {
           isFullscreen={fullscreenField === 'original'}
           dataTextField='original'
           height={textFieldSize}
-          loading={isTalking}
         />
 
         <DraggableDivider
@@ -658,7 +765,6 @@ const CastScreen = () => {
           dataTextField='translated'
           height={100 - textFieldSize}
           isTranslation
-          loading={isTalking}
         />
       </Box>
     </Container>

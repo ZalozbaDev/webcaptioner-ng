@@ -15,27 +15,28 @@ import { localStorage } from '../../../lib/local-storage'
 import dayjs from 'dayjs'
 import { InputLine, TranslationResponse, YoutubeSettings } from '../types'
 import { audioQueueService } from '../../../services/AudioQueueService'
-import { InputWord, normalizeTranscriptText } from '../../../types/transcript'
+import { InputWord, normalizeTranscriptText, normalizeTranscriptKey } from '../../../types/transcript'
 import { VoskSendConfigService } from '../../../lib/vosk-config-service'
+import {
+  useAdaptiveTtsSpeed,
+  estimateSpeechDurationSeconds,
+} from '../../../hooks/useAdaptiveTtsSpeed'
 import {
   attachTokensToLatestTranslation,
   dequeuePendingTranslationTokens,
   enqueuePendingTranslationTokens,
 } from '../../../helper/translation-token-sync'
+import { reducePartialText } from '../../../helper/partial-transcript'
 
 const shouldIgnoreTranscriptionText = (plainText: string): boolean => {
   const t = plainText.trim()
   if (!t) return true
-  // const lower = t.toLowerCase()
 
-  // if (lower.includes('ggml-model')) return true
-  // if (lower.includes('whisper.cpp')) return true
-  // if (lower.includes('--whisper-')) return true
-
-  // Ignore lines that are only punctuation/whitespace
   let hasAlphaNum = false
+
   for (let i = 0; i < t.length; i += 1) {
     const ch = t[i]
+
     if (ch >= '0' && ch <= '9') {
       hasAlphaNum = true
       break
@@ -48,9 +49,14 @@ const shouldIgnoreTranscriptionText = (plainText: string): boolean => {
       break
     }
   }
+
   if (!hasAlphaNum) return true
 
   return false
+}
+
+type AudioQueueServiceWithBufferSeconds = typeof audioQueueService & {
+  getBufferedSeconds?: () => number
 }
 
 export const useRecording = (
@@ -71,6 +77,7 @@ export const useRecording = (
 ) => {
   const [isRecording, setIsRecording] = useState(false)
   const [voskResponse, setVoskResponse] = useState(false)
+  const [partialText, setPartialText] = useState('')
   const [stream, setStream] = useState<MediaStream | null>(null)
   const [isVoskBuilding, setIsVoskBuilding] = useState(false)
 
@@ -79,22 +86,56 @@ export const useRecording = (
   let context: AudioContext
 
   const seqRef = useRef<number>(0)
+  const pendingAudioSecondsRef = useRef(0)
 
   const voskReadyRef = useRef<boolean>(false)
   const voskConfigSentRef = useRef<boolean>(false)
   const voskStreamStartedRef = useRef<boolean>(false)
+
+  const { calculateAdaptiveSpeed, resetAdaptiveSpeed } = useAdaptiveTtsSpeed()
 
   // Replace local variable with a ref to persist the websocket
   const webSocketRef = useRef<WebSocket | null>(null)
 
   const translationsWsRef = useRef<WebSocket | null>(null)
   const translationsWsRecordIdRef = useRef<string | null>(null)
+  const partialTextRef = useRef('')
+  const acceptPartialsRef = useRef(true)
+
+  const broadcastPartialToCast = (partial: string) => {
+    const ws = translationsWsRef.current
+    if (ws?.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({ partial }))
+    }
+  }
+
+  const clearPartialText = (options?: { lockPartials?: boolean }) => {
+    if (options?.lockPartials) {
+      acceptPartialsRef.current = false
+    }
+
+    if (partialTextRef.current === '') return
+    partialTextRef.current = ''
+    setPartialText('')
+    broadcastPartialToCast('')
+  }
+
+  const applyPartialUpdate = (incoming: string | undefined) => {
+    if (!acceptPartialsRef.current) return
+    const next = reducePartialText(partialTextRef.current, incoming)
+    if (next === partialTextRef.current) return
+    partialTextRef.current = next
+    setPartialText(next)
+    broadcastPartialToCast(next)
+  }
+
   const pendingTranslationTokensRef = useRef<Map<string, InputWord[][]>>(
     new Map(),
   )
 
   useEffect(() => {
     const key = options.youtubeSettings.streamingKey
+
     if (key) {
       seqRef.current = localStorage.getCounterForYoutubeStreaming(key)
     } else {
@@ -108,6 +149,16 @@ export const useRecording = (
       audioQueueService.initialize(options.audioContext)
     }
   }, [options.audioContext])
+
+  const getBufferedAudioSeconds = () => {
+    const queueService = audioQueueService as AudioQueueServiceWithBufferSeconds
+
+    if (typeof queueService.getBufferedSeconds !== 'function') {
+      return 0
+    }
+
+    return queueService.getBufferedSeconds()
+  }
 
   const attachTranslationTokensToLatest = (
     translation: string,
@@ -128,6 +179,7 @@ export const useRecording = (
           translation,
           translationTokens,
         )
+
         return prev
       }
 
@@ -155,6 +207,7 @@ export const useRecording = (
     if (!streamingKey) return
 
     const youtubePackages = createYoutubePackages(text, timing)
+
     for (const youtubePackage of youtubePackages) {
       const youtubeData = await getParseDataForYoutube(
         seq,
@@ -190,6 +243,33 @@ export const useRecording = (
     }
   }
 
+  const playTranslationAudio = (translation: string, speakerId: string) => {
+    const estimatedAudioSeconds = estimateSpeechDurationSeconds(translation)
+
+    const bufferedSeconds =
+      getBufferedAudioSeconds() + pendingAudioSecondsRef.current
+
+    const speed = calculateAdaptiveSpeed({
+      bufferedSeconds,
+    })
+
+    pendingAudioSecondsRef.current += estimatedAudioSeconds
+
+    getAudioFromText(translation, speakerId, speed)
+      .then(audioResponse => {
+        audioQueueService.addToQueue(audioResponse.data, estimatedAudioSeconds)
+      })
+      .catch(error => {
+        console.error('Error playing audio:', error)
+      })
+      .finally(() => {
+        pendingAudioSecondsRef.current = Math.max(
+          0,
+          pendingAudioSecondsRef.current - estimatedAudioSeconds,
+        )
+      })
+  }
+
   const onReceiveMessage = async (
     event: MessageEvent,
     recordId: string | undefined,
@@ -198,12 +278,14 @@ export const useRecording = (
       if (typeof event.data === 'string') {
         try {
           const maybeReady = JSON.parse(event.data) as any
+
           if (maybeReady?.type === 'vosk_ready') {
             voskReadyRef.current = true
             setIsVoskBuilding(false)
 
             if (!voskConfigSentRef.current) {
               voskConfigSentRef.current = true
+
               VoskSendConfigService.sendConfig(
                 webSocketRef.current,
                 settings.sampleRate,
@@ -223,21 +305,25 @@ export const useRecording = (
         }
       }
 
-      let parsed = typedVoskResponse(event.data)
+      const parsed = typedVoskResponse(event.data)
 
       // Fallback: if we receive any normal Vosk payload, we are effectively "ready".
       setIsVoskBuilding(false)
 
       setVoskResponse(parsed.listen)
-      if (
-        parsed.text
-        // parsed.text !== '-- ***/whisper/ggml-model.q8_0.bin --' &&
-        // parsed.text !== '-- **/whisper/ggml-model.q8_0.bin --' &&
-        // parsed.text !== '-- */whisper/ggml-model.q8_0.bin --'
-      ) {
+
+      if (parsed.listen) {
+        acceptPartialsRef.current = true
+      }
+
+      if (parsed.text) {
+        clearPartialText({ lockPartials: true })
+
         const streamingKey = options.youtubeSettings.streamingKey
+
         if (streamingKey) {
           seqRef.current += 1
+
           localStorage.setCounterForYoutubeStreaming(
             streamingKey,
             seqRef.current,
@@ -246,9 +332,11 @@ export const useRecording = (
 
         const tokens = (parsed.result ?? []).filter(w => !!w?.word?.trim())
         const plainFromText = normalizeTranscriptText(parsed.text)
+
         const plainText = tokens.length
           ? tokens.map(w => w.word).join(' ')
           : plainFromText
+
         if (plainText.length <= 0) return
         if (shouldIgnoreTranscriptionText(plainText)) return
 
@@ -258,7 +346,7 @@ export const useRecording = (
         }
 
         options.setInputText(prev => [...prev, { plain: plainText, tokens }])
-        // Get bamborak audio file
+
         getTranslation(
           recordId,
           plainText,
@@ -266,32 +354,56 @@ export const useRecording = (
           'hsb',
           settings.translationTargetLanguage,
         ).then(async response => {
+          const payload = response.data
+          const translation = payload.translation
+          const translationTokens = Array.isArray(payload.translationTokens)
+            ? payload.translationTokens
+            : undefined
+
           // Only play audio if autoPlayAudio is enabled AND audioContext is provided
           if (settings.autoPlayAudio && options.audioContext) {
-            getAudioFromText(
-              response.data.translation,
-              settings.selectedSpeakerId,
-            ).then(audioResponse => {
-              audioQueueService.addToQueue(audioResponse.data)
-            })
+            playTranslationAudio(translation, settings.selectedSpeakerId)
           }
 
-          const translation = response.data.translation
-
           // Save the translation
-          options.setTranslation(prev => [...prev, { text: translation }])
+          options.setTranslation(prev => {
+            const normalized = normalizeTranscriptKey(translation)
+            const last = prev[prev.length - 1]
+
+            if (
+              last &&
+              normalizeTranscriptKey(last.text) === normalized
+            ) {
+              return prev
+            }
+
+            return [
+              ...prev,
+              {
+                text: translation,
+                ...(translationTokens?.length ? { translationTokens } : {}),
+              },
+            ]
+          })
+
+          clearPartialText()
 
           // If tokens arrived before the state update, attach them now.
           flushQueuedTokensForTranslation(translation)
 
           await maybeSendYoutubePackages(seqRef.current, translation, timing)
         })
+      } else if (parsed.partial !== undefined) {
+        applyPartialUpdate(parsed.partial)
       }
     }
   }
 
   const onStopRecording = () => {
+    clearPartialText({ lockPartials: true })
     setIsVoskBuilding(false)
+    resetAdaptiveSpeed()
+    pendingAudioSecondsRef.current = 0
 
     voskReadyRef.current = false
     voskConfigSentRef.current = false
@@ -351,6 +463,7 @@ export const useRecording = (
       .catch(error => {
         setIsVoskBuilding(false)
         onStopRecording()
+
         toast.error(
           `Error accessing microphone ${selectedMicrophone?.label}`,
           error.message,
@@ -364,18 +477,22 @@ export const useRecording = (
   ) => {
     try {
       setIsVoskBuilding(true)
+      resetAdaptiveSpeed()
+      pendingAudioSecondsRef.current = 0
 
       voskReadyRef.current = false
       voskConfigSentRef.current = false
       voskStreamStartedRef.current = false
 
       let recordId = oldRecordId
+
       if (!recordId) {
         // Create audio record first with current autoPlayAudio settings
         const response = await createAudioRecord(
           settings.autoPlayAudio,
           settings.selectedSpeakerId,
         )
+
         recordId = response.data._id
         const token = response.data.token
 
@@ -399,6 +516,7 @@ export const useRecording = (
         }
 
         translationsWsRecordIdRef.current = recordId
+
         const wsUrl = `${process.env.REACT_APP_WEBCAPTIONER_SERVER?.replace(
           'http',
           'ws',
@@ -409,19 +527,32 @@ export const useRecording = (
           (event: MessageEvent) => {
             try {
               const data = JSON.parse(event.data as string)
+
+              if (typeof data?.partial === 'string') {
+                return
+              }
+
               const translation =
                 typeof data?.translation === 'string' ? data.translation : ''
+
               const translationTokens = Array.isArray(data?.translationTokens)
                 ? (data.translationTokens as InputWord[])
                 : undefined
 
               if (!translation || !translationTokens?.length) return
+
               attachTranslationTokensToLatest(translation, translationTokens)
             } catch (error) {
               console.error('[translations/ws][main] parse error', error)
             }
           },
         )
+
+        translationsWsRef.current.addEventListener('open', () => {
+          if (partialTextRef.current) {
+            broadcastPartialToCast(partialTextRef.current)
+          }
+        })
       }
 
       webSocketRef.current.onerror = () => {
@@ -438,6 +569,7 @@ export const useRecording = (
 
   const breakRecording = (newState: 'stop' | 'pause') => {
     console.log('breakRecording', newState)
+
     if (isRecording) {
       onStopRecording()
     }
@@ -447,6 +579,7 @@ export const useRecording = (
     isRecording,
     isVoskBuilding,
     voskResponse,
+    partialText,
     stream,
     setVoskResponse,
     startRecording,
