@@ -12,6 +12,7 @@ type SotraResponse = {
     conf: number
     spell?: boolean
   }>
+  playBeep?: boolean
 }
 
 type VOSKResponse = {

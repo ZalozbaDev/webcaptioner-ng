@@ -18,7 +18,10 @@ import {
 } from './components'
 import ThemeToggle from '../../components/theme-toggle'
 import { useWakeLock } from '../../hooks/use-wakelock'
-import { createTranscriptLine, getTranscriptLineTokens } from '../../types/transcript'
+import {
+  createTranscriptLine,
+  getTranscriptLineTokens,
+} from '../../types/transcript'
 import {
   useAdaptiveTtsSpeed,
   estimateSpeechDurationSeconds,
@@ -316,7 +319,13 @@ const CastScreen = () => {
     if (translatedTextContainer) {
       translatedTextContainer.scrollTop = translatedTextContainer.scrollHeight
     }
-  }, [cast?.originalText, cast?.translatedText, autoscroll, fullscreenField, partialText])
+  }, [
+    cast?.originalText,
+    cast?.translatedText,
+    autoscroll,
+    fullscreenField,
+    partialText,
+  ])
 
   const increaseOriginalFontSize = () => {
     setOriginalFontSize(prev => Math.min(128, prev + 2))
@@ -503,8 +512,9 @@ const CastScreen = () => {
                 ) {
                   const speakerId = castRef.current.speakerId.toString()
 
-                  const translationTokens = getTranscriptLineTokens(translatedLine)
-                  if (isTranslationTooWrong(translationTokens)) {
+                  const translationTokens =
+                    getTranscriptLineTokens(translatedLine)
+                  if (data.playBeep || isTranslationTooWrong(translationTokens)) {
                     audioQueueService.addBeepToQueue(0.2)
                     return
                   }

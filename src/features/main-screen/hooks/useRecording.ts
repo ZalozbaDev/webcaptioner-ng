@@ -362,7 +362,11 @@ export const useRecording = (
 
           // Only play audio if autoPlayAudio is enabled AND audioContext is provided
           if (settings.autoPlayAudio && options.audioContext) {
-            playTranslationAudio(translation, settings.selectedSpeakerId)
+            if (payload.playBeep) {
+              audioQueueService.addBeepToQueue(0.2)
+            } else {
+              playTranslationAudio(translation, settings.selectedSpeakerId)
+            }
           }
 
           // Save the translation
