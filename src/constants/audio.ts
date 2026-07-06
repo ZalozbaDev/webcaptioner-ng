@@ -3,10 +3,7 @@ import {
   TRANSLATION_TARGET_LANGUAGES,
   TranslationTargetLanguage,
 } from '../constants/translation'
-import {
-  DEFAULT_LIBRETRANSLATE_TARGET_LANGUAGE,
-  LibreTranslateTargetLanguage,
-} from './libretranslate'
+import { DEFAULT_LIBRETRANSLATE_TARGET_LANGUAGE } from './libretranslate'
 
 export const DEFAULT_SPEAKER_ID = 'weronika'
 export const DEFAULT_SAMPLE_RATE = process.env
