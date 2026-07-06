@@ -2,7 +2,11 @@ import { Settings } from '../types/settings'
 import {
   TRANSLATION_TARGET_LANGUAGES,
   TranslationTargetLanguage,
-} from './translation'
+} from '../constants/translation'
+import {
+  DEFAULT_LIBRETRANSLATE_TARGET_LANGUAGE,
+  LibreTranslateTargetLanguage,
+} from './libretranslate'
 
 export const DEFAULT_SPEAKER_ID = 'weronika'
 export const DEFAULT_SAMPLE_RATE = process.env
@@ -64,4 +68,5 @@ export const DEFAULT_SETTINGS: Settings = {
   autoPlayAudio: false,
   selectedSpeakerId: DEFAULT_SPEAKER_ID,
   translationTargetLanguage: DEFAULT_TRANSLATION_TARGET_LANGUAGE,
+  libretranslateTargetLanguage: DEFAULT_LIBRETRANSLATE_TARGET_LANGUAGE,
 } as const

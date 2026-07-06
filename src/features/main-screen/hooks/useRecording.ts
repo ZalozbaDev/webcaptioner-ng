@@ -347,12 +347,17 @@ export const useRecording = (
 
         options.setInputText(prev => [...prev, { plain: plainText, tokens }])
 
+        const targetLanguage =
+          settings.sotraModel === 'libretranslate'
+            ? settings.libretranslateTargetLanguage
+            : settings.translationTargetLanguage
+
         getTranslation(
           recordId,
           plainText,
           settings.sotraModel,
           'hsb',
-          settings.translationTargetLanguage,
+          targetLanguage,
         ).then(async response => {
           const payload = response.data
           const translation = payload.translation

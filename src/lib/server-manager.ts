@@ -3,13 +3,16 @@ import { axiosInstance } from './axios'
 import type { TranscriptLine } from '../types/transcript'
 import { DEFAULT_AUDIO_FORMAT, DEFAULT_SAMPLE_RATE } from '../constants/audio'
 import { TranslationTargetLanguage } from '../constants/translation'
+import { LibreTranslateTargetLanguage } from '../constants/libretranslate'
 
 export const getTranslation = async (
   audioRecordId: string | undefined,
   text: string,
-  model: 'ctranslate' | 'fairseq',
+  model: SotraModel,
   sourceLanguage: 'de' | 'hsb' = 'hsb',
-  targetLanguage: TranslationTargetLanguage = 'de',
+  targetLanguage:
+    | TranslationTargetLanguage
+    | LibreTranslateTargetLanguage = 'de',
 ) => {
   const data = JSON.stringify({
     text,
