@@ -3,15 +3,10 @@ import { Navigate } from 'react-router-dom'
 
 const LoginWithEmail = lazy(() => import('../features/auth/login-with-email'))
 const Login = lazy(() => import('../features/auth/login'))
-// const PasswordRecovery = lazy(() => import('../features/authentication/password-recovery'))
-// const PasswordReset = lazy(() => import('../features/authentication/password-reset'))
-// const Register = lazy(() => import('../features/authentication/register'))
-// const VerifyCode = lazy(() => import('../features/authentication/verify-code'))
+const Register = lazy(() => import('../features/auth/register'))
+const ForgotPassword = lazy(() => import('../features/auth/forgot-password'))
 const GuestGuard = lazy(() => import('../components/guards/guest-guard'))
 const CastScreen = lazy(() => import('../features/cast-screen'))
-
-// const Imprint = lazy(() => import('../features/imprint'))
-// const DataProtection = lazy(() => import('../features/data-protection'))
 
 export const defaultRoutes = [
   {
@@ -33,26 +28,22 @@ export const defaultRoutes = [
           </GuestGuard>
         ),
       },
-      // {
-      //   path: 'password-recovery',
-      //   element: <PasswordRecovery />
-      // },
-      // {
-      //   path: 'password-reset',
-      //   element: <PasswordReset />
-      // },
-      // {
-      //   path: 'register',
-      //   element: (
-      //     <GuestGuard>
-      //       <Register />
-      //     </GuestGuard>
-      //   )
-      // },
-      // {
-      //   path: 'verify-code',
-      //   element: <VerifyCode />
-      // }
+      {
+        path: 'register',
+        element: (
+          <GuestGuard>
+            <Register />
+          </GuestGuard>
+        ),
+      },
+      {
+        path: 'forgot-password',
+        element: (
+          <GuestGuard>
+            <ForgotPassword />
+          </GuestGuard>
+        ),
+      },
     ],
   },
   {

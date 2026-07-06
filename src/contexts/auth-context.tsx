@@ -1,23 +1,26 @@
-import { createContext, useEffect, useState } from 'react'
+import { createContext, useEffect, useState, useCallback } from 'react'
 import type { FC, ReactNode } from 'react'
 import { localStorage } from '../lib/local-storage'
 import { axiosInstance } from '../lib/axios'
 
 interface State {
   isAuthenticated: boolean
+  isInitialized: boolean
   user: User | null
+}
+
+interface RegisterInput {
+  firstname: string
+  lastname: string
+  email: string
+  password: string
 }
 
 interface AuthContextValue extends State {
   login: (email: string, password: string) => Promise<void>
-  loginFree: (password: string) => Promise<void>
-  register: (data: {
-    firstname: string
-    lastname: string
-    email: string
-    password: string
-  }) => Promise<void>
+  register: (input: RegisterInput) => Promise<void>
   forgotPassword: (email: string) => Promise<void>
+  loginFree: (password: string) => Promise<void>
   logout: () => void
 }
 
@@ -27,42 +30,59 @@ interface AuthProviderProps {
 
 const initialState: State = {
   isAuthenticated: false,
+  isInitialized: false,
   user: null,
 }
 
 const AuthContext = createContext<AuthContextValue>({
   ...initialState,
   login: () => Promise.resolve(),
-  loginFree: () => Promise.resolve(),
   register: () => Promise.resolve(),
   forgotPassword: () => Promise.resolve(),
+  loginFree: () => Promise.resolve(),
   logout: () => {},
 })
 
 export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(
-    localStorage.isAuthenticated()
+    localStorage.isAuthenticated(),
   )
+  const [isInitialized, setIsInitialized] = useState(false)
   const [user, setUser] = useState(initialState.user)
 
-  useEffect(() => {
-    // setIsAuthenticated(localStorage.isAuthenticated)
-
-    if (localStorage.getAccessToken()) {
-      getMe()
+  const getMe = useCallback(async () => {
+    try {
+      const response = await axiosInstance.get('auth/me')
+      const { _id, email, firstname, lastname, role } = response.data
+      setIsAuthenticated(true)
+      setUser({ _id, email, firstname, lastname, role, audioRecords: [] })
+    } catch {
+      setIsAuthenticated(false)
+      setUser(null)
+      localStorage.deleteAll()
     }
   }, [])
 
-  const login = (email: string, password: string) => {
-    return axiosInstance
-      .post('/auth/login', { email, password })
-      .then(async response => {
-        const { token } = response.data
-        localStorage.setAccessToken(token)
-      })
-      .then(() => {
-        getMe()
-      })
+  useEffect(() => {
+    const init = async () => {
+      if (localStorage.getAccessToken()) {
+        await getMe()
+      }
+      setIsInitialized(true)
+    }
+
+    init()
+  }, [getMe])
+
+  const login = async (email: string, password: string) => {
+    const response = await axiosInstance.post('/auth/login', {
+      email,
+      password,
+    })
+    const { token, refreshToken } = response.data
+    localStorage.setAccessToken(token)
+    localStorage.setRefreshToken(refreshToken)
+    await getMe()
   }
 
   const loginFree = (password: string) => {
@@ -86,36 +106,25 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
   }
 
   const logout = () => {
-    // localStorage.delete(false)
     setIsAuthenticated(false)
     setUser(null)
     localStorage.deleteAll()
   }
 
-  const getMe = async () => {
-    axiosInstance
-      .get('auth/me')
-      .then(response => {
-        const { _id, email, firstname, lastname, role } = response.data
-        setIsAuthenticated(true)
-        setUser({ _id, email, firstname, lastname, role, audioRecords: [] })
-      })
-
-      .catch(err => {
-        setIsAuthenticated(false)
-        setUser(null)
-      })
+  if (!isInitialized) {
+    return null
   }
 
   return (
     <AuthContext.Provider
       value={{
         isAuthenticated,
+        isInitialized,
         user,
         login,
-        loginFree,
         register,
         forgotPassword,
+        loginFree,
         logout,
       }}
     >
