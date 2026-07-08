@@ -59,8 +59,8 @@ jobs:
           # allow creation for multiple platforms
           platforms: |
             linux/amd64
-          context: .
-          file: .
+          context: docker
+          file: docker/Dockerfile
           load: false
           push: true
           cache-from: type=local,src=/tmp/.buildx-cache
