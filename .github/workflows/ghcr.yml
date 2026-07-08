@@ -59,7 +59,7 @@ jobs:
           # allow creation for multiple platforms
           platforms: |
             linux/amd64
-          context: docker
+          context: .
           file: docker/Dockerfile
           load: false
           push: true
