@@ -9,17 +9,8 @@ interface State {
   user: User | null
 }
 
-interface RegisterInput {
-  firstname: string
-  lastname: string
-  email: string
-  password: string
-}
-
 interface AuthContextValue extends State {
   login: (email: string, password: string) => Promise<void>
-  register: (input: RegisterInput) => Promise<void>
-  forgotPassword: (email: string) => Promise<void>
   loginFree: (password: string) => Promise<void>
   logout: () => void
 }
@@ -37,8 +28,6 @@ const initialState: State = {
 const AuthContext = createContext<AuthContextValue>({
   ...initialState,
   login: () => Promise.resolve(),
-  register: () => Promise.resolve(),
-  forgotPassword: () => Promise.resolve(),
   loginFree: () => Promise.resolve(),
   logout: () => {},
 })
@@ -92,19 +81,6 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     })
   }
 
-  const register = (data: {
-    firstname: string
-    lastname: string
-    email: string
-    password: string
-  }) => {
-    return axiosInstance.post('/auth/register', data).then(() => {})
-  }
-
-  const forgotPassword = (email: string) => {
-    return axiosInstance.post('/auth/forgot-password', { email }).then(() => {})
-  }
-
   const logout = () => {
     setIsAuthenticated(false)
     setUser(null)
@@ -122,8 +98,6 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
         isInitialized,
         user,
         login,
-        register,
-        forgotPassword,
         loginFree,
         logout,
       }}

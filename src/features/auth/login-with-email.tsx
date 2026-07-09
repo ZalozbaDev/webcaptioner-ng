@@ -88,29 +88,6 @@ const LoginWithEmailScreen: FC = () => {
         </Button>
       </Box>
 
-      <Box sx={{ mt: 1, textAlign: 'center' }}>
-        <Button
-          size='small'
-          variant='text'
-          sx={{ color: 'var(--text-primary)', textTransform: 'none' }}
-          href='/authentication/forgot-password'
-        >
-          Hesło zabyte?
-        </Button>
-      </Box>
-
-      <Box sx={{ mt: 2 }}>
-        <Button
-          sx={{ color: 'var(--text-primary)' }}
-          fullWidth
-          size='large'
-          variant='text'
-          href='/authentication/register'
-        >
-          Registrować
-        </Button>
-      </Box>
-
       <Box sx={{ mt: 1 }}>
         <Button
           sx={{ color: 'var(--text-primary)' }}
