@@ -1,5 +1,6 @@
-import { IconButton, Typography } from '@mui/material'
+import { IconButton, Link, Typography } from '@mui/material'
 import { Logout } from '@mui/icons-material'
+import { Link as RouterLink } from 'react-router-dom'
 import { APP_VERSION } from '../../../constants'
 import ThemeToggle from '../../../components/theme-toggle'
 
@@ -26,6 +27,38 @@ export const Header = ({ user, onLogout }: HeaderProps) => {
         <div style={{ position: 'absolute', top: 5, right: 5 }}>
           <ThemeToggle />
         </div>
+      )}
+
+      {!user && (
+        <Typography
+          variant='caption'
+          sx={{
+            position: 'absolute',
+            bottom: 5,
+            left: 5,
+            opacity: 0.7,
+            display: 'flex',
+            gap: 1,
+          }}
+        >
+          <Link
+            component={RouterLink}
+            to='/impressum'
+            underline='hover'
+            sx={{ color: 'inherit' }}
+          >
+            Impressum
+          </Link>
+          <span>|</span>
+          <Link
+            component={RouterLink}
+            to='/datenschutz'
+            underline='hover'
+            sx={{ color: 'inherit' }}
+          >
+            Datenschutz
+          </Link>
+        </Typography>
       )}
 
       <Typography

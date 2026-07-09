@@ -1,6 +1,7 @@
 import { lazy } from 'react'
 import DashboardLayout from '../components/layouts/dashboard-layout'
 import { defaultRoutes } from './default-routes'
+import { legalDashboardChildren } from './legal-routes'
 
 const AuthGuard = lazy(() => import('../components/guards/auth-guard'))
 const MainScreen = lazy(() => import('../features/main-screen'))
@@ -24,6 +25,7 @@ export const registeredUserRoutes = [
         path: 'history',
         element: <HistoryScreen />,
       },
+      ...legalDashboardChildren,
       // {
       //   path: 'search',
       //   element: <SearchPersons />,
