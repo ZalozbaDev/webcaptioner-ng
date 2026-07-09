@@ -1,14 +1,14 @@
 class DataConversionAudioProcessor extends AudioWorkletProcessor {
-  bufferSize = 4096
+  chunkLength = 4096
   _bytesWritten = 0
-  _buffer = new Int16Array(this.bufferSize)
+  _buffer = new Int16Array(this.chunkLength)
 
   constructor(options) {
     console.log({ options })
     super()
-    this.bufferSize = options.processorOptions.bufferSize || this.bufferSize
-    this.bufferSize = parseInt(this.bufferSize, 10)
-    this._buffer = new Int16Array(this.bufferSize)
+    this.chunkLength = options.processorOptions.chunkLength || this.chunkLength
+    this.chunkLength = parseInt(this.chunkLength, 10)
+    this._buffer = new Int16Array(this.chunkLength)
     this.initBuffer()
   }
 
@@ -21,14 +21,14 @@ class DataConversionAudioProcessor extends AudioWorkletProcessor {
   }
 
   isBufferFull() {
-    return this._bytesWritten === this.bufferSize
+    return this._bytesWritten === this.chunkLength
   }
 
   process(inputs, outputs, parameters) {
     const inputData = inputs[0][0]
 
     if (this.isBufferFull()) {
-      // console.log('flush', this._bytesWritten, this.bufferSize)
+      // console.log('flush', this._bytesWritten, this.chunkLength)
       this.flush()
     }
 
@@ -44,7 +44,7 @@ class DataConversionAudioProcessor extends AudioWorkletProcessor {
 
   flush() {
     this.port.postMessage(
-      this._bytesWritten < this.bufferSize
+      this._bytesWritten < this.chunkLength
         ? this._buffer.slice(0, this._bytesWritten)
         : this._buffer
     )

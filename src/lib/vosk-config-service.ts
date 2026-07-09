@@ -5,7 +5,7 @@ export const VoskSendConfigService = {
   sendConfig: (
     webSocket: WebSocket | null,
     sampleRate: number,
-    bufferSize: number,
+    chunkLength: number,
   ) => {
     webSocket?.send(
       JSON.stringify({
@@ -16,7 +16,7 @@ export const VoskSendConfigService = {
     )
     webSocket?.send(
       JSON.stringify({
-        config: { buffer_size: bufferSize },
+        config: { chunklen: chunkLength },
       }),
     )
   },

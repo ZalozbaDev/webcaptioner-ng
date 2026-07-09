@@ -15,7 +15,11 @@ import { localStorage } from '../../../lib/local-storage'
 import dayjs from 'dayjs'
 import { InputLine, TranslationResponse, YoutubeSettings } from '../types'
 import { audioQueueService } from '../../../services/AudioQueueService'
-import { InputWord, normalizeTranscriptText, normalizeTranscriptKey } from '../../../types/transcript'
+import {
+  InputWord,
+  normalizeTranscriptText,
+  normalizeTranscriptKey,
+} from '../../../types/transcript'
 import { VoskSendConfigService } from '../../../lib/vosk-config-service'
 import {
   useAdaptiveTtsSpeed,
@@ -289,7 +293,7 @@ export const useRecording = (
               VoskSendConfigService.sendConfig(
                 webSocketRef.current,
                 settings.sampleRate,
-                settings.bufferSize,
+                settings.chunkLength,
               )
             }
 
@@ -379,10 +383,7 @@ export const useRecording = (
             const normalized = normalizeTranscriptKey(translation)
             const last = prev[prev.length - 1]
 
-            if (
-              last &&
-              normalizeTranscriptKey(last.text) === normalized
-            ) {
+            if (last && normalizeTranscriptKey(last.text) === normalized) {
               return prev
             }
 
@@ -455,7 +456,7 @@ export const useRecording = (
             stream,
             settings.sampleRate,
             webSocketRef.current!,
-            settings.bufferSize,
+            settings.chunkLength,
             (p: AudioWorkletNode) => {
               processor = p
             },
