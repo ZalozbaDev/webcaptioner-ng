@@ -24,53 +24,59 @@ const LoginScreen: FC = () => {
 
   return (
     <Container maxWidth='xs'>
-      <TextField
-        fullWidth
-        label='tajne hesło'
-        margin='normal'
-        autoComplete='false'
-        type={showPassword ? 'text' : 'password'}
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-        variant='filled'
-        sx={{
-          backgroundColor: 'var(--input-bg)',
-          borderRadius: 2,
+      <Box
+        component='form'
+        onSubmit={e => {
+          e.preventDefault()
+          onLogin()
         }}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position='end'>
-              <IconButton
-                aria-label='toggle password visibility'
-                onClick={() => setShowPassword(!showPassword)}
-                onMouseDown={() => setShowPassword(!showPassword)}
-                edge='end'
-              >
-                {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
-              </IconButton>
-            </InputAdornment>
-          ),
-        }}
-      />
-
-      <Box sx={{ mt: 2 }}>
-        <Button
-          color='primary'
+      >
+        <TextField
           fullWidth
-          size='large'
-          type='submit'
-          variant='contained'
-          onClick={onLogin}
-        >
-          Login
-        </Button>
+          label='tajne hesło'
+          margin='normal'
+          autoComplete='false'
+          type={showPassword ? 'text' : 'password'}
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          variant='filled'
+          sx={{
+            backgroundColor: 'var(--input-bg)',
+            borderRadius: 2,
+          }}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position='end'>
+                <IconButton
+                  aria-label='toggle password visibility'
+                  onClick={() => setShowPassword(!showPassword)}
+                  onMouseDown={() => setShowPassword(!showPassword)}
+                  edge='end'
+                >
+                  {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+
+        <Box sx={{ mt: 2 }}>
+          <Button
+            color='primary'
+            fullWidth
+            size='large'
+            type='submit'
+            variant='contained'
+          >
+            Login
+          </Button>
+        </Box>
       </Box>
       <Box sx={{ mt: 2 }}>
         <Button
           sx={{ color: 'var(--text-primary)' }}
           fullWidth
           size='large'
-          type='submit'
           variant='text'
           href='/authentication/login-with-email'
         >

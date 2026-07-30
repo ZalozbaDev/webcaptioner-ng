@@ -38,7 +38,7 @@ const menuTextItems: {
   editable: boolean
   options?: { title: string; value: string | number }[]
 }[] = [
-  { key: 'bufferSize', title: 'Buffer Size', editable: true },
+  { key: 'chunkLength', title: 'Buffer Size', editable: true },
   { key: 'channelCount', title: 'Channel Count', editable: false },
   {
     key: 'sampleRate',
@@ -343,10 +343,7 @@ export const SettingsContainer: FC<{
               value={settings.translationTargetLanguage}
               title='Přełožowanska rěč'
               onChange={event =>
-                onChangeSetting(
-                  'translationTargetLanguage',
-                  event.target.value,
-                )
+                onChangeSetting('translationTargetLanguage', event.target.value)
               }
               sx={{
                 width: {

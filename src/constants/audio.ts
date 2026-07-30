@@ -60,7 +60,7 @@ export const DEFAULT_SETTINGS: Settings = {
   sampleRate: DEFAULT_SAMPLE_RATE,
   sampleSize: 16,
   deviceId: undefined,
-  bufferSize: 4096,
+  chunkLength: 4096,
   sotraModel: process.env.REACT_APP_DEFAULT_SOTRA_MODEL as SotraModel,
   autoPlayAudio: false,
   selectedSpeakerId: DEFAULT_SPEAKER_ID,

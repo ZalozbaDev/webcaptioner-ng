@@ -9,7 +9,7 @@ export interface Settings {
   sampleRate: number
   sampleSize: number
   deviceId: string | undefined
-  bufferSize: number
+  chunkLength: number
   sotraModel: SotraModel
   translationTargetLanguage: TranslationTargetLanguage
   libretranslateTargetLanguage: LibreTranslateTargetLanguage

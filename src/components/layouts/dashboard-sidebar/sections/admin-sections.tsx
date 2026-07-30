@@ -1,4 +1,4 @@
-import { RecordVoiceOver, History } from '@mui/icons-material'
+import { RecordVoiceOver, History, Gavel, PrivacyTip } from '@mui/icons-material'
 
 export const adminSections = [
   {
@@ -13,6 +13,21 @@ export const adminSections = [
         title: 'Historia',
         path: '/history',
         icon: <History fontSize='small' />,
+      },
+    ],
+  },
+  {
+    title: 'Rechtliches',
+    items: [
+      {
+        title: 'Impressum',
+        path: '/impressum',
+        icon: <Gavel fontSize='small' />,
+      },
+      {
+        title: 'Datenschutz',
+        path: '/datenschutz',
+        icon: <PrivacyTip fontSize='small' />,
       },
     ],
   },

@@ -31,84 +31,68 @@ const LoginWithEmailScreen: FC = () => {
 
   return (
     <Container maxWidth='xs'>
-      <TextField
-        fullWidth
-        label='email'
-        margin='normal'
-        autoComplete='email'
-        type='email'
-        value={email}
-        onChange={e => setEmail(e.target.value)}
-        variant='filled'
-        sx={{
-          backgroundColor: 'var(--input-bg)',
-          borderRadius: 2,
+      <Box
+        component='form'
+        onSubmit={e => {
+          e.preventDefault()
+          onLogin()
         }}
-      />
-      <TextField
-        fullWidth
-        label='tajne hesło'
-        margin='normal'
-        autoComplete='current-password'
-        type={showPassword ? 'text' : 'password'}
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-        variant='filled'
-        sx={{
-          backgroundColor: 'var(--input-bg)',
-          borderRadius: 2,
-        }}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position='end'>
-              <IconButton
-                aria-label='toggle password visibility'
-                onClick={() => setShowPassword(!showPassword)}
-                onMouseDown={() => setShowPassword(!showPassword)}
-                edge='end'
-              >
-                {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
-              </IconButton>
-            </InputAdornment>
-          ),
-        }}
-      />
-
-      <Box sx={{ mt: 2 }}>
-        <Button
-          color='primary'
+      >
+        <TextField
           fullWidth
-          size='large'
-          type='submit'
-          variant='contained'
-          onClick={onLogin}
-          loading={loading}
-        >
-          Login
-        </Button>
-      </Box>
-
-      <Box sx={{ mt: 1, textAlign: 'center' }}>
-        <Button
-          size='small'
-          variant='text'
-          sx={{ color: 'var(--text-primary)', textTransform: 'none' }}
-          href='/authentication/forgot-password'
-        >
-          Hesło zabyte?
-        </Button>
-      </Box>
-
-      <Box sx={{ mt: 2 }}>
-        <Button
-          sx={{ color: 'var(--text-primary)' }}
+          label='email'
+          margin='normal'
+          autoComplete='email'
+          type='email'
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          variant='filled'
+          sx={{
+            backgroundColor: 'var(--input-bg)',
+            borderRadius: 2,
+          }}
+        />
+        <TextField
           fullWidth
-          size='large'
-          variant='text'
-          href='/authentication/register'
-        >
-          Registrować
-        </Button>
+          label='tajne hesło'
+          margin='normal'
+          autoComplete='current-password'
+          type={showPassword ? 'text' : 'password'}
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          variant='filled'
+          sx={{
+            backgroundColor: 'var(--input-bg)',
+            borderRadius: 2,
+          }}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position='end'>
+                <IconButton
+                  aria-label='toggle password visibility'
+                  onClick={() => setShowPassword(!showPassword)}
+                  onMouseDown={() => setShowPassword(!showPassword)}
+                  edge='end'
+                >
+                  {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+
+        <Box sx={{ mt: 2 }}>
+          <Button
+            color='primary'
+            fullWidth
+            size='large'
+            type='submit'
+            variant='contained'
+            loading={loading}
+          >
+            Login
+          </Button>
+        </Box>
       </Box>
 
       <Box sx={{ mt: 1 }}>
