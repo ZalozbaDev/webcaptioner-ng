@@ -347,12 +347,17 @@ export const useRecording = (
 
         options.setInputText(prev => [...prev, { plain: plainText, tokens }])
 
+        const targetLanguage =
+          settings.sotraModel === 'libretranslate'
+            ? settings.libretranslateTargetLanguage
+            : settings.translationTargetLanguage
+
         getTranslation(
           recordId,
           plainText,
           settings.sotraModel,
           'hsb',
-          settings.translationTargetLanguage,
+          targetLanguage,
         ).then(async response => {
           const payload = response.data
           const translation = payload.translation
@@ -362,7 +367,11 @@ export const useRecording = (
 
           // Only play audio if autoPlayAudio is enabled AND audioContext is provided
           if (settings.autoPlayAudio && options.audioContext) {
-            playTranslationAudio(translation, settings.selectedSpeakerId)
+            if (payload.playBeep) {
+              audioQueueService.addBeepToQueue(0.2)
+            } else {
+              playTranslationAudio(translation, settings.selectedSpeakerId)
+            }
           }
 
           // Save the translation

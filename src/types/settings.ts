@@ -1,3 +1,4 @@
+import { LibreTranslateTargetLanguage } from '../constants/libretranslate'
 import { TranslationTargetLanguage } from '../constants/translation'
 
 export interface Settings {
@@ -11,6 +12,7 @@ export interface Settings {
   bufferSize: number
   sotraModel: SotraModel
   translationTargetLanguage: TranslationTargetLanguage
+  libretranslateTargetLanguage: LibreTranslateTargetLanguage
   autoPlayAudio: boolean
   selectedSpeakerId: string
 }

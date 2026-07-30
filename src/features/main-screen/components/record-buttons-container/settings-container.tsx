@@ -16,10 +16,13 @@ import { MicrophoneSelector } from '../microphone-selector.tsx'
 import {
   getTranslationTargetLanguageLabel,
   getSotraModelLabel,
+  getLibreTranslateTargetLanguageLabel,
+  getLibreTranslateTargetLanguageFlag,
 } from '../../../../helper/text-parser'
 import { Settings } from '../../../../types/settings'
 import { updateAudioRecord } from '../../../../lib/server-manager'
 import { TRANSLATION_TARGET_LANGUAGES } from '../../../../constants/translation'
+import { LIBRETRANSLATE_TARGET_LANGUAGES } from '../../../../constants/libretranslate'
 import { SettingsPopupContainer } from './settings-popup-container'
 import { SettingsRow, SettingsFullWidthRow } from './settings-row'
 
@@ -51,28 +54,28 @@ const menuTextItems: {
   { key: 'deviceId', title: 'Device ID', editable: false },
 ]
 
-const menuSelectionItems: {
-  key: keyof Settings
-  title: string
-  options: { title: string; value: string }[]
-}[] = [
-  {
-    key: 'sotraModel',
-    title: 'Sotra Model',
-    options: [
-      { title: getSotraModelLabel('ctranslate'), value: 'ctranslate' },
-      { title: getSotraModelLabel('fairseq'), value: 'fairseq' },
-    ],
-  },
-  {
-    key: 'translationTargetLanguage',
-    title: 'Přełožowanska rěč',
-    options: TRANSLATION_TARGET_LANGUAGES.map(lang => ({
-      title: getTranslationTargetLanguageLabel(lang),
-      value: lang,
-    })),
-  },
-]
+const sotraModelOptions = [
+  { title: getSotraModelLabel('ctranslate'), value: 'ctranslate' },
+  { title: getSotraModelLabel('fairseq'), value: 'fairseq' },
+  { title: getSotraModelLabel('libretranslate'), value: 'libretranslate' },
+] as const
+
+const LanguageMenuItem: FC<{ label: string; flag: string }> = ({
+  label,
+  flag,
+}) => (
+  <Box
+    component='span'
+    sx={{
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: 1,
+    }}
+  >
+    <span aria-hidden='true'>{flag}</span>
+    <span>{label}</span>
+  </Box>
+)
 
 export const SettingsContainer: FC<{
   anchorEl: null | HTMLElement
@@ -264,39 +267,104 @@ export const SettingsContainer: FC<{
           )
         })}
 
-        {menuSelectionItems.map(({ key, title, options }) => {
-          const setting = settings[key]
+        <SettingsRow label='Sotra Model:'>
+          <Select
+            size='small'
+            disabled={disabled}
+            value={settings.sotraModel}
+            title='Sotra Model'
+            onChange={event =>
+              onChangeSetting('sotraModel', event.target.value)
+            }
+            sx={{
+              width: {
+                xs: 150,
+                sm: 190,
+              },
+              maxWidth: '100%',
+              textAlign: 'right',
+            }}
+          >
+            {sotraModelOptions.map(option => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.title}
+              </MenuItem>
+            ))}
+          </Select>
+        </SettingsRow>
 
-          if (setting === undefined || typeof setting === 'boolean') {
-            return null
-          }
-
-          return (
-            <SettingsRow key={key} label={`${title}:`}>
-              <Select
-                size='small'
-                disabled={disabled}
-                value={setting}
-                title={title}
-                onChange={event => onChangeSetting(key, event.target.value)}
-                sx={{
-                  width: {
-                    xs: 150,
-                    sm: 190,
-                  },
-                  maxWidth: '100%',
-                  textAlign: 'right',
-                }}
-              >
-                {options.map(option => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.title}
-                  </MenuItem>
-                ))}
-              </Select>
-            </SettingsRow>
-          )
-        })}
+        {settings.sotraModel === 'libretranslate' ? (
+          <SettingsRow label='Přełožowanska rěč:'>
+            <Select
+              size='small'
+              disabled={disabled}
+              value={settings.libretranslateTargetLanguage}
+              title='Přełožowanska rěč'
+              onChange={event =>
+                onChangeSetting(
+                  'libretranslateTargetLanguage',
+                  event.target.value,
+                )
+              }
+              renderValue={value => (
+                <LanguageMenuItem
+                  label={getLibreTranslateTargetLanguageLabel(
+                    value as (typeof LIBRETRANSLATE_TARGET_LANGUAGES)[number],
+                  )}
+                  flag={getLibreTranslateTargetLanguageFlag(
+                    value as (typeof LIBRETRANSLATE_TARGET_LANGUAGES)[number],
+                  )}
+                />
+              )}
+              sx={{
+                width: {
+                  xs: 150,
+                  sm: 190,
+                },
+                maxWidth: '100%',
+                textAlign: 'right',
+              }}
+            >
+              {LIBRETRANSLATE_TARGET_LANGUAGES.map(lang => (
+                <MenuItem key={lang} value={lang}>
+                  <LanguageMenuItem
+                    label={getLibreTranslateTargetLanguageLabel(lang)}
+                    flag={getLibreTranslateTargetLanguageFlag(lang)}
+                  />
+                </MenuItem>
+              ))}
+            </Select>
+          </SettingsRow>
+        ) : (
+          <SettingsRow label='Přełožowanska rěč:'>
+            <Select
+              size='small'
+              disabled={disabled}
+              value={settings.translationTargetLanguage}
+              title='Přełožowanska rěč'
+              onChange={event =>
+                onChangeSetting(
+                  'translationTargetLanguage',
+                  event.target.value,
+                )
+              }
+              sx={{
+                width: {
+                  xs: 150,
+                  sm: 190,
+                },
+                maxWidth: '100%',
+                textAlign: 'right',
+              }}
+            >
+              {TRANSLATION_TARGET_LANGUAGES.map(lang => (
+                <MenuItem key={lang} value={lang}>
+                  {getTranslationTargetLanguageLabel(lang)}
+                </MenuItem>
+              ))}
+            </Select>
+          </SettingsRow>
+        )}
 
         <FormControlLabel
           control={

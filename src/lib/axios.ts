@@ -31,13 +31,29 @@ axiosInstance.interceptors.response.use(
   async error => {
     const originalRequest = error.config
 
-    // If the error status is 401 and there is no originalRequest._retry flag,
-    // it means the token has expired and we need to refresh it
-    if (error.response.status === 401 && !originalRequest._retry) {
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      localStorage.getRefreshToken()
+    ) {
       originalRequest._retry = true
 
+      try {
+        const response = await axios.post(`${BASE_URL}/auth/refresh`, {
+          refreshToken: localStorage.getRefreshToken(),
+        })
+
+        const { token, refreshToken } = response.data
+        localStorage.setAccessToken(token)
+        localStorage.setRefreshToken(refreshToken)
+        originalRequest.headers.Authorization = 'Bearer ' + token
+
+        return axiosInstance(originalRequest)
+      } catch {
+        localStorage.deleteAll()
+      }
+    } else if (error.response?.status === 401 && !originalRequest._retry) {
       localStorage.deleteAll()
-      // history.pushState(null, '', '/authentication/login')
     }
 
     return Promise.reject(error)
