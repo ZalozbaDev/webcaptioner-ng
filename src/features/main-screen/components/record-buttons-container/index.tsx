@@ -13,7 +13,7 @@ import { SettingsContainer } from './settings-container'
 import { YoutubeContainer, YoutubeSettings } from './youtube-container'
 import { Settings } from '../../../../types/settings'
 import { useTheme } from '../../../../contexts/theme-context'
-import { FRONTEND_RECORDING_INFORMATION_LINE } from "../../../config";
+import { FRONTEND_RECORDING_INFORMATION_LINE } from "../../../../config";
 
 export const RecordButtonsContainer: FC<{
   voskResponse: boolean

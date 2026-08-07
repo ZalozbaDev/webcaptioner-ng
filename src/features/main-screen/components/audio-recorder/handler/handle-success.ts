@@ -1,6 +1,6 @@
 import { toast } from 'sonner'
 import { VoskSendConfigService } from '../../../../../lib/vosk-config-service'
-import { FRONTEND_SEND_TIMESTAMP,FRONTEND_SEND_TIMESTAMP_COUNT } from "../../../../config";
+import { FRONTEND_SEND_TIMESTAMP,FRONTEND_SEND_TIMESTAMP_COUNT } from "../../../../../config";
 
 export const handleSuccess = (
   stream: MediaStream,

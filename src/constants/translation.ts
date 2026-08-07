@@ -6,8 +6,9 @@ export const TRANSLATION_TARGET_LANGUAGES = ['hsb', 'de', 'dsb', 'cs'] as const
 export type TranslationTargetLanguage =
   (typeof TRANSLATION_TARGET_LANGUAGES)[number]
 
-export const FRONTEND_DEFAULT_TRANSLATION_TARGET_LANGUAGE: TranslationTargetLanguage =
-  'hsb'
+// export const FRONTEND_DEFAULT_TRANSLATION_TARGET_LANGUAGE: TranslationTargetLanguage =
+//  'hsb'
+const DEFAULT_FALLBACK_TRANSLATION_TARGET_LANGUAGE = 'de'
 
 export function isTranslationTargetLanguage(
   value: string,
