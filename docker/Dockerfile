@@ -1,22 +1,32 @@
-FROM node:20.11.1-bookworm
-MAINTAINER Daniel Sobe <daniel.sobe@sorben.com>
+########### build container
+FROM node:24 AS frontendbuild
+WORKDIR /app
 
-# docker build -t webcaptioner-ng .
-# docker build -t webcaptioner-ng . --no-cache
+COPY package*.json ./
+RUN npm ci
 
-# RUN useradd -u 1000 -m reactapp
+COPY tsconfig.json .
+ADD src/ src/
+ADD public/ public/
+RUN npm run build
+# RUN ls -l
 
-RUN mkdir -p /application/public && chown 1000:1000 /application/public
-RUN mkdir -p /application/src && chown 1000:1000 /application/public
+########### deployment container
+FROM nginx:stable-alpine
 
-COPY --chown=1000:1000 public /application/public
-COPY --chown=1000:1000 src    /application/src
-COPY --chown=1000:1000 package.json package-lock.json tsconfig.json /application/
+RUN useradd -u 1000 -m reactapp
 
-RUN cd application && npm install && cd .. && chown -R 1000:1000 /application/
+# make sure the router works (pages fall back to the index.html)
+COPY --chown=1000:1000 docker/nginx.conf /etc/nginx/conf.d/default.conf
 
-COPY --chown=1000:1000 docker/startme.sh /
+COPY --chown=1000:1000 --from=frontendbuild /app/build /usr/share/nginx/html
+
+COPY --chown=1000:1000 docker/docker-entrypoint.sh /docker-entrypoint.sh
+
+RUN chmod +x /docker-entrypoint.sh
+
+EXPOSE 80
 
 USER 1000
 
-CMD ["/bin/bash", "-c", "/startme.sh"] 
+ENTRYPOINT ["/docker-entrypoint.sh"]
