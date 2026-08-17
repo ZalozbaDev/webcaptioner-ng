@@ -290,9 +290,16 @@ export const useRecording = (
             if (!voskConfigSentRef.current) {
               voskConfigSentRef.current = true
 
-              VoskSendConfigService.sendConfig(
+              VoskSendConfigService.sendModel(
+                webSocketRef.current,
+                settings.voskModel,
+              )
+              VoskSendConfigService.sendSampleRate(
                 webSocketRef.current,
                 settings.sampleRate,
+              )
+              VoskSendConfigService.sendChunkLength(
+                webSocketRef.current,
                 settings.chunkLength,
               )
             }
@@ -360,7 +367,7 @@ export const useRecording = (
           recordId,
           plainText,
           settings.sotraModel,
-          'hsb',
+          settings.transcriptLanguage === 'de' ? 'de' : 'hsb',
           targetLanguage,
         ).then(async response => {
           const payload = response.data
@@ -512,7 +519,9 @@ export const useRecording = (
 
       webSocketRef.current = initWebsocket(
         `${process.env
-          .REACT_APP_WEBCAPTIONER_SERVER!}/vosk?recordId=${recordId}`,
+          .REACT_APP_WEBCAPTIONER_SERVER!}/vosk?recordId=${recordId}&model=${encodeURIComponent(
+          settings.voskModel,
+        )}`,
         e => onReceiveMessage(e, recordId),
       )
 

@@ -6,6 +6,8 @@ import {
 import { DEFAULT_LIBRETRANSLATE_TARGET_LANGUAGE } from './libretranslate'
 
 export const DEFAULT_SPEAKER_ID = 'weronika'
+export const DEFAULT_VOSK_MODEL = 'hsb'
+export const DEFAULT_TRANSCRIPT_LANGUAGE: Language = 'hsb'
 export const DEFAULT_SAMPLE_RATE = process.env
   .REACT_APP_DEFAULT_VOSK_SAMPLE_RATE
   ? parseInt(process.env.REACT_APP_DEFAULT_VOSK_SAMPLE_RATE)
@@ -64,6 +66,8 @@ export const DEFAULT_SETTINGS: Settings = {
   sotraModel: process.env.REACT_APP_DEFAULT_SOTRA_MODEL as SotraModel,
   autoPlayAudio: false,
   selectedSpeakerId: DEFAULT_SPEAKER_ID,
+  voskModel: DEFAULT_VOSK_MODEL,
+  transcriptLanguage: DEFAULT_TRANSCRIPT_LANGUAGE,
   translationTargetLanguage: DEFAULT_TRANSLATION_TARGET_LANGUAGE,
   libretranslateTargetLanguage: DEFAULT_LIBRETRANSLATE_TARGET_LANGUAGE,
 } as const

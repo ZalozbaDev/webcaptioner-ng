@@ -15,4 +15,6 @@ export interface Settings {
   libretranslateTargetLanguage: LibreTranslateTargetLanguage
   autoPlayAudio: boolean
   selectedSpeakerId: string
+  voskModel: string
+  transcriptLanguage: Language
 }

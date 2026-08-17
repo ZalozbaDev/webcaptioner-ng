@@ -32,6 +32,7 @@ export const RecordButtonsContainer: FC<{
   youtubeSettings: YoutubeSettings
   onSaveYoutubeSettings: (settings: YoutubeSettings) => void
   speakers: BamborakSpeaker[]
+  voskModels: VoskModel[]
   onShare: () => void
   record: { id: string; token: string } | null
 }> = ({
@@ -52,6 +53,7 @@ export const RecordButtonsContainer: FC<{
   youtubeSettings,
   onSaveYoutubeSettings,
   speakers,
+  voskModels,
   onShare,
   record,
 }) => {
@@ -105,6 +107,7 @@ export const RecordButtonsContainer: FC<{
         onChangeMicrophone={onChangeMicrophone}
         activeMicrophone={activeMicrophone}
         speakers={speakers}
+        voskModels={voskModels}
         record={record}
       />
     ),
@@ -117,6 +120,7 @@ export const RecordButtonsContainer: FC<{
       settingsAnchorEl,
       settingsOpen,
       speakers,
+      voskModels,
       record,
     ],
   )

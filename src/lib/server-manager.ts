@@ -119,6 +119,10 @@ export const getSpeakersFromBamborak = async () => {
   return axios.get(url)
 }
 
+export const getVoskModels = async () => {
+  return axiosInstance.get<VoskModel[]>('/vosk-models')
+}
+
 export const createAudioRecord = async (
   autoPlayAudio?: boolean,
   speakerId?: string | null,
