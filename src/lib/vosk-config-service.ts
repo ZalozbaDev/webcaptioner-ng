@@ -2,10 +2,10 @@ export const VoskSendConfigService = {
   sendEOF: (webSocket: WebSocket | null) => {
     webSocket?.send(JSON.stringify({ eof: 1 }))
   },
-  sendModel: (webSocket: WebSocket | null, model: string) => {
+  sendModel: (webSocket: WebSocket | null, modelPath: string) => {
     webSocket?.send(
       JSON.stringify({
-        config: { model },
+        config: { model: modelPath },
       }),
     )
   },
