@@ -4,16 +4,15 @@ import {
   TranslationTargetLanguage,
 } from '../constants/translation'
 import { DEFAULT_LIBRETRANSLATE_TARGET_LANGUAGE } from './libretranslate'
+import { FRONTEND_DEFAULT_VOSK_SAMPLE_RATE,FRONTEND_DEFAULT_AUDIO_FORMAT,FRONTEND_DEFAULT_TRANSLATION_TARGET_LANGUAGE,FRONTEND_DEFAULT_SOTRA_MODEL } from "../config";
 
 export const DEFAULT_SPEAKER_ID = 'weronika'
 export const DEFAULT_VOSK_MODEL = 'hsb'
 export const DEFAULT_TRANSCRIPT_LANGUAGE: Language = 'hsb'
-export const DEFAULT_SAMPLE_RATE = process.env
-  .REACT_APP_DEFAULT_VOSK_SAMPLE_RATE
-  ? parseInt(process.env.REACT_APP_DEFAULT_VOSK_SAMPLE_RATE)
-  : 48000
+export const DEFAULT_SAMPLE_RATE = FRONTEND_DEFAULT_VOSK_SAMPLE_RATE
+  ? parseInt(FRONTEND_DEFAULT_VOSK_SAMPLE_RATE)  : 48000
 export const DEFAULT_AUDIO_FORMAT =
-  process.env.REACT_APP_DEFAULT_AUDIO_FORMAT || 'mp3'
+  FRONTEND_DEFAULT_AUDIO_FORMAT || 'mp3'
 const DEFAULT_FALLBACK_TRANSLATION_TARGET_LANGUAGE = 'de'
 
 function isTranslationTargetLanguage(
@@ -29,7 +28,7 @@ function parseTranslationTargetLanguageOrDefault(
 ): TranslationTargetLanguage {
   if (!value) {
     console.warn(
-      `Missing REACT_APP_DEFAULT_TRANSLATION_TARGET_LANGUAGE. ` +
+      `Missing FRONTEND_DEFAULT_TRANSLATION_TARGET_LANGUAGE. ` +
         `Using default "${DEFAULT_FALLBACK_TRANSLATION_TARGET_LANGUAGE}".`,
     )
 
@@ -38,7 +37,7 @@ function parseTranslationTargetLanguageOrDefault(
 
   if (!isTranslationTargetLanguage(value)) {
     console.warn(
-      `Invalid REACT_APP_DEFAULT_TRANSLATION_TARGET_LANGUAGE: "${value}". ` +
+      `Invalid FRONTEND_DEFAULT_TRANSLATION_TARGET_LANGUAGE: "${value}". ` +
         `Allowed values are: ${TRANSLATION_TARGET_LANGUAGES.join(', ')}. ` +
         `Using default "${DEFAULT_FALLBACK_TRANSLATION_TARGET_LANGUAGE}".`,
     )
@@ -51,7 +50,7 @@ function parseTranslationTargetLanguageOrDefault(
 
 export const DEFAULT_TRANSLATION_TARGET_LANGUAGE =
   parseTranslationTargetLanguageOrDefault(
-    process.env.REACT_APP_DEFAULT_TRANSLATION_TARGET_LANGUAGE,
+    FRONTEND_DEFAULT_TRANSLATION_TARGET_LANGUAGE,
   )
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -63,7 +62,7 @@ export const DEFAULT_SETTINGS: Settings = {
   sampleSize: 16,
   deviceId: undefined,
   chunkLength: 4096,
-  sotraModel: process.env.REACT_APP_DEFAULT_SOTRA_MODEL as SotraModel,
+  sotraModel: FRONTEND_DEFAULT_SOTRA_MODEL as SotraModel,
   autoPlayAudio: false,
   selectedSpeakerId: DEFAULT_SPEAKER_ID,
   voskModel: DEFAULT_VOSK_MODEL,
