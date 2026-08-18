@@ -33,7 +33,7 @@ type MainContentProps = {
   selectedMicrophone: MediaDeviceInfo
   onChangeMicrophone: (mic: MediaDeviceInfo) => void
   settings: Settings
-  onChangeSetting: (key: keyof Settings, value: boolean | number) => void
+  onChangeSetting: (key: keyof Settings, value: Settings[keyof Settings]) => void
   youtubeSettings: YoutubeSettings
   onChangeYoutubeSettings: (settings: YoutubeSettings) => void
   totalTime: number
@@ -41,6 +41,7 @@ type MainContentProps = {
   inputText: InputLine[]
   translation: TranslationResponse[]
   speakers: BamborakSpeaker[]
+  voskModels: VoskModel[]
   record: { id: string; token: string } | null
   setRecord: (record: { id: string; token: string }) => void
 }
@@ -70,6 +71,7 @@ export const MainContent = ({
   inputText,
   translation,
   speakers,
+  voskModels,
   record,
   setRecord,
 }: MainContentProps) => {
@@ -150,6 +152,7 @@ export const MainContent = ({
         youtubeSettings={youtubeSettings}
         onSaveYoutubeSettings={onChangeYoutubeSettings}
         speakers={speakers}
+        voskModels={voskModels}
         stream={recording.stream}
         onShare={handleShare}
         record={record}

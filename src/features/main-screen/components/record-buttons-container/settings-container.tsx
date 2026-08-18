@@ -87,6 +87,7 @@ export const SettingsContainer: FC<{
   onChangeMicrophone: (mic: MediaDeviceInfo) => void
   activeMicrophone: MediaDeviceInfo | null
   speakers: BamborakSpeaker[]
+  voskModels: VoskModel[]
   record: { id: string; token: string } | null
 }> = ({
   anchorEl,
@@ -98,6 +99,7 @@ export const SettingsContainer: FC<{
   onChangeMicrophone,
   activeMicrophone,
   speakers,
+  voskModels,
   record,
 }) => {
   const handleSpeakerChange = async (speakerId: string) => {
@@ -130,6 +132,14 @@ export const SettingsContainer: FC<{
 
   const handleNumberChange = (key: keyof Settings, value: string) => {
     onChangeSetting(key, value === '' ? 0 : Number(value))
+  }
+
+  const handleVoskModelChange = (modelName: string) => {
+    const model = voskModels.find(item => item.name === modelName)
+    onChangeSetting('voskModel', modelName)
+    if (model) {
+      onChangeSetting('transcriptLanguage', model.transcriptLanguage)
+    }
   }
 
   return (
@@ -266,6 +276,42 @@ export const SettingsContainer: FC<{
             </SettingsRow>
           )
         })}
+
+        <SettingsRow label='Model:'>
+          <Select
+            size='small'
+            disabled={disabled || voskModels.length === 0}
+            value={
+              voskModels.some(model => model.name === settings.voskModel)
+                ? settings.voskModel
+                : ''
+            }
+            displayEmpty
+            title='Model'
+            onChange={event =>
+              handleVoskModelChange(String(event.target.value))
+            }
+            sx={{
+              width: {
+                xs: 150,
+                sm: 190,
+              },
+              maxWidth: '100%',
+              textAlign: 'right',
+            }}
+          >
+            {voskModels.length === 0 && (
+              <MenuItem value='' disabled>
+                –
+              </MenuItem>
+            )}
+            {voskModels.map(model => (
+              <MenuItem key={model.name} value={model.name}>
+                {model.description}
+              </MenuItem>
+            ))}
+          </Select>
+        </SettingsRow>
 
         <SettingsRow label='Sotra Model:'>
           <Select

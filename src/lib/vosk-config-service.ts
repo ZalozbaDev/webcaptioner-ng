@@ -2,24 +2,6 @@ export const VoskSendConfigService = {
   sendEOF: (webSocket: WebSocket | null) => {
     webSocket?.send(JSON.stringify({ eof: 1 }))
   },
-  sendConfig: (
-    webSocket: WebSocket | null,
-    sampleRate: number,
-    chunkLength: number,
-  ) => {
-    webSocket?.send(
-      JSON.stringify({
-        config: {
-          sample_rate: sampleRate,
-        },
-      }),
-    )
-    webSocket?.send(
-      JSON.stringify({
-        config: { chunklen: chunkLength },
-      }),
-    )
-  },
   sendModel: (webSocket: WebSocket | null, model: string) => {
     webSocket?.send(
       JSON.stringify({
@@ -38,6 +20,13 @@ export const VoskSendConfigService = {
     webSocket?.send(
       JSON.stringify({
         config: { sample_format: sampleFormat },
+      }),
+    )
+  },
+  sendSampleRate: (webSocket: WebSocket | null, sampleRate: number) => {
+    webSocket?.send(
+      JSON.stringify({
+        config: { sample_rate: sampleRate },
       }),
     )
   },

@@ -32,6 +32,13 @@ type VOSKResponse = {
 
 type Language = 'hsb' | 'de' | 'dsb'
 
+type VoskModel = {
+  name: string
+  description: string
+  path: string
+  transcriptLanguage: Language
+}
+
 type BamborakSpeaker = {
   id: string
   info: string

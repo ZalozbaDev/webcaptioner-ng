@@ -70,7 +70,9 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     })
     const { token, refreshToken } = response.data
     localStorage.setAccessToken(token)
-    localStorage.setRefreshToken(refreshToken)
+    if (refreshToken) {
+      localStorage.setRefreshToken(refreshToken)
+    }
     await getMe()
   }
 
