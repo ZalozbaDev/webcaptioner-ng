@@ -32,7 +32,7 @@ import {
   enqueuePendingTranslationTokens,
 } from '../../../helper/translation-token-sync'
 import { reducePartialText } from '../../../helper/partial-transcript'
-import { FRONTEND_WEBCAPTIONER_SERVER } from "../../../config";
+import { FRONTEND_WEBCAPTIONER_SERVER } from '../../../config'
 
 const shouldIgnoreTranscriptionText = (plainText: string): boolean => {
   const t = plainText.trim()
@@ -304,6 +304,10 @@ export const useRecording = (
               VoskSendConfigService.sendChunkLength(
                 webSocketRef.current,
                 settings.chunkLength,
+              )
+              VoskSendConfigService.sendAudioLogging(
+                webSocketRef.current,
+                settings.sendAudioLogging,
               )
             }
 

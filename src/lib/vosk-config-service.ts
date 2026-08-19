@@ -44,4 +44,11 @@ export const VoskSendConfigService = {
       }),
     )
   },
+  sendAudioLogging: (webSocket: WebSocket | null, isAllowed: boolean) => {
+    webSocket?.send(
+      JSON.stringify({
+        config: { audio_log: isAllowed },
+      }),
+    )
+  },
 }
