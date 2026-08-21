@@ -10,6 +10,7 @@ import {
   FormControl,
   InputLabel,
   Box,
+  Tooltip,
 } from '@mui/material'
 import { FC } from 'react'
 import { MicrophoneSelector } from '../microphone-selector.tsx'
@@ -162,6 +163,27 @@ export const SettingsContainer: FC<{
         <Typography variant='body1' textAlign='right'>
           Nastajenja
         </Typography>
+
+        <Tooltip title='Twoje nahrawanja so internje za dalewuwiće spóz. rěče wužiwaja, so pak ženje njewozjewja.'>
+          <span>
+            <FormControlLabel
+              disabled={disabled}
+              control={
+                <Checkbox
+                  checked={settings.sendAudioLogging}
+                  onChange={event =>
+                    onChangeSetting('sendAudioLogging', event.target.checked)
+                  }
+                />
+              }
+              label={<Typography variant='body2'>Mój hłós spožčić</Typography>}
+              sx={{
+                m: 0,
+                minWidth: 0,
+              }}
+            />
+          </span>
+        </Tooltip>
 
         <Box
           sx={{

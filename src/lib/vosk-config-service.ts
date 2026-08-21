@@ -2,10 +2,10 @@ export const VoskSendConfigService = {
   sendEOF: (webSocket: WebSocket | null) => {
     webSocket?.send(JSON.stringify({ eof: 1 }))
   },
-  sendModel: (webSocket: WebSocket | null, model: string) => {
+  sendModel: (webSocket: WebSocket | null, modelPath: string) => {
     webSocket?.send(
       JSON.stringify({
-        config: { model },
+        config: { model: modelPath },
       }),
     )
   },
@@ -41,6 +41,13 @@ export const VoskSendConfigService = {
     webSocket?.send(
       JSON.stringify({
         ts: { s: Math.trunc(milliseconds / 1000), ms: milliseconds % 1000 },
+      }),
+    )
+  },
+  sendAudioLogging: (webSocket: WebSocket | null, isAllowed: boolean) => {
+    webSocket?.send(
+      JSON.stringify({
+        config: { audio_log: isAllowed },
       }),
     )
   },

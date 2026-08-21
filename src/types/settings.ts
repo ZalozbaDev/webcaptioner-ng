@@ -17,4 +17,5 @@ export interface Settings {
   selectedSpeakerId: string
   voskModel: string
   transcriptLanguage: Language
+  sendAudioLogging: boolean
 }

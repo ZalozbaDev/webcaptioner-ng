@@ -10,6 +10,7 @@ import {
   getParseDataForYoutube,
   getAudioFromText,
   createAudioRecord,
+  getVoskModels,
 } from '../../../lib/server-manager'
 import { localStorage } from '../../../lib/local-storage'
 import dayjs from 'dayjs'
@@ -31,7 +32,7 @@ import {
   enqueuePendingTranslationTokens,
 } from '../../../helper/translation-token-sync'
 import { reducePartialText } from '../../../helper/partial-transcript'
-import { FRONTEND_WEBCAPTIONER_SERVER } from "../../../config";
+import { FRONTEND_WEBCAPTIONER_SERVER } from '../../../config'
 
 const shouldIgnoreTranscriptionText = (plainText: string): boolean => {
   const t = plainText.trim()
@@ -96,6 +97,7 @@ export const useRecording = (
   const voskReadyRef = useRef<boolean>(false)
   const voskConfigSentRef = useRef<boolean>(false)
   const voskStreamStartedRef = useRef<boolean>(false)
+  const voskModelPathRef = useRef<string>(settings.voskModel)
 
   const { calculateAdaptiveSpeed, resetAdaptiveSpeed } = useAdaptiveTtsSpeed()
 
@@ -293,7 +295,7 @@ export const useRecording = (
 
               VoskSendConfigService.sendModel(
                 webSocketRef.current,
-                settings.voskModel,
+                voskModelPathRef.current,
               )
               VoskSendConfigService.sendSampleRate(
                 webSocketRef.current,
@@ -302,6 +304,10 @@ export const useRecording = (
               VoskSendConfigService.sendChunkLength(
                 webSocketRef.current,
                 settings.chunkLength,
+              )
+              VoskSendConfigService.sendAudioLogging(
+                webSocketRef.current,
+                settings.sendAudioLogging,
               )
             }
 
@@ -501,6 +507,20 @@ export const useRecording = (
       voskReadyRef.current = false
       voskConfigSentRef.current = false
       voskStreamStartedRef.current = false
+
+      try {
+        const { data: voskModels } = await getVoskModels()
+        const selectedModel = voskModels.find(
+          model =>
+            model.name === settings.voskModel ||
+            model.path === settings.voskModel,
+        )
+
+        voskModelPathRef.current = selectedModel?.path ?? settings.voskModel
+      } catch (error) {
+        console.error('Error resolving vosk model path:', error)
+        voskModelPathRef.current = settings.voskModel
+      }
 
       let recordId = oldRecordId
 
